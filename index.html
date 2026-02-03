@@ -5,93 +5,121 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>8 Brand Screenshot Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- OCR library -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
+
 <body>
-  <div class="wrap">
+  <div class="bg"></div>
+
+  <main class="wrap">
     <header class="hero">
       <h1>8 Brand Screenshot Dashboard</h1>
       <p class="sub">
         Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser.
-        Rolling comparisons: <b>1D / 7D / 14D</b> ending at <b>End Date</b>.
+        1D / 7D / 14D comparisons use rolling windows ending at End Date.
       </p>
     </header>
 
-    <section class="panel">
-      <div class="controls">
+    <section class="card controls">
+      <div class="row">
         <div class="field">
           <label>End Date (YYYY-MM-DD)</label>
           <input id="endDate" type="date" />
+          <div class="hint">We calculate 1D/7D/14D ending at this date.</div>
         </div>
 
-        <div class="field grow">
+        <div class="field">
           <label>Upload screenshots (8 files)</label>
           <input id="files" type="file" multiple accept="image/*" />
           <div class="hint">
-            Allowed filenames: <b>m1.png</b> OR <b>m1_2026-02-02.png</b> (case-insensitive).
+            Filename rule: <b>m1.png</b> or <b>M1_2026-02-02.png</b> (case-insensitive).
           </div>
-        </div>
-
-        <div class="actions">
-          <button id="runBtn">Run OCR + Build Dashboard</button>
-          <button id="clearBtn" class="secondary">Clear</button>
         </div>
       </div>
 
-      <div class="statusRow">
-        <span id="statusPill" class="pill">Idle</span>
-        <span class="mini">Tip: best OCR at 90–110% zoom, full table visible, sharp text.</span>
+      <!-- ✅ Toggle + label -->
+      <div class="row row-tight">
+        <label class="toggle">
+          <input type="checkbox" id="toggleLastCompleted" checked />
+          <span><b>Use last completed day</b> (avoid partial-day drops before 11:59pm)</span>
+        </label>
+
+        <div class="pill">
+          Comparisons end at: <b id="comparisonEndDateText">—</b>
+        </div>
+
+        <div class="pill small">
+          Cutoff time: <b>23:59</b> (your local browser time)
+        </div>
+      </div>
+
+      <div class="row row-tight">
+        <button id="runBtn" class="btn primary">Run OCR + Build Dashboard</button>
+        <button id="clearBtn" class="btn">Clear</button>
+
+        <div class="statusLine">
+          <span id="globalStatus" class="badge neutral">Ready</span>
+          <span id="progressText" class="muted"></span>
+        </div>
       </div>
     </section>
 
-    <nav class="tabs">
+    <section class="tabs">
       <button class="tab active" data-tab="summary">Summary</button>
       <button class="tab" data-tab="active">Active Focus</button>
       <button class="tab" data-tab="all">All Metrics</button>
       <button class="tab" data-tab="raw">Raw OCR</button>
-    </nav>
+    </section>
 
-    <section id="tab-summary" class="tabPane show">
-      <div class="card">
-        <h2>Summary (Quick Health)</h2>
-        <div id="summaryCards" class="summaryCards"></div>
+    <!-- SUMMARY -->
+    <section class="card tabPane" id="tab-summary">
+      <h2>Summary</h2>
+      <p class="muted">
+        Best for quick business health check (Active is weighted the most).
+      </p>
+      <div id="summaryGrid" class="grid"></div>
+      <div class="note">
+        Tip: Keep End Date = today, toggle ON. It will automatically compare using the last completed day until cutoff.
       </div>
     </section>
 
-    <section id="tab-active" class="tabPane">
-      <div class="card">
-        <div class="cardHead">
-          <h2>Active Players Focus (Most Important)</h2>
-          <div class="smallNote">
-            Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14).
-          </div>
-        </div>
-        <div class="tableWrap">
-          <table id="activeTable"></table>
-        </div>
+    <!-- ACTIVE -->
+    <section class="card tabPane hidden" id="tab-active">
+      <h2>Active Players Focus (Most Important)</h2>
+      <p class="muted">
+        Shows end day vs previous day + rolling averages (last7 vs prev7, last14 vs prev14).
+      </p>
+      <div class="tableWrap">
+        <table class="tbl" id="activeTable"></table>
       </div>
     </section>
 
-    <section id="tab-all" class="tabPane">
-      <div class="card">
-        <h2>All Metrics (1D / 7D / 14D)</h2>
-        <div class="tableWrap">
-          <table id="allTable"></table>
-        </div>
+    <!-- ALL -->
+    <section class="card tabPane hidden" id="tab-all">
+      <h2>All Metrics (1D / 7D / 14D)</h2>
+      <p class="muted">
+        Active, Deposit, Reg, FTD, Turnover. Use horizontal scroll.
+      </p>
+      <div class="tableWrap">
+        <table class="tbl" id="allTable"></table>
       </div>
     </section>
 
-    <section id="tab-raw" class="tabPane">
-      <div class="card">
-        <h2>Raw OCR (Debug)</h2>
-        <div id="rawBlocks"></div>
-      </div>
+    <!-- RAW -->
+    <section class="card tabPane hidden" id="tab-raw">
+      <h2>Raw OCR (for debugging)</h2>
+      <p class="muted">If any brand shows wrong numbers, open the OCR text here.</p>
+      <div id="rawPanels"></div>
     </section>
 
     <footer class="foot">
-      <div>Made for fast daily ops monitoring • Works offline after page load</div>
+      <div class="muted">
+        Notes: OCR accuracy depends on screenshot quality (zoom 90–110%, clear text, full table visible).
+      </div>
     </footer>
-  </div>
+  </main>
 
   <script src="app.js"></script>
 </body>
