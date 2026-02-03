@@ -3,83 +3,1131 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>8 Brand Screenshot Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>8 Brand Screenshot Dashboard (1D / 7D / 14D)</title>
+
+  <!-- Tesseract.js (OCR in browser) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#071226;
+      --card:#0b1a33;
+      --card2:#0a1730;
+      --text:#e8eefc;
+      --muted:#9fb0d0;
+      --line:#1b2e55;
+      --ok:#21c07a;
+      --warn:#f2b824;
+      --alert:#ff4d4d;
+      --data:#8c7cff;
+      --btn:#2d6cdf;
+      --btn2:#2a3450;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 700px at 15% 10%, #0b2a6a33, transparent 60%),
+                  radial-gradient(900px 600px at 80% 0%, #2d6cdf22, transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:0 18px 80px}
+    .hero{
+      text-align:center;margin-bottom:18px;
+    }
+    .hero h1{
+      margin:0 0 6px;
+      font-size:28px;
+      letter-spacing:.2px;
+    }
+    .hero p{margin:0;color:var(--muted);font-size:13.5px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding:16px;
+    }
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap:12px;
+      align-items:end;
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input[type="date"], input[type="text"]{
+      width:100%;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      padding:10px 10px;
+      border-radius: 10px;
+      outline:none;
+    }
+    input[type="file"]{
+      width:100%;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);
+      padding:10px;
+      border-radius:10px;
+    }
+    .btnrow{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    button{
+      cursor:pointer;
+      border:0;
+      padding:10px 14px;
+      border-radius: 12px;
+      font-weight:600;
+      color: white;
+      background: var(--btn);
+      transition: .15s ease;
+    }
+    button.secondary{background: var(--btn2); color: var(--text); border:1px solid rgba(255,255,255,.10)}
+    button:disabled{opacity:.6; cursor:not-allowed}
+    .statusline{
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      margin-top:10px; color:var(--muted); font-size:12px
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--muted)}
+    .dot.ok{background:var(--ok)}
+    .dot.warn{background:var(--warn)}
+    .dot.alert{background:var(--alert)}
+    .dot.data{background:var(--data)}
+    .tabs{
+      margin-top:14px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+    }
+    .tabbtn{
+      padding:9px 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      font-weight:700;
+      font-size:13px;
+    }
+    .tabbtn.active{
+      background: rgba(45,108,223,.20);
+      border-color: rgba(45,108,223,.45);
+    }
+    .panel{margin-top:14px}
+    .panel.hidden{display:none}
+
+    .section-title{
+      display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+      margin: 8px 0 10px;
+    }
+    .section-title h2{margin:0;font-size:18px}
+    .section-title small{color:var(--muted);font-size:12px}
+
+    .tablewrap{
+      overflow:auto;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.20);
+    }
+    table{border-collapse:separate;border-spacing:0;width:100%;min-width:980px}
+    thead th{
+      position:sticky; top:0;
+      background: rgba(6,14,30,.95);
+      color:var(--muted);
+      font-size:12px;
+      text-align:left;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:13px;
+      white-space:nowrap;
+    }
+    tbody tr:hover td{background: rgba(255,255,255,.03)}
+    .brandcell{font-weight:800}
+    .num{font-variant-numeric: tabular-nums; font-family: var(--mono)}
+    .muted{color:var(--muted)}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius: 999px;
+      font-weight:800;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+    }
+    .badge.ok{border-color: rgba(33,192,122,.5); color:#d9fff0}
+    .badge.warn{border-color: rgba(242,184,36,.55); color:#fff4d6}
+    .badge.alert{border-color: rgba(255,77,77,.55); color:#ffe0e0}
+    .badge.data{border-color: rgba(140,124,255,.55); color:#efeaff}
+    .spark{
+      width:120px; height:26px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .spark svg{width:110px;height:18px}
+    .kpis{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .kpi{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.20);
+    }
+    .kpi .label{color:var(--muted);font-size:12px}
+    .kpi .value{font-weight:900;font-size:18px;margin-top:6px}
+    .kpi .sub{color:var(--muted);font-size:12px;margin-top:4px}
+    details{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      background: rgba(0,0,0,.20);
+      padding:10px 12px;
+      margin:10px 0;
+    }
+    summary{cursor:pointer; font-weight:900}
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family: var(--mono);
+      font-size:12px;
+      color:#cfe0ff;
+      margin:10px 0 0;
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px;
+      border-radius:12px;
+      max-height:280px;
+      overflow:auto;
+    }
+    .note{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+    @media (max-width:900px){
+      .controls{grid-template-columns:1fr;align-items:stretch}
+      table{min-width:980px}
+      .kpis{grid-template-columns:1fr 1fr}
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>8 Brand Screenshot Dashboard</h1>
-    <p class="sub">
-      Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser.
-    </p>
+  <div class="wrap">
+    <div class="hero">
+      <h1>8 Brand Screenshot Dashboard</h1>
+      <p>Upload screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser. 1D / 7D / 14D uses rolling comparisons ending at End Date.</p>
+    </div>
 
     <div class="card">
-      <div class="row">
-        <div class="field">
+      <div class="controls">
+        <div>
           <label>End Date (YYYY-MM-DD)</label>
-          <input id="endDate" type="text" value="2026-02-02" />
-          <div class="hint">We calculate 1D/7D/14D ending at this date.</div>
+          <input id="endDate" type="date" />
         </div>
 
-        <div class="field">
+        <div>
+          <label>Filename rule</label>
+          <input id="fnameHelp" type="text" value="Allowed: m1.png OR m1_2026-02-02.png (case-insensitive)" readonly />
+        </div>
+
+        <div>
           <label>Upload screenshots (8 files)</label>
-          <input id="fileInput" type="file" accept="image/*" multiple />
-          <div class="hint">Filename format: BRAND_YYYY-MM-DD.png (example: M1_2026-02-02.png)</div>
+          <input id="files" type="file" accept="image/*" multiple />
         </div>
       </div>
 
-      <div class="row">
-        <button id="btnRun" class="primary">Run OCR + Build Dashboard</button>
-        <button id="btnClear">Clear</button>
+      <div class="btnrow">
+        <button id="runBtn">Run OCR + Build Dashboard</button>
+        <button id="clearBtn" class="secondary">Clear</button>
       </div>
 
-      <div id="progressBox" class="progress hidden">
-        <div class="progressTop">
-          <div id="progressTitle" class="progressTitle">OCR</div>
-          <div id="progressMeta" class="progressMeta">…</div>
+      <div class="statusline" id="statusline">
+        <span class="pill"><span class="dot"></span><span id="runState">Idle</span></span>
+        <span class="pill"><span class="dot data"></span><span>End date is required</span></span>
+        <span class="pill"><span class="dot warn"></span><span>Best OCR: zoom 90–110%, full table visible</span></span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tabbtn active" data-tab="summary">Summary</button>
+      <button class="tabbtn" data-tab="active">Active Focus</button>
+      <button class="tabbtn" data-tab="all">All Metrics</button>
+      <button class="tabbtn" data-tab="raw">Raw OCR</button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="panel" id="panel-summary">
+      <div class="card">
+        <div class="section-title">
+          <h2>Executive Summary</h2>
+          <small>Active-first + Health Score + Status. (7D/14D are rolling averages vs previous window.)</small>
         </div>
-        <div class="bar"><div id="barFill" class="barFill"></div></div>
+
+        <div class="kpis" id="topKpis">
+          <!-- filled by JS -->
+        </div>
+
+        <div class="tablewrap" style="margin-top:12px">
+          <table id="summaryTable">
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th>Active 14D Trend</th>
+                <th>Active 1D%</th>
+                <th>Active 7D%</th>
+                <th>Active 14D%</th>
+                <th>Deposit 7D%</th>
+                <th>FTD 7D%</th>
+                <th>Reg 7D%</th>
+                <th>Turnover 7D%</th>
+                <th>Health Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+
+        <div class="note">Status logic: OK / WARN / ALERT is driven mainly by Active 7D% and 14D% (with data-quality override).</div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Dashboard (1D / 7D / 14D)</h2>
-      <div class="hint">
-        1D = end vs previous day • 7D = avg(last 7) vs avg(prev 7) • 14D = avg(last 14) vs avg(prev 14)
-      </div>
+    <!-- ACTIVE FOCUS -->
+    <div class="panel hidden" id="panel-active">
+      <div class="card">
+        <div class="section-title">
+          <h2>Active Players Focus (Most Important)</h2>
+          <small>Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14).</small>
+        </div>
 
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th rowspan="2">Brand</th>
-
-              <th colspan="6">Active</th>
-              <th colspan="6">Deposit</th>
-              <th colspan="6">Reg</th>
-              <th colspan="6">FTD</th>
-
-              <th rowspan="2">Status</th>
-            </tr>
-            <tr>
-              <th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>
-              <th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>
-              <th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>
-              <th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>
-            </tr>
-          </thead>
-          <tbody id="dashBody"></tbody>
-        </table>
+        <div class="tablewrap">
+          <table id="activeTable">
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th>End Day Active</th>
+                <th>Prev Day Active</th>
+                <th>Avg(last7)</th>
+                <th>Avg(prev7)</th>
+                <th>Avg(last14)</th>
+                <th>Avg(prev14)</th>
+                <th>1D Δ</th>
+                <th>1D%</th>
+                <th>7D Δ</th>
+                <th>7D%</th>
+                <th>14D Δ</th>
+                <th>14D%</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="activeBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Raw OCR (for debugging)</h2>
-      <div id="rawBox"></div>
+    <!-- ALL METRICS -->
+    <div class="panel hidden" id="panel-all">
+      <div class="card">
+        <div class="section-title">
+          <h2>All Metrics (1D / 7D / 14D)</h2>
+          <small>Deposit / Reg / FTD / Active / Turnover. Same rolling logic everywhere.</small>
+        </div>
+
+        <div class="tablewrap">
+          <table id="allTable">
+            <thead id="allHead"></thead>
+            <tbody id="allBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
+    <!-- RAW OCR -->
+    <div class="panel hidden" id="panel-raw">
+      <div class="card">
+        <div class="section-title">
+          <h2>Raw OCR (Debug)</h2>
+          <small>Open each brand to see OCR text + parsed rows.</small>
+        </div>
+        <div id="rawBlocks"></div>
+      </div>
+    </div>
+
   </div>
 
-  <script src="app.js"></script>
+<script>
+/** =========================
+ *  CONFIG
+ * ========================= */
+const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
+const METRICS = ["active","deposit","reg","ftd","turnover"]; // include turnover ✅
+const METRIC_LABEL = {
+  active: "Active",
+  deposit:"Deposit",
+  reg:"Reg",
+  ftd:"FTD",
+  turnover:"Turnover"
+};
+
+const STATUS_RULES = {
+  ok:   { a7: -3,  a14: -5 },
+  warn: { a7: -8,  a14: -12 },
+  shock1d: -10
+};
+
+// Health score weights (active-first)
+const HEALTH_W = {
+  active14: 0.40,
+  active7:  0.25,
+  deposit7: 0.15,
+  ftd7:     0.10,
+  turnover7:0.10
+};
+
+/** =========================
+ *  UI HOOKS
+ * ========================= */
+const endDateEl = document.getElementById("endDate");
+const filesEl = document.getElementById("files");
+const runBtn = document.getElementById("runBtn");
+const clearBtn = document.getElementById("clearBtn");
+const runStateEl = document.getElementById("runState");
+
+const summaryBody = document.getElementById("summaryBody");
+const activeBody = document.getElementById("activeBody");
+const allHead = document.getElementById("allHead");
+const allBody = document.getElementById("allBody");
+const rawBlocks = document.getElementById("rawBlocks");
+const topKpis = document.getElementById("topKpis");
+
+/** =========================
+ *  STATE
+ * ========================= */
+let brandData = {};   // { M1: { rows:[{date, reg, ftd, deposit, active, turnover}], ocrText, parseInfo } }
+let computed = {};    // { M1: { metric:{ ...windows... }, status, score, dataQuality } }
+
+/** =========================
+ *  TAB UI
+ * ========================= */
+document.querySelectorAll(".tabbtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabbtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById("panel-summary").classList.toggle("hidden", tab!=="summary");
+    document.getElementById("panel-active").classList.toggle("hidden", tab!=="active");
+    document.getElementById("panel-all").classList.toggle("hidden", tab!=="all");
+    document.getElementById("panel-raw").classList.toggle("hidden", tab!=="raw");
+  });
+});
+
+/** =========================
+ *  DEFAULT DATE
+ * ========================= */
+(function setDefaultEndDate(){
+  const d = new Date();
+  const iso = d.toISOString().slice(0,10);
+  endDateEl.value = iso;
+})();
+
+/** =========================
+ *  HELPERS: DATE
+ * ========================= */
+function parseISODate(s){
+  // expects yyyy-mm-dd
+  const m = String(s||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return null;
+  return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+}
+function parseDateFromRow(rowStr){
+  // OCR lines may have yyyy/mm/dd or yyyy-mm-dd
+  const m = rowStr.match(/(20\d{2})[\/\-](\d{2})[\/\-](\d{2})/);
+  if(!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+  return d;
+}
+function toISO(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const da=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${da}`;
+}
+function daysBetween(a,b){
+  return Math.round((a.getTime()-b.getTime())/(1000*60*60*24));
+}
+
+/** =========================
+ *  HELPERS: NUMBERS
+ * ========================= */
+function toNum(token){
+  if(token==null) return null;
+  const s = String(token).replace(/[^\d]/g,"");
+  if(!s) return null;
+  return Number(s);
+}
+function pct(delta, base){
+  if(base===0 || base==null) return null;
+  return delta / base;
+}
+function fmtNum(n){
+  if(n==null || Number.isNaN(n)) return "-";
+  return n.toLocaleString(undefined,{maximumFractionDigits:0});
+}
+function fmtPct(p){
+  if(p==null || Number.isNaN(p)) return "-";
+  return (p*100).toFixed(2) + "%";
+}
+function safeAvg(arr){
+  const v = arr.filter(x=>typeof x==="number" && !Number.isNaN(x));
+  if(!v.length) return null;
+  return v.reduce((a,b)=>a+b,0)/v.length;
+}
+
+/** =========================
+ *  BRAND FROM FILENAME
+ * ========================= */
+function detectBrandFromFilename(name){
+  const base = String(name||"").toUpperCase();
+  // allow "M1.png" OR "M1_2026-02-02.png" OR "M1-anything.jpg"
+  const m = base.match(/^(M1|M2|B1|B2|B3|B4|K1|TK)(?:_|-|\.|$)/);
+  return m ? m[1] : null;
+}
+
+/** =========================
+ *  OCR
+ * ========================= */
+async function ocrImage(file){
+  const worker = await Tesseract.createWorker("eng");
+  await worker.setParameters({
+    tessedit_char_whitelist: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/%:-_.() \n\t",
+  });
+  const { data } = await worker.recognize(file);
+  await worker.terminate();
+  return data.text || "";
+}
+
+/** =========================
+ *  PARSER
+ *  We expect OCR includes a table with:
+ *  Date, Reg, FTD, Total Deposit, ... Active Players, Turnover, ...
+ *
+ *  Strategy:
+ *  1) Parse row lines that contain a date
+ *  2) Extract all numeric tokens in that row
+ *  3) Use header detection if available; else fallback to a common column order:
+ *     date, reg, ftd, deposit, depCount, withdraw, wdCount, active, turnover, ...
+ * ========================= */
+function normalizeOCR(text){
+  return String(text||"")
+    .replace(/\u00A0/g," ")
+    .replace(/[^\S\r\n]+/g," ")
+    .replace(/\r/g,"")
+    .trim();
+}
+
+function detectHeaderMap(lines){
+  // Find a line that looks like header
+  // common words: Registered, First Depositors, Total Deposit, Active Players, Turnover
+  const idx = lines.findIndex(l =>
+    /registered/i.test(l) && /(deposit|active|turnover|first)/i.test(l)
+  );
+  if(idx<0) return null;
+
+  const header = lines[idx].toLowerCase();
+  // crude mapping by keyword order found
+  // We'll still parse by fallback positions, but this helps confidence display.
+  const map = {
+    reg: /registered/.test(header),
+    ftd: /first/.test(header) || /\bftd\b/.test(header),
+    deposit: /deposit/.test(header),
+    active: /active/.test(header),
+    turnover: /turnover/.test(header)
+  };
+  return { headerLine: lines[idx], map };
+}
+
+function parseDailyRows(ocrText){
+  const t = normalizeOCR(ocrText);
+  const lines = t.split("\n").map(l=>l.trim()).filter(Boolean);
+
+  const headerInfo = detectHeaderMap(lines);
+
+  const rows = [];
+  for(const line of lines){
+    const d = parseDateFromRow(line);
+    if(!d) continue;
+
+    // Split tokens, grab numeric tokens (with commas possible)
+    // Example OCR row: "2026/02/02 805 427 16,702 31,975,071.42 ... 1,622,570.55 3.33%"
+    const tokens = line.split(/\s+/);
+    const nums = [];
+    for(const tok of tokens){
+      // keep percent tokens separate; ignore trailing "%" columns
+      if(/%$/.test(tok)) continue;
+      const n = toNum(tok);
+      if(n!=null) nums.push(n);
+    }
+
+    // Fallback mapping by position (common in your OCR rows)
+    // 0: reg, 1: ftd, 2: deposit, ... last meaningful: active, turnover
+    // We'll attempt to locate active+turnover near end:
+    // Often: ... wdCount, activePlayers, turnover, companyPercent
+    // So active= second last numeric, turnover= last numeric (or last-1 if last is % removed)
+    let reg=null, ftd=null, deposit=null, active=null, turnover=null;
+
+    if(nums.length >= 5){
+      reg = nums[0] ?? null;
+      ftd = nums[1] ?? null;
+      deposit = nums[3] ?? nums[2] ?? null; // sometimes deposit amount lands at index 3 due to "deposit count"
+      // active & turnover near end:
+      active = nums[nums.length-2] ?? null;
+      turnover = nums[nums.length-1] ?? null;
+
+      // if turnover seems too small and active huge, swap:
+      if(turnover != null && active != null && turnover < 1000 && active > 100000){
+        const tmp=turnover; turnover=active; active=tmp;
+      }
+    }
+
+    rows.push({
+      date: toISO(d),
+      reg, ftd, deposit, active, turnover,
+      rawLine: line
+    });
+  }
+
+  // de-dup by date (keep last)
+  const mapByDate = new Map();
+  for(const r of rows) mapByDate.set(r.date, r);
+  const out = Array.from(mapByDate.values()).sort((a,b)=>a.date.localeCompare(b.date));
+
+  // quick data-quality check
+  const missingCore = out.filter(r => r.active==null || r.deposit==null).length;
+  const quality = {
+    totalRows: out.length,
+    missingCore,
+    headerInfo
+  };
+
+  return { rows: out, quality, headerInfo, sample: out.slice(-3) };
+}
+
+/** =========================
+ *  WINDOW CALCS
+ * ========================= */
+function calcWindows(rows, endISO){
+  // rows sorted ascending by date
+  const endD = parseISODate(endISO);
+  if(!endD) return { ok:false, reason:"Invalid end date" };
+
+  const eligible = rows.filter(r => parseISODate(r.date) && parseISODate(r.date) <= endD);
+  if(!eligible.length) return { ok:false, reason:"No rows on/before end date" };
+
+  // choose end row: exact match else nearest previous
+  let endIdx = eligible.length - 1;
+  for(let i=eligible.length-1;i>=0;i--){
+    if(eligible[i].date === endISO){ endIdx=i; break; }
+    if(parseISODate(eligible[i].date) <= endD){ endIdx=i; break; }
+  }
+
+  const endRow = eligible[endIdx];
+
+  // prev day row: nearest before endIdx
+  const prevRow = endIdx>0 ? eligible[endIdx-1] : null;
+
+  function takeWindow(n, fromIdx){
+    const start = Math.max(0, fromIdx - n + 1);
+    return eligible.slice(start, fromIdx+1);
+  }
+  function takePrevWindow(n, fromIdx){
+    const end = fromIdx - n;
+    if(end < 0) return [];
+    const start = Math.max(0, end - n + 1);
+    return eligible.slice(start, end+1);
+  }
+
+  const win7 = takeWindow(7, endIdx);
+  const prev7 = takePrevWindow(7, endIdx);
+  const win14 = takeWindow(14, endIdx);
+  const prev14 = takePrevWindow(14, endIdx);
+
+  function series(metric, arr){ return arr.map(r => r[metric]).filter(v=>typeof v==="number"); }
+
+  const out = { ok:true, endRow, prevRow, win7, prev7, win14, prev14, usedEnd: endRow.date };
+  return out;
+}
+
+function computeBrand(brand, rows, endISO){
+  const w = calcWindows(rows, endISO);
+  if(!w.ok) return { ok:false, reason:w.reason };
+
+  const result = { ok:true, usedEnd: w.usedEnd, metrics:{} };
+
+  for(const m of METRICS){
+    const endV = w.endRow[m];
+    const prevV = w.prevRow ? w.prevRow[m] : null;
+
+    const a7 = safeAvg(w.win7.map(r=>r[m]));
+    const p7 = safeAvg(w.prev7.map(r=>r[m]));
+    const a14 = safeAvg(w.win14.map(r=>r[m]));
+    const p14 = safeAvg(w.prev14.map(r=>r[m]));
+
+    const d1 = (endV!=null && prevV!=null) ? (endV - prevV) : null;
+    const p1 = (d1!=null && prevV!=null) ? pct(d1, prevV) : null;
+
+    const d7 = (a7!=null && p7!=null) ? (a7 - p7) : null;
+    const p7pct = (d7!=null && p7!=null) ? pct(d7, p7) : null;
+
+    const d14 = (a14!=null && p14!=null) ? (a14 - p14) : null;
+    const p14pct = (d14!=null && p14!=null) ? pct(d14, p14) : null;
+
+    result.metrics[m] = {
+      end: endV, prev: prevV,
+      avg7: a7, prev7: p7,
+      avg14: a14, prev14: p14,
+      d1, p1, d7, p7pct, d14, p14pct
+    };
+  }
+
+  // Data quality flag
+  const coreMissing = rows.slice(-14).some(r => r.active==null || r.deposit==null || r.turnover==null);
+  const hasEnough = rows.length >= 14;
+
+  const dq = (!hasEnough) ? "LOW_DATA" : (coreMissing ? "OCR_RISK" : "GOOD");
+
+  // Status based on Active metrics
+  const a = result.metrics.active;
+  const status = computeStatus(a, dq);
+
+  // Health score (0-100)
+  const score = computeScore(result.metrics);
+
+  return { ...result, dataQuality:dq, status, score };
+}
+
+function computeStatus(activeMetric, dq){
+  if(dq !== "GOOD") return { level:"DATA", label:"DATA ISSUE" };
+
+  const p1 = activeMetric.p1;
+  const p7 = activeMetric.p7pct;
+  const p14 = activeMetric.p14pct;
+
+  if(p1!=null && p1 <= (STATUS_RULES.shock1d/100)) return { level:"ALERT", label:"ALERT" };
+
+  if(p7!=null && p14!=null){
+    if(p7 < (STATUS_RULES.warn.a7/100) || p14 < (STATUS_RULES.warn.a14/100)) return { level:"ALERT", label:"ALERT" };
+    if(p7 < (STATUS_RULES.ok.a7/100)  || p14 < (STATUS_RULES.ok.a14/100))  return { level:"WARN",  label:"WARN" };
+    return { level:"OK", label:"OK" };
+  }
+  return { level:"DATA", label:"DATA ISSUE" };
+}
+
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+function scoreFromPct(p){
+  // map % change to 0..1 (better higher)
+  // +10% or more => 1; -15% or worse => 0; linear between
+  if(p==null) return 0.5;
+  const hi = 0.10, lo = -0.15;
+  const t = (p - lo) / (hi - lo);
+  return clamp01(t);
+}
+function computeScore(metrics){
+  const a14 = scoreFromPct(metrics.active.p14pct);
+  const a7  = scoreFromPct(metrics.active.p7pct);
+  const d7  = scoreFromPct(metrics.deposit.p7pct);
+  const f7  = scoreFromPct(metrics.ftd.p7pct);
+  const t7  = scoreFromPct(metrics.turnover.p7pct);
+
+  const weighted =
+    a14*HEALTH_W.active14 +
+    a7 *HEALTH_W.active7 +
+    d7 *HEALTH_W.deposit7 +
+    f7 *HEALTH_W.ftd7 +
+    t7 *HEALTH_W.turnover7;
+
+  return Math.round(weighted * 100);
+}
+
+/** =========================
+ *  SPARKLINE (ACTIVE last14)
+ * ========================= */
+function sparklineSVG(values){
+  const w=110, h=18;
+  const v = values.filter(x=>typeof x==="number");
+  if(v.length < 2){
+    return `<div class="spark muted">-</div>`;
+  }
+  const min = Math.min(...v);
+  const max = Math.max(...v);
+  const range = (max-min) || 1;
+
+  const pts = values.map((val, i)=>{
+    const x = (i/(values.length-1))*(w-2)+1;
+    const y = h - ((val-min)/range)*(h-2) - 1;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
+  return `
+    <div class="spark">
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+        <polyline points="${pts}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.6" />
+      </svg>
+    </div>
+  `;
+}
+
+/** =========================
+ *  RENDER
+ * ========================= */
+function badgeHTML(status){
+  const level = status.level;
+  if(level==="OK")   return `<span class="badge ok"><span class="dot ok"></span>OK</span>`;
+  if(level==="WARN") return `<span class="badge warn"><span class="dot warn"></span>WARN</span>`;
+  if(level==="ALERT")return `<span class="badge alert"><span class="dot alert"></span>ALERT</span>`;
+  return `<span class="badge data"><span class="dot data"></span>DATA</span>`;
+}
+
+function renderTopKPIs(){
+  // show worst active 14D, worst active 7D, best score, worst score
+  const items = BRANDS.map(b=>{
+    const c = computed[b];
+    if(!c || !c.ok) return null;
+    return {
+      brand:b,
+      score:c.score,
+      a7:c.metrics.active.p7pct,
+      a14:c.metrics.active.p14pct,
+      status:c.status.level
+    };
+  }).filter(Boolean);
+
+  if(!items.length){
+    topKpis.innerHTML = `
+      <div class="kpi"><div class="label">Upload + Run</div><div class="value">No data yet</div><div class="sub">Select 8 screenshots and run OCR.</div></div>
+      <div class="kpi"><div class="label">Active Watch</div><div class="value">-</div><div class="sub">We’ll highlight biggest drops.</div></div>
+      <div class="kpi"><div class="label">Health Score</div><div class="value">-</div><div class="sub">0–100 weighted score.</div></div>
+      <div class="kpi"><div class="label">Status</div><div class="value">-</div><div class="sub">OK/WARN/ALERT or DATA.</div></div>
+    `;
+    return;
+  }
+
+  const worst14 = [...items].sort((a,b)=>(a.a14??999)-(b.a14??999))[0];
+  const worst7  = [...items].sort((a,b)=>(a.a7??999)-(b.a7??999))[0];
+  const bestS   = [...items].sort((a,b)=>b.score-a.score)[0];
+  const worstS  = [...items].sort((a,b)=>a.score-b.score)[0];
+
+  topKpis.innerHTML = `
+    <div class="kpi">
+      <div class="label">Worst Active 14D%</div>
+      <div class="value">${worst14.brand} • ${fmtPct(worst14.a14)}</div>
+      <div class="sub">Monitor sustained decline (trend).</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Worst Active 7D%</div>
+      <div class="value">${worst7.brand} • ${fmtPct(worst7.a7)}</div>
+      <div class="sub">Short-term momentum.</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Best Health Score</div>
+      <div class="value">${bestS.brand} • ${bestS.score}/100</div>
+      <div class="sub">Active-heavy weighted score.</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Worst Health Score</div>
+      <div class="value">${worstS.brand} • ${worstS.score}/100</div>
+      <div class="sub">Needs attention today.</div>
+    </div>
+  `;
+}
+
+function renderSummary(){
+  summaryBody.innerHTML = "";
+
+  for(const b of BRANDS){
+    const c = computed[b];
+    if(!c || !c.ok){
+      summaryBody.innerHTML += `
+        <tr>
+          <td class="brandcell">${b}</td>
+          <td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td><td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td>
+          <td>${badgeHTML({level:"DATA"})}</td>
+        </tr>
+      `;
+      continue;
+    }
+
+    const a = c.metrics.active;
+    const dep = c.metrics.deposit;
+    const ftd = c.metrics.ftd;
+    const reg = c.metrics.reg;
+    const tov = c.metrics.turnover;
+
+    // spark values = last 14 active ending at usedEnd
+    const rows = brandData[b]?.rows || [];
+    const endIdx = rows.findIndex(r=>r.date===c.usedEnd);
+    const slice = endIdx>=0 ? rows.slice(Math.max(0,endIdx-13), endIdx+1) : rows.slice(-14);
+    const actVals = slice.map(r=>r.active).filter(v=>typeof v==="number");
+    const spark = (actVals.length>=2) ? sparklineSVG(actVals) : `<div class="spark muted">-</div>`;
+
+    summaryBody.innerHTML += `
+      <tr>
+        <td class="brandcell">${b}</td>
+        <td>${spark}</td>
+        <td class="num">${fmtPct(a.p1)}</td>
+        <td class="num">${fmtPct(a.p7pct)}</td>
+        <td class="num">${fmtPct(a.p14pct)}</td>
+        <td class="num">${fmtPct(dep.p7pct)}</td>
+        <td class="num">${fmtPct(ftd.p7pct)}</td>
+        <td class="num">${fmtPct(reg.p7pct)}</td>
+        <td class="num">${fmtPct(tov.p7pct)}</td>
+        <td class="num">${c.score}</td>
+        <td>${badgeHTML(c.status)}</td>
+      </tr>
+    `;
+  }
+}
+
+function renderActiveFocus(){
+  activeBody.innerHTML = "";
+
+  for(const b of BRANDS){
+    const c = computed[b];
+    if(!c || !c.ok){
+      activeBody.innerHTML += `
+        <tr>
+          <td class="brandcell">${b}</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td class="muted">-</td><td class="muted">-</td>
+          <td>${badgeHTML({level:"DATA"})}</td>
+        </tr>
+      `;
+      continue;
+    }
+
+    const a = c.metrics.active;
+
+    activeBody.innerHTML += `
+      <tr>
+        <td class="brandcell">${b}</td>
+        <td class="num">${fmtNum(a.end)}</td>
+        <td class="num">${fmtNum(a.prev)}</td>
+        <td class="num">${a.avg7==null? "-" : Math.round(a.avg7).toLocaleString()}</td>
+        <td class="num">${a.prev7==null? "-" : Math.round(a.prev7).toLocaleString()}</td>
+        <td class="num">${a.avg14==null? "-" : Math.round(a.avg14).toLocaleString()}</td>
+        <td class="num">${a.prev14==null? "-" : Math.round(a.prev14).toLocaleString()}</td>
+        <td class="num">${fmtNum(a.d1)}</td>
+        <td class="num">${fmtPct(a.p1)}</td>
+        <td class="num">${a.d7==null? "-" : Math.round(a.d7).toLocaleString()}</td>
+        <td class="num">${fmtPct(a.p7pct)}</td>
+        <td class="num">${a.d14==null? "-" : Math.round(a.d14).toLocaleString()}</td>
+        <td class="num">${fmtPct(a.p14pct)}</td>
+        <td>${badgeHTML(c.status)}</td>
+      </tr>
+    `;
+  }
+}
+
+function renderAllMetrics(){
+  // Header: grouped columns per metric (1DΔ/1D%/7DΔ/7D%/14DΔ/14D%)
+  allHead.innerHTML = `
+    <tr>
+      <th>Brand</th>
+      ${METRICS.map(m=>`
+        <th>${METRIC_LABEL[m]} 1D Δ</th>
+        <th>${METRIC_LABEL[m]} 1D%</th>
+        <th>${METRIC_LABEL[m]} 7D Δ</th>
+        <th>${METRIC_LABEL[m]} 7D%</th>
+        <th>${METRIC_LABEL[m]} 14D Δ</th>
+        <th>${METRIC_LABEL[m]} 14D%</th>
+      `).join("")}
+      <th>Status</th>
+    </tr>
+  `;
+
+  allBody.innerHTML = "";
+  for(const b of BRANDS){
+    const c = computed[b];
+    if(!c || !c.ok){
+      allBody.innerHTML += `
+        <tr>
+          <td class="brandcell">${b}</td>
+          ${METRICS.map(()=>`<td class="muted">-</td><td class="muted">-</td><td class="muted">-</td><td class="muted">-</td><td class="muted">-</td><td class="muted">-</td>`).join("")}
+          <td>${badgeHTML({level:"DATA"})}</td>
+        </tr>
+      `;
+      continue;
+    }
+
+    const tds = METRICS.map(m=>{
+      const mm = c.metrics[m];
+      const d7 = mm.d7==null ? null : Math.round(mm.d7);
+      const d14 = mm.d14==null ? null : Math.round(mm.d14);
+      return `
+        <td class="num">${fmtNum(mm.d1)}</td>
+        <td class="num">${fmtPct(mm.p1)}</td>
+        <td class="num">${d7==null? "-" : d7.toLocaleString()}</td>
+        <td class="num">${fmtPct(mm.p7pct)}</td>
+        <td class="num">${d14==null? "-" : d14.toLocaleString()}</td>
+        <td class="num">${fmtPct(mm.p14pct)}</td>
+      `;
+    }).join("");
+
+    allBody.innerHTML += `
+      <tr>
+        <td class="brandcell">${b}</td>
+        ${tds}
+        <td>${badgeHTML(c.status)}</td>
+      </tr>
+    `;
+  }
+}
+
+function renderRaw(){
+  rawBlocks.innerHTML = "";
+  for(const b of BRANDS){
+    const bd = brandData[b];
+    if(!bd){
+      rawBlocks.innerHTML += `
+        <details>
+          <summary>${b} — no file</summary>
+          <pre>Upload ${b}.png</pre>
+        </details>
+      `;
+      continue;
+    }
+
+    const sample = (bd.parseInfo?.sample||[]).map(r=>JSON.stringify(r)).join("\n");
+    const info = bd.parseInfo?.quality || {};
+    const hdr = bd.parseInfo?.headerInfo?.headerLine || "(header not detected)";
+
+    rawBlocks.innerHTML += `
+      <details>
+        <summary>${b} — OCR text + parsed rows</summary>
+        <pre><b>Header:</b> ${hdr}\n<b>Rows:</b> ${info.totalRows||0} | <b>Missing core:</b> ${info.missingCore||0}\n\n<b>Sample parsed rows (last):</b>\n${sample}\n\n<b>RAW OCR:</b>\n${bd.ocrText}</pre>
+      </details>
+    `;
+  }
+}
+
+/** =========================
+ *  MAIN RUN
+ * ========================= */
+function setRunState(text){
+  runStateEl.textContent = text;
+}
+
+runBtn.addEventListener("click", async ()=>{
+  const endISO = endDateEl.value;
+  if(!endISO){
+    alert("End Date is required");
+    return;
+  }
+
+  const files = Array.from(filesEl.files||[]);
+  if(!files.length){
+    alert("Please upload screenshots.");
+    return;
+  }
+
+  // map files -> brand
+  const fileByBrand = {};
+  for(const f of files){
+    const b = detectBrandFromFilename(f.name);
+    if(!b) continue;
+    fileByBrand[b]=f;
+  }
+
+  // ensure all brands present (best practice)
+  const missing = BRANDS.filter(b=>!fileByBrand[b]);
+  if(missing.length){
+    alert("Missing files for: " + missing.join(", ") + "\n\nRename files to: m1.png, m2.png, b1.png, b2.png, b3.png, b4.png, k1.png, tk.png");
+    return;
+  }
+
+  runBtn.disabled = true;
+  clearBtn.disabled = true;
+  setRunState("Running OCR… (don’t close tab)");
+
+  brandData = {};
+  computed = {};
+
+  for(const b of BRANDS){
+    setRunState(`OCR: ${b}…`);
+    const f = fileByBrand[b];
+
+    let text="";
+    try{
+      text = await ocrImage(f);
+    }catch(err){
+      console.error(err);
+      text = "";
+    }
+
+    const parsed = parseDailyRows(text);
+
+    brandData[b] = {
+      fileName: f.name,
+      ocrText: text,
+      rows: parsed.rows,
+      parseInfo: parsed
+    };
+
+    // compute windows
+    const comp = computeBrand(b, parsed.rows, endISO);
+    computed[b] = comp;
+  }
+
+  setRunState("Rendering…");
+  renderTopKPIs();
+  renderSummary();
+  renderActiveFocus();
+  renderAllMetrics();
+  renderRaw();
+
+  setRunState("Done ✅");
+  runBtn.disabled = false;
+  clearBtn.disabled = false;
+});
+
+clearBtn.addEventListener("click", ()=>{
+  filesEl.value = "";
+  brandData = {};
+  computed = {};
+  summaryBody.innerHTML = "";
+  activeBody.innerHTML = "";
+  allHead.innerHTML = "";
+  allBody.innerHTML = "";
+  rawBlocks.innerHTML = "";
+  topKpis.innerHTML = "";
+  setRunState("Idle");
+});
+</script>
 </body>
 </html>
