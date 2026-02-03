@@ -30,10 +30,7 @@ function parseBrandFromName(name){
   return ALLOWED.includes(b) ? b : null;
 }
 
-/**
- * OCR using Tesseract.js
- * (Runs in browser, no server)
- */
+/** OCR using Tesseract.js (runs in browser) */
 async function ocrImage(file, onProg){
   const { data } = await Tesseract.recognize(file, "eng", {
     logger: (m) => {
@@ -45,52 +42,90 @@ async function ocrImage(file, onProg){
   return (data.text || "").trim();
 }
 
+/** Normalize and also fix common dash variants in dates */
+function normalize(s){
+  return String(s || "")
+    .replace(/\u00A0/g," ")
+    .replace(/[–—]/g, "-")
+    .replace(/[\.\/]/g, "-")
+    .replace(/[^\S\r\n]+/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+/** Find all date strings like 2026-02-03 (also supports OCR variants) */
+function findAllDates(text){
+  const t = normalize(text);
+  const re = /(20\d{2}-\d{2}-\d{2})/g;
+  const dates = [];
+  let m;
+  while((m = re.exec(t)) !== null){
+    dates.push({ date: m[1], index: m.index });
+  }
+  // unique by date, keep first index
+  const seen = new Set();
+  return dates.filter(d => (seen.has(d.date) ? false : (seen.add(d.date), true)));
+}
+
+function dateToNum(d){
+  // "YYYY-MM-DD" -> number
+  const [y,m,dd] = d.split("-").map(x=>parseInt(x,10));
+  return y*10000 + m*100 + dd;
+}
+
 /**
- * Extract numbers for a specific date from OCR text.
- * We search around the date and grab the first several numeric tokens.
- *
- * We assume table has order similar to your report:
- * Registered Users, First Depositors, Total Deposit Count, Total Deposit,
- * Total Withdrawal Count, Total Withdrawal, Active Players, Turnover, ...
- *
- * We only need:
- * - Registered Users
- * - First Depositors (FTD)
- * - Total Deposit (Deposit)
- * - Active Players
- * - Turnover
+ * Extract numbers for a target date.
+ * If not found, auto-pick nearest available date from OCR.
  */
-function extractForDate(text, dateStr){
+function extractForDateSmart(text, targetDate){
   const t = normalize(text);
 
-  // locate the date index
-  const idx = t.indexOf(dateStr);
-  if(idx === -1){
-    return { ok:false, reason:`Date ${dateStr} not found in OCR` };
+  const allDates = findAllDates(t);
+  if(allDates.length === 0){
+    return { ok:false, reason:"No dates detected in OCR text at all." };
   }
 
-  // take a window after date (OCR may not preserve line breaks)
-  const win = t.slice(idx, idx + 800);
+  let chosen = allDates.find(d => d.date === targetDate);
 
-  // pull numeric tokens (comma separated, decimals allowed)
-  // e.g. 1,803   155,793,400.12   (25,073,803.27)
+  let usedNearest = false;
+  if(!chosen){
+    // pick nearest date by numeric distance
+    usedNearest = true;
+    const targetN = dateToNum(targetDate);
+    let best = allDates[0];
+    let bestDist = Math.abs(dateToNum(best.date) - targetN);
+    for(const d of allDates){
+      const dist = Math.abs(dateToNum(d.date) - targetN);
+      if(dist < bestDist){
+        best = d; bestDist = dist;
+      }
+    }
+    chosen = best;
+  }
+
+  const idx = chosen.index;
+  const win = t.slice(idx, idx + 900);
+
+  // collect numeric tokens near the date
   const nums = [];
-  const re = /(\(?-?\d[\d,]*\.?\d*\)?)/g;
+  const reNum = /(\(?-?\d[\d,]*\.?\d*\)?)/g;
   let m;
-  while((m = re.exec(win)) !== null){
-    let s = m[1];
-    // ignore the date itself
-    if(s.includes("-")) continue;
+  while((m = reNum.exec(win)) !== null){
+    const s = m[1];
+    if(s.includes("-")) continue; // ignore dates
     nums.push(s);
-    if(nums.length > 30) break;
+    if(nums.length > 40) break;
   }
 
-  // Heuristic mapping based on your table:
-  // After date, usually next tokens:
-  // [Registered, FirstDepositors, TotalDepositCount, TotalDeposit, TotalWCount, TotalW, Active, Turnover, ...]
-  // We only need positions 0,1,3,6,7
+  // Heuristic mapping (same as before):
+  // [Registered, FTD, DepCount, Deposit, WCount, W, Active, Turnover, ...]
   if(nums.length < 8){
-    return { ok:false, reason:`Not enough numbers near ${dateStr} (found ${nums.length})` };
+    return {
+      ok:false,
+      reason:`Date found (${chosen.date}) but not enough numbers near it (found ${nums.length}).`,
+      chosenDate: chosen.date,
+      usedNearest
+    };
   }
 
   const registered = toNum(nums[0]);
@@ -99,13 +134,18 @@ function extractForDate(text, dateStr){
   const active = toNum(nums[6]);
   const turnover = toNum(nums[7]);
 
-  return { ok:true, registered, ftd, deposit, active, turnover, sample: nums.slice(0, 12) };
+  return {
+    ok:true,
+    chosenDate: chosen.date,
+    usedNearest,
+    registered, ftd, deposit, active, turnover,
+    sample: nums.slice(0, 12)
+  };
 }
 
 function toNum(s){
   if(!s) return 0;
   let x = String(s).trim();
-  // negative in parentheses
   let neg = false;
   if(x.startsWith("(") && x.endsWith(")")){
     neg = true;
@@ -115,14 +155,6 @@ function toNum(s){
   const v = parseFloat(x);
   if(Number.isNaN(v)) return 0;
   return neg ? -v : v;
-}
-
-function normalize(s){
-  return String(s || "")
-    .replace(/\u00A0/g," ")
-    .replace(/[^\S\r\n]+/g," ")
-    .replace(/\s+/g," ")
-    .trim();
 }
 
 function calcDropPct(startVal, endVal){
@@ -139,9 +171,14 @@ function fmtPct(p){
   return (p*100).toFixed(2) + "%";
 }
 
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, (m)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+
 function makeRow(brand, res){
   const tr = document.createElement("tr");
-
   const status = res.status || "—";
   const badgeClass = status === "OK" ? "badge ok" : status === "WARN" ? "badge warn" : "badge err";
 
@@ -163,26 +200,29 @@ function makeRow(brand, res){
   return tr;
 }
 
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g, (m)=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[m]));
-}
-
-function renderRaw(brand, text, startObj, endObj){
+function renderRaw(brand, text, startObj, endObj, startTarget, endTarget){
   const wrap = document.createElement("details");
   wrap.className = "rawItem";
   const sum = document.createElement("summary");
   sum.textContent = `${brand} — OCR text (click)`;
-  const pre = document.createElement("pre");
-  pre.style.whiteSpace = "pre-wrap";
-  pre.style.margin = "10px 0 0";
-  pre.textContent = text;
 
   const meta = document.createElement("div");
   meta.className = "muted small";
   meta.style.marginTop = "8px";
-  meta.textContent = `Start extract: ${startObj.ok ? JSON.stringify(startObj.sample) : startObj.reason} | End extract: ${endObj.ok ? JSON.stringify(endObj.sample) : endObj.reason}`;
+
+  const sUsed = startObj.ok ? startObj.chosenDate : "-";
+  const eUsed = endObj.ok ? endObj.chosenDate : "-";
+
+  meta.textContent =
+    `Target Start=${startTarget} → Used=${sUsed}${startObj.usedNearest ? " (nearest)" : ""} | ` +
+    `Target End=${endTarget} → Used=${eUsed}${endObj.usedNearest ? " (nearest)" : ""} ` +
+    `| Start sample: ${startObj.ok ? JSON.stringify(startObj.sample) : startObj.reason} ` +
+    `| End sample: ${endObj.ok ? JSON.stringify(endObj.sample) : endObj.reason}`;
+
+  const pre = document.createElement("pre");
+  pre.style.whiteSpace = "pre-wrap";
+  pre.style.margin = "10px 0 0";
+  pre.textContent = text;
 
   wrap.appendChild(sum);
   wrap.appendChild(meta);
@@ -214,20 +254,11 @@ els.run.addEventListener("click", async ()=>{
     return;
   }
 
-  // group by brand
   const byBrand = {};
   for(const f of files){
     const b = parseBrandFromName(f.name);
-    if(!b){
-      // ignore but show warning later
-      continue;
-    }
+    if(!b) continue;
     byBrand[b] = f;
-  }
-
-  const missing = ALLOWED.filter(b => !byBrand[b]);
-  if(missing.length){
-    alert("Missing screenshots for: " + missing.join(", ") + "\n(Upload anyway, it will still process what you provided.)");
   }
 
   const results = {};
@@ -247,15 +278,19 @@ els.run.addEventListener("click", async ()=>{
       setProgress(true, `OCR: ${brand}`, `${status} ${(prog*100).toFixed(0)}%`, ((done + prog) / total) * 100);
     });
 
-    const startObj = extractForDate(text, startDate);
-    const endObj = extractForDate(text, endDate);
+    const startObj = extractForDateSmart(text, startDate);
+    const endObj = extractForDateSmart(text, endDate);
 
-    renderRaw(brand, text, startObj, endObj);
+    renderRaw(brand, text, startObj, endObj, startDate, endDate);
 
     if(!startObj.ok || !endObj.ok){
       results[brand] = {
         status:"ERR",
-        error: `Extract failed. Start ok=${startObj.ok}, End ok=${endObj.ok}`
+        deposit:{drop:0,pct:null},
+        registered:{drop:0,pct:null},
+        ftd:{drop:0,pct:null},
+        active:{drop:0,pct:null},
+        turnover:{drop:0,pct:null},
       };
       done++;
       continue;
@@ -267,12 +302,9 @@ els.run.addEventListener("click", async ()=>{
     const active = calcDropPct(startObj.active, endObj.active);
     const turnover = calcDropPct(startObj.turnover, endObj.turnover);
 
-    // WARN if all zeros (OCR probably failed)
-    const allZero = [startObj.deposit,startObj.registered,startObj.ftd,startObj.active,startObj.turnover].every(v => v === 0)
-                 && [endObj.deposit,endObj.registered,endObj.ftd,endObj.active,endObj.turnover].every(v => v === 0);
-
+    const usedNearest = startObj.usedNearest || endObj.usedNearest;
     results[brand] = {
-      status: allZero ? "WARN" : "OK",
+      status: usedNearest ? "WARN" : "OK",
       deposit, registered, ftd, active, turnover
     };
 
@@ -280,22 +312,16 @@ els.run.addEventListener("click", async ()=>{
     setProgress(true, `OCR: ${brand}`, `Done`, (done/total)*100);
   }
 
-  // Render dashboard
   for(const brand of ALLOWED){
-    const r = results[brand] || { status:"ERR", error:"No result" };
-    if(r.status === "OK" || r.status === "WARN"){
-      els.dashBody.appendChild(makeRow(brand, r));
-    } else {
-      // show empty row with error status
-      els.dashBody.appendChild(makeRow(brand, {
-        status:"ERR",
-        deposit:{drop:0,pct:null},
-        registered:{drop:0,pct:null},
-        ftd:{drop:0,pct:null},
-        active:{drop:0,pct:null},
-        turnover:{drop:0,pct:null},
-      }));
-    }
+    const r = results[brand] || {
+      status:"ERR",
+      deposit:{drop:0,pct:null},
+      registered:{drop:0,pct:null},
+      ftd:{drop:0,pct:null},
+      active:{drop:0,pct:null},
+      turnover:{drop:0,pct:null},
+    };
+    els.dashBody.appendChild(makeRow(brand, r));
   }
 
   setProgress(false);
