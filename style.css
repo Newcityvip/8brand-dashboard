@@ -1,0 +1,35 @@
+:root { --b:#e6e6e6; --bg:#0b0f14; --card:#111823; --txt:#e9eef6; --mut:#aab6c6; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:linear-gradient(180deg,#070a0f,#0b0f14); color:var(--txt); font-family:system-ui,Segoe UI,Roboto,Arial; }
+.wrap{ max-width:1200px; margin:24px auto; padding:0 14px; }
+header h1{ margin:0 0 6px; font-size:26px; }
+header p{ margin:0 0 18px; }
+.card{ background:var(--card); border:1px solid #1e2a3a; border-radius:14px; padding:16px; margin:14px 0; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+.grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+label{ display:block; font-size:12px; color:var(--mut); margin:0 0 6px; }
+input{ width:100%; padding:10px 10px; border-radius:10px; border:1px solid #27364b; background:#0e141d; color:var(--txt); outline:none; }
+.actions{ display:flex; gap:10px; margin-top:12px; }
+button{ border:0; border-radius:10px; padding:10px 12px; background:#2f7cf6; color:white; cursor:pointer; font-weight:600; }
+button.ghost{ background:transparent; border:1px solid #2a3b53; color:var(--txt); }
+.hint{ margin-top:10px; color:var(--mut); font-size:13px; }
+code{ background:#0e141d; border:1px solid #27364b; padding:2px 6px; border-radius:8px; }
+.tableWrap{ overflow:auto; border-radius:12px; border:1px solid #1e2a3a; }
+table{ width:100%; border-collapse:separate; border-spacing:0; min-width:1100px; }
+th,td{ padding:10px 10px; border-bottom:1px solid #1e2a3a; white-space:nowrap; }
+th{ position:sticky; top:0; background:#0f1722; z-index:2; text-align:left; font-size:12px; color:#cfe0ff; }
+td{ font-size:13px; }
+.small{ font-size:12px; }
+.muted{ color:var(--mut); }
+.rawBox{ display:grid; gap:10px; }
+.rawItem{ border:1px solid #1e2a3a; background:#0e141d; border-radius:12px; padding:10px; }
+.rawItem summary{ cursor:pointer; font-weight:700; }
+.badge{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #2a3b53; background:#0e141d; color:#cbd6e6; }
+.ok{ border-color:#1f6f3b; color:#b9ffd2; }
+.warn{ border-color:#6f5a1f; color:#ffe4a6; }
+.err{ border-color:#6f1f1f; color:#ffb9b9; }
+.progressBox{ margin-top:12px; border:1px solid #1e2a3a; border-radius:12px; padding:10px; background:#0e141d; }
+.hidden{ display:none; }
+.bar{ height:10px; background:#0b0f14; border:1px solid #27364b; border-radius:999px; overflow:hidden; margin-top:8px; }
+.barFill{ height:100%; width:0%; background:#2f7cf6; }
+.progressTitle{ font-weight:700; }
+.progressMeta{ margin-top:6px; color:var(--mut); font-size:12px; }
