@@ -22,11 +22,14 @@ function setProgress(show, title="", meta="", pct=0){
   }
 }
 
+/**
+ * ✅ NEW: allow filenames like:
+ *   m1.png, M1.jpg, M1_anything.png, M1_2026-02-02.png
+ */
 function parseBrandFromName(name){
-  const m = String(name).match(/^([A-Za-z0-9]+)_\d{4}-\d{2}-\d{2}/);
-  if(!m) return null;
-  const b = m[1].toUpperCase();
-  return ALLOWED.includes(b) ? b : null;
+  const up = String(name || "").toUpperCase();
+  const m = up.match(/^(M1|M2|B1|B2|B3|B4|K1|TK)(?=(_|\.|$))/);
+  return m ? m[1] : null;
 }
 
 async function ocrImage(file, onProg){
@@ -40,14 +43,10 @@ async function ocrImage(file, onProg){
   return (data.text || "").trim();
 }
 
-function normalize(s){
-  return String(s || "")
-    .replace(/\u00A0/g," ")
-    .replace(/[–—]/g, "-")
-    .replace(/[\.\/]/g, "-")
-    .replace(/[^\S\r\n]+/g," ")
-    .replace(/\s+/g," ")
-    .trim();
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, (m)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
 }
 
 function toNum(s){
@@ -64,13 +63,8 @@ function toNum(s){
   return neg ? -v : v;
 }
 
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g, (m)=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[m]));
-}
-
 function fmtInt(n){
+  if(n === null || n === undefined) return "";
   return (n ?? 0).toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 function fmtPct(p){
@@ -79,25 +73,35 @@ function fmtPct(p){
 }
 
 /**
- * Parse the OCR table into a time series:
- * Each line with "YYYY-MM-DD" is treated as a row.
- * We extract numbers in that line and map:
- *   registered = nums[0]
- *   ftd        = nums[1]
- *   deposit    = nums[3]   (Total Deposit)
- *   active     = nums[6]   (Active Players)
- *   turnover   = nums[7]   (Turnover)
+ * ✅ NEW: normalize a SINGLE LINE (do NOT destroy newlines globally)
+ */
+function normalizeLine(line){
+  return String(line || "")
+    .replace(/\u00A0/g," ")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+/**
+ * ✅ NEW: Parse OCR into daily series (keeps all rows!)
+ * Accepts date formats:
+ *   2026-02-03
+ *   2026/02/03  (converted)
  */
 function parseSeriesFromOCR(ocrText){
-  const t = normalize(ocrText);
-  const lines = t.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const raw = String(ocrText || "");
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
   const rows = [];
-  for(const line of lines){
-    const dm = line.match(/(20\d{2}-\d{2}-\d{2})/);
+  for(const rawLine of lines){
+    const line = normalizeLine(rawLine);
+
+    // match date with "-" or "/"
+    const dm = line.match(/(20\d{2})[\/-](\d{2})[\/-](\d{2})/);
     if(!dm) continue;
 
-    const date = dm[1];
+    const date = `${dm[1]}-${dm[2]}-${dm[3]}`;
 
     // collect numeric tokens (include commas, decimals, parentheses)
     const tokens = [];
@@ -105,12 +109,16 @@ function parseSeriesFromOCR(ocrText){
     let m;
     while((m = reNum.exec(line)) !== null){
       const s = m[1];
-      if(s.includes("-") && s.length >= 8) continue; // skip dates
+
+      // skip pieces that look like date fragments
+      if(s.length === 4 && dm[1] === s) continue;
       tokens.push(s);
-      if(tokens.length > 30) break;
+      if(tokens.length > 40) break;
     }
 
-    // Need at least enough fields to map
+    // We expect at least enough columns
+    // mapping based on your working screenshot:
+    // registered = nums[0], ftd = nums[1], deposit = nums[3], active = nums[6], turnover = nums[7]
     if(tokens.length < 8) continue;
 
     const registered = toNum(tokens[0]);
@@ -129,20 +137,15 @@ function parseSeriesFromOCR(ocrText){
   }
 
   // sort asc
-  const out = Array.from(byDate.values()).sort((a,b)=>a.date.localeCompare(b.date));
-  return out;
+  return Array.from(byDate.values()).sort((a,b)=>a.date.localeCompare(b.date));
 }
 
-/**
- * Get row by exact date. If not found, choose nearest available date.
- */
 function pickDateRow(series, targetDate){
   if(series.length === 0) return { ok:false, reason:"No rows/dates parsed from OCR." };
 
   const exact = series.find(r => r.date === targetDate);
   if(exact) return { ok:true, usedNearest:false, row: exact };
 
-  // nearest by absolute YYYYMMDD distance
   const toN = (d)=>Number(d.replaceAll("-",""));
   const tN = toN(targetDate);
 
@@ -158,14 +161,6 @@ function pickDateRow(series, targetDate){
   return { ok:true, usedNearest:true, row: best };
 }
 
-/**
- * Build windows ending at endIndex:
- * - 1D compares end vs previous day (endIndex-1)
- * - 7D compares avg(last 7) vs avg(prev 7)
- * - 14D compares avg(last 14) vs avg(prev 14)
- *
- * If insufficient rows, returns nulls and WARN/ERR will be used.
- */
 function calcRolling(series, endIndex, key){
   const get = (i)=> (i >= 0 && i < series.length) ? series[i][key] : null;
 
@@ -175,14 +170,12 @@ function calcRolling(series, endIndex, key){
   const d1 = (endVal === null || prevVal === null) ? null : (endVal - prevVal);
   const p1 = (prevVal === null || prevVal === 0 || d1 === null) ? null : (d1 / prevVal);
 
-  // helper average in [from..to] inclusive
   const avg = (from, to)=>{
-    if(from < 0 || to < 0) return null;
     if(from > to) return null;
-    if(from >= series.length) return null;
-
     const a = Math.max(0, from);
     const b = Math.min(series.length - 1, to);
+    if(a > b) return null;
+
     const arr = [];
     for(let i=a;i<=b;i++){
       const v = series[i][key];
@@ -204,10 +197,7 @@ function calcRolling(series, endIndex, key){
   const d14 = (last14 === null || prev14 === null) ? null : (last14 - prev14);
   const p14 = (prev14 === null || prev14 === 0 || d14 === null) ? null : (d14 / prev14);
 
-  return {
-    d1, p1, d7, p7, d14, p14,
-    endVal, prevVal, last7, prev7, last14, prev14
-  };
+  return { d1, p1, d7, p7, d14, p14 };
 }
 
 function badge(status){
@@ -215,20 +205,17 @@ function badge(status){
   return `<span class="${cls}">${status}</span>`;
 }
 
-function td(v){ return `<td>${escapeHtml(String(v))}</td>`; }
-
 function makeRow(brand, metrics, status){
-  // Order: Active(6) Deposit(6) Reg(6) FTD(6)
   const cols = [];
   cols.push(`<td style="text-align:left">${escapeHtml(brand)}</td>`);
 
   const pack = (m)=>{
-    cols.push(td(fmtInt(m.d1)));
-    cols.push(td(fmtPct(m.p1)));
-    cols.push(td(fmtInt(m.d7)));
-    cols.push(td(fmtPct(m.p7)));
-    cols.push(td(fmtInt(m.d14)));
-    cols.push(td(fmtPct(m.p14)));
+    cols.push(`<td>${escapeHtml(fmtInt(m.d1))}</td>`);
+    cols.push(`<td>${escapeHtml(fmtPct(m.p1))}</td>`);
+    cols.push(`<td>${escapeHtml(fmtInt(m.d7))}</td>`);
+    cols.push(`<td>${escapeHtml(fmtPct(m.p7))}</td>`);
+    cols.push(`<td>${escapeHtml(fmtInt(m.d14))}</td>`);
+    cols.push(`<td>${escapeHtml(fmtPct(m.p14))}</td>`);
   };
 
   pack(metrics.active);
@@ -299,10 +286,10 @@ els.run.addEventListener("click", async ()=>{
     const f = byBrand[brand];
     if(!f){
       els.dashBody.insertAdjacentHTML("beforeend", makeRow(brand, {
-        active:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        deposit:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        registered:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        ftd:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
+        active:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        deposit:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        registered:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        ftd:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
       }, "ERR"));
       continue;
     }
@@ -319,38 +306,34 @@ els.run.addEventListener("click", async ()=>{
 
     if(!endPick.ok){
       els.dashBody.insertAdjacentHTML("beforeend", makeRow(brand, {
-        active:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        deposit:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        registered:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
-        ftd:{d1:0,p1:null,d7:0,p7:null,d14:0,p14:null},
+        active:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        deposit:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        registered:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
+        ftd:{d1:null,p1:null,d7:null,p7:null,d14:null,p14:null},
       }, "ERR"));
       done++;
       continue;
     }
 
-    const endDateUsed = endPick.row.date;
-    const endIndex = series.findIndex(r => r.date === endDateUsed);
+    const endIndex = series.findIndex(r => r.date === endPick.row.date);
 
     const active = calcRolling(series, endIndex, "active");
     const deposit = calcRolling(series, endIndex, "deposit");
     const registered = calcRolling(series, endIndex, "registered");
     const ftd = calcRolling(series, endIndex, "ftd");
 
-    // status rules:
-    // OK = has 1D + 7D + 14D all computed
-    // WARN = can compute some but not all
-    // ERR = basically nothing
-    const allGood =
-      active.d1 !== null && active.d7 !== null && active.d14 !== null &&
-      deposit.d1 !== null && deposit.d7 !== null && deposit.d14 !== null &&
-      registered.d1 !== null && registered.d7 !== null && registered.d14 !== null &&
-      ftd.d1 !== null && ftd.d7 !== null && ftd.d14 !== null;
+    // ✅ Status: need enough history for rolling:
+    // 1D needs 2 rows, 7D needs ~14 rows, 14D needs ~28 rows
+    const has1D = active.d1 !== null && deposit.d1 !== null;
+    const has7D = active.d7 !== null && deposit.d7 !== null;
+    const has14D = active.d14 !== null && deposit.d14 !== null;
 
-    const anyGood =
-      [active, deposit, registered, ftd].some(m => m.d1 !== null || m.d7 !== null || m.d14 !== null);
+    let status = "ERR";
+    if(has1D && has7D && has14D) status = "OK";
+    else if(has1D && (has7D || has14D)) status = "WARN";
+    else if(has1D) status = "WARN";
 
-    let status = allGood ? "OK" : (anyGood ? "WARN" : "ERR");
-    if(endPick.usedNearest) status = (status === "OK") ? "WARN" : status;
+    if(endPick.usedNearest && status === "OK") status = "WARN";
 
     els.dashBody.insertAdjacentHTML("beforeend", makeRow(brand, {
       active, deposit, registered, ftd
