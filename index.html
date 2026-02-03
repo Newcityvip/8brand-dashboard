@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>8 Brand Screenshot Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Tesseract.js (OCR runs in browser) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>8 Brand Screenshot Dashboard</h1>
+      <p class="muted">
+        Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser.
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="grid">
+        <div>
+          <label>Start Date (YYYY-MM-DD)</label>
+          <input id="startDate" value="2026-01-13" />
+        </div>
+        <div>
+          <label>End Date (YYYY-MM-DD)</label>
+          <input id="endDate" value="2026-02-02" />
+        </div>
+        <div>
+          <label>Upload screenshots (8 files)</label>
+          <input id="fileInput" type="file" accept="image/*" multiple />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnRun">Run OCR + Build Dashboard</button>
+        <button id="btnClear" class="ghost">Clear</button>
+      </div>
+
+      <div class="hint">
+        <b>Filename format:</b> BRAND_YYYY-MM-DD.png (example: <code>M1_2026-02-02.png</code>)
+      </div>
+
+      <div id="progressBox" class="progressBox hidden">
+        <div class="progressTitle" id="progressTitle">Ready</div>
+        <div class="bar"><div class="barFill" id="barFill"></div></div>
+        <div class="progressMeta" id="progressMeta"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Dashboard</h2>
+      <div class="tableWrap">
+        <table id="dashTable">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th>Deposit Drop</th><th>Deposit %</th>
+              <th>Reg Drop</th><th>Reg %</th>
+              <th>FTD Drop</th><th>FTD %</th>
+              <th>Active Drop</th><th>Active %</th>
+              <th>Turnover Drop</th><th>Turnover %</th>
+              <th class="small">Status</th>
+            </tr>
+          </thead>
+          <tbody id="dashBody"></tbody>
+        </table>
+      </div>
+      <div class="muted small">
+        Notes: OCR accuracy depends on screenshot quality. Best results: zoom 90–100%, clear text, full table visible.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Raw OCR (for debugging)</h2>
+      <div id="rawBox" class="rawBox"></div>
+    </section>
+
+    <footer class="muted small">
+      Tip: You can share this GitHub Pages link with teammates. Everyone can use it directly.
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
