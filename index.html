@@ -30,21 +30,8 @@
       min-height:100vh;
     }
     .wrap{max-width:1200px;margin:0 auto;padding:28px 18px 60px}
-    .title{
-      text-align:center;
-      font-weight:800;
-      letter-spacing:.3px;
-      font-size:28px;
-      margin:6px 0 6px;
-    }
-    .subtitle{
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-      margin:0 0 20px;
-      line-height:1.45;
-    }
-
+    .title{text-align:center;font-weight:800;letter-spacing:.3px;font-size:28px;margin:6px 0 6px;}
+    .subtitle{text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px;line-height:1.45;}
     .panel{
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
       border:1px solid var(--line);
@@ -52,365 +39,198 @@
       box-shadow:var(--shadow);
       padding:14px;
     }
-    .controls{
-      display:grid;
-      grid-template-columns: 1.1fr 1.2fr;
-      gap:14px;
-      align-items:start;
-    }
-    @media (max-width:900px){
-      .controls{grid-template-columns:1fr}
-    }
-
-    .grid2{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
+    .controls{display:grid;grid-template-columns: 1.1fr 1.2fr;gap:14px;align-items:start;}
+    @media (max-width:900px){.controls{grid-template-columns:1fr}}
+    .grid2{display:grid;grid-template-columns: 1fr 1fr;gap:12px;}
     @media (max-width:700px){ .grid2{grid-template-columns:1fr} }
-
-    .field{
-      background:var(--card2);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 10px;
-    }
-    .label{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+    .field{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 10px;}
+    .label{font-size:12px;color:var(--muted);margin-bottom:6px;}
     input[type="date"], input[type="text"]{
-      width:100%;
-      background:rgba(0,0,0,.25);
+      width:100%;background:rgba(0,0,0,.25);
       border:1px solid rgba(255,255,255,.14);
-      border-radius:10px;
-      padding:10px 10px;
-      color:var(--text);
-      outline:none;
-      font-size:14px;
+      border-radius:10px;padding:10px 10px;color:var(--text);outline:none;font-size:14px;
     }
-    input[type="file"]{
-      width:100%;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-    .btn{
-      background:var(--btn);
-      border:none;
-      color:white;
-      padding:10px 14px;
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .btn.secondary{
-      background:var(--btn2);
-      border:1px solid var(--line);
-      color:var(--text);
-    }
+    input[type="file"]{width:100%;color:var(--muted);font-size:13px;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+    .btn{background:var(--btn);border:none;color:white;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;}
+    .btn.secondary{background:var(--btn2);border:1px solid var(--line);color:var(--text);}
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(0,0,0,.25);
-      border:1px solid rgba(255,255,255,.14);
-      color:var(--muted);
-      font-size:12px;
-      white-space:nowrap;
+      display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;
+      background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);font-size:12px;white-space:nowrap;
     }
     .pill b{color:var(--text)}
     .toggle{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:10px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:var(--card2);
+      display:flex;gap:10px;align-items:flex-start;
+      padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--card2);
     }
     .toggle input{margin-top:3px}
     .toggle .t1{font-weight:800}
     .toggle .t2{color:var(--muted);font-size:12px;margin-top:2px}
-
-    .tabs{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin:16px 0 10px;
-      flex-wrap:wrap;
-    }
+    .tabs{display:flex;justify-content:center;gap:8px;margin:16px 0 10px;flex-wrap:wrap;}
     .tab{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      padding:8px 12px;
-      border-radius:999px;
-      cursor:pointer;
-      font-weight:700;
-      color:var(--muted);
-      font-size:13px;
+      border:1px solid var(--line);background:rgba(255,255,255,.06);
+      padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:700;color:var(--muted);font-size:13px;
     }
-    .tab.active{
-      background:rgba(47,121,255,.22);
-      color:var(--text);
-      border-color:rgba(47,121,255,.45);
-    }
-
+    .tab.active{background:rgba(47,121,255,.22);color:var(--text);border-color:rgba(47,121,255,.45);}
     .section{margin-top:12px}
-    .section h2{
-      font-size:16px;
-      margin:0 0 8px;
-    }
+    .section h2{font-size:16px;margin:0 0 8px;}
     .hint{color:var(--muted);font-size:12px;margin:0 0 10px;line-height:1.4}
-
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:12px;
-    }
+    .cards{display:grid;grid-template-columns: repeat(4, 1fr);gap:12px;}
     @media (max-width:1050px){ .cards{grid-template-columns: repeat(2,1fr)} }
     @media (max-width:520px){ .cards{grid-template-columns:1fr} }
-
     .card{
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      position:relative;
-      overflow:hidden;
+      border:1px solid var(--line);border-radius:14px;padding:12px;position:relative;overflow:hidden;
     }
-    .card .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-      margin-bottom:8px;
-    }
+    .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
     .badge{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      color:var(--muted);
-      background:rgba(0,0,0,.25);
-      font-weight:800;
+      font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);
+      color:var(--muted);background:rgba(0,0,0,.25);font-weight:800;
     }
     .badge.ok{color:#c8ffe0;border-color:rgba(46,204,113,.45); background:rgba(46,204,113,.12)}
     .badge.warn{color:#fff5c2;border-color:rgba(241,196,15,.45); background:rgba(241,196,15,.12)}
     .badge.err{color:#ffd0d8;border-color:rgba(255,92,122,.55); background:rgba(255,92,122,.14)}
     .k{font-weight:900;font-size:15px}
     .small{color:var(--muted);font-size:12px;margin-top:2px}
-    .metricsRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:8px;
-    }
+    .metricsRow{display:grid;grid-template-columns: 1fr 1fr;gap:10px;margin-top:8px;}
     .mini{
       background:rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.10);
-      border-radius:12px;
-      padding:10px;
+      border-radius:12px;padding:10px;
     }
     .mini .mLabel{color:var(--muted);font-size:12px}
     .mini .mVal{font-weight:900;font-size:14px;margin-top:4px}
-
-    .tableWrap{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      border-radius:14px;
-      overflow:hidden;
-    }
+    .tableWrap{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:14px;overflow:hidden;}
     .scrollX{overflow:auto}
     table{border-collapse:collapse; width:100%; min-width:1120px}
-    th, td{
-      padding:10px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      font-size:12px;
-      text-align:right;
-      white-space:nowrap;
-    }
-    th{
-      position:sticky;
-      top:0;
-      background:rgba(8,22,42,.95);
-      z-index:1;
-      color:rgba(255,255,255,.8);
-      font-weight:900;
-      letter-spacing:.2px;
-    }
+    th, td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;text-align:right;white-space:nowrap;}
+    th{position:sticky;top:0;background:rgba(8,22,42,.95);z-index:1;color:rgba(255,255,255,.8);font-weight:900;letter-spacing:.2px;}
     td:first-child, th:first-child{ text-align:left; position:sticky; left:0; background:rgba(8,22,42,.95); z-index:2;}
-    td:nth-child(2), th:nth-child(2){ text-align:right; position:sticky; left:72px; background:rgba(8,22,42,.95); z-index:2;}
-    .statusCell{text-align:center}
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:11px;
-      color:rgba(255,255,255,.78);
-    }
-    details{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      margin-top:10px;
-      overflow:hidden;
-    }
+    td:nth-child(2), th:nth-child(2){ text-align:center; position:sticky; left:72px; background:rgba(8,22,42,.95); z-index:2;}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;font-size:11px;color:rgba(255,255,255,.78);}
+    details{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);margin-top:10px;overflow:hidden;}
     details summary{
-      cursor:pointer;
-      padding:10px 12px;
-      font-weight:900;
-      color:rgba(255,255,255,.86);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
+      cursor:pointer;padding:10px 12px;font-weight:900;color:rgba(255,255,255,.86);
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
     }
     .ocrBox{
-      padding:10px 12px 14px;
-      border-top:1px solid rgba(255,255,255,.08);
-      max-height:340px;
-      overflow:auto;
-      background:rgba(0,0,0,.18);
+      padding:10px 12px 14px;border-top:1px solid rgba(255,255,255,.08);
+      max-height:360px;overflow:auto;background:rgba(0,0,0,.18);
     }
     .warnText{color:#ffeaa7}
     .errText{color:#ffb3c0}
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="title">8 Brand Screenshot Dashboard</div>
-    <div class="subtitle">
-      Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser.
-      We compute <b>1D / 7D / 14D</b> rolling comparisons ending at End Date.
-    </div>
-
-    <div class="panel">
-      <div class="controls">
-        <div class="grid2">
-          <div class="field">
-            <div class="label">End Date (YYYY-MM-DD)</div>
-            <input id="endDate" type="date" />
-          </div>
-
-          <div class="field">
-            <div class="label">Upload screenshots (8 files)</div>
-            <input id="files" type="file" accept="image/*" multiple />
-            <div class="small" style="margin-top:8px">
-              Filename rule: allowed <b>m1.png</b> or <b>M1_2026-02-02.png</b> (case-insensitive).
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="toggle">
-            <input id="useLastCompleted" type="checkbox" checked />
-            <div>
-              <div class="t1">Use last completed day</div>
-              <div class="t2">Avoid partial-day drops before <b>11:59pm Manila</b> (Asia/Manila).</div>
-            </div>
-          </div>
-
-          <div class="row">
-            <button class="btn" id="runBtn">Run OCR + Build Dashboard</button>
-            <button class="btn secondary" id="clearBtn">Clear</button>
-            <span class="pill" id="statusPill"><b>Idle</b></span>
-            <span class="pill" id="endUsedPill">Comparisons end at: <b>—</b></span>
-            <span class="pill">Cutoff: <b>23:59</b> (Asia/Manila)</span>
-          </div>
-
-          <div class="small" style="margin-top:8px; color: var(--muted); line-height:1.4">
-            Parsing is <b>locked to your backoffice table</b> by scanning date-rows and using header/keyword + numeric heuristics for:
-            Registered Users / First Depositors / Total Deposit / Active Players / Turnover.
-          </div>
-        </div>
-      </div>
-
-      <div class="tabs">
-        <div class="tab active" data-tab="summary">Summary</div>
-        <div class="tab" data-tab="active">Active Focus</div>
-        <div class="tab" data-tab="all">All Metrics</div>
-        <div class="tab" data-tab="raw">Raw OCR</div>
-      </div>
-
-      <div class="section" id="tab-summary">
-        <h2>Summary</h2>
-        <p class="hint">Quick business health check (Active is weighted most).</p>
-        <div class="cards" id="summaryCards"></div>
-      </div>
-
-      <div class="section" id="tab-active" style="display:none">
-        <h2>Active Players Focus (Most Important)</h2>
-        <p class="hint">
-          Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14).
-          Use this to detect consistent drops.
-        </p>
-        <div class="tableWrap">
-          <div class="scrollX">
-            <table id="activeTable">
-              <thead>
-                <tr>
-                  <th>Brand</th>
-                  <th>Status</th>
-                  <th>End Day Active</th>
-                  <th>Prev Day Active</th>
-                  <th>Avg(last7)</th>
-                  <th>Avg(prev7)</th>
-                  <th>Avg(last14)</th>
-                  <th>Avg(prev14)</th>
-                  <th>1D Δ</th>
-                  <th>1D %</th>
-                  <th>7D Δ</th>
-                  <th>7D %</th>
-                  <th>14D Δ</th>
-                  <th>14D %</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="tab-all" style="display:none">
-        <h2>All Metrics (1D / 7D / 14D)</h2>
-        <p class="hint">
-          1D = end vs previous day · 7D = avg(last 7) vs avg(prev 7) · 14D = avg(last 14) vs avg(prev 14)
-        </p>
-        <div class="tableWrap">
-          <div class="scrollX">
-            <table id="allTable">
-              <thead id="allHead"></thead>
-              <tbody id="allBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="tab-raw" style="display:none">
-        <h2>Raw OCR (for debugging)</h2>
-        <p class="hint">
-          If any brand shows wrong numbers, open OCR text here. You should see clean date rows like
-          <span class="mono">2026/02/03 ... Active Players ... Turnover</span>.
-        </p>
-        <div id="rawBlocks"></div>
-      </div>
-
-    </div>
+<div class="wrap">
+  <div class="title">8 Brand Screenshot Dashboard</div>
+  <div class="subtitle">
+    Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally.
+    We compute <b>1D / 7D / 14D</b> comparisons ending at End Date.
   </div>
 
+  <div class="panel">
+    <div class="controls">
+      <div class="grid2">
+        <div class="field">
+          <div class="label">End Date (YYYY-MM-DD)</div>
+          <input id="endDate" type="date" />
+        </div>
+        <div class="field">
+          <div class="label">Upload screenshots (8 files)</div>
+          <input id="files" type="file" accept="image/*" multiple />
+          <div class="small" style="margin-top:8px">
+            Filename: <b>m1.png</b> or <b>M1_2026-02-02.png</b> (case-insensitive).
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="toggle">
+          <input id="useLastCompleted" type="checkbox" checked />
+          <div>
+            <div class="t1">Use last completed day</div>
+            <div class="t2">Avoid partial-day drops before <b>11:59pm Manila</b> (Asia/Manila).</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="runBtn">Run OCR + Build Dashboard</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+          <span class="pill" id="statusPill"><b>Idle</b></span>
+          <span class="pill" id="endUsedPill">Comparisons end at: <b>—</b></span>
+          <span class="pill">Cutoff: <b>23:59</b> (Asia/Manila)</span>
+        </div>
+
+        <div class="small" style="margin-top:8px;color:var(--muted);line-height:1.4">
+          Parsing is locked by scanning date-rows (supports <b>2026/02/03</b>, <b>2026-02-03</b>, and <b>20260203</b>)
+          then mapping numbers for Registered / FTD / Total Deposit / Active / Turnover.
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="summary">Summary</div>
+      <div class="tab" data-tab="active">Active Focus</div>
+      <div class="tab" data-tab="all">All Metrics</div>
+      <div class="tab" data-tab="raw">Raw OCR</div>
+    </div>
+
+    <div class="section" id="tab-summary">
+      <h2>Summary</h2>
+      <p class="hint">Quick business check (Active weighted most).</p>
+      <div class="cards" id="summaryCards"></div>
+    </div>
+
+    <div class="section" id="tab-active" style="display:none">
+      <h2>Active Players Focus</h2>
+      <p class="hint">End-day + rolling averages (last7 vs prev7, last14 vs prev14).</p>
+      <div class="tableWrap">
+        <div class="scrollX">
+          <table id="activeTable">
+            <thead>
+            <tr>
+              <th>Brand</th><th>Status</th>
+              <th>End Active</th><th>Prev Active</th>
+              <th>Avg(last7)</th><th>Avg(prev7)</th>
+              <th>Avg(last14)</th><th>Avg(prev14)</th>
+              <th>1D Δ</th><th>1D %</th>
+              <th>7D Δ</th><th>7D %</th>
+              <th>14D Δ</th><th>14D %</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="tab-all" style="display:none">
+      <h2>All Metrics (1D / 7D / 14D)</h2>
+      <p class="hint">1D = end vs previous day · 7D = avg(last7) vs avg(prev7) · 14D = avg(last14) vs avg(prev14)</p>
+      <div class="tableWrap">
+        <div class="scrollX">
+          <table id="allTable">
+            <thead id="allHead"></thead>
+            <tbody id="allBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="tab-raw" style="display:none">
+      <h2>Raw OCR (debug)</h2>
+      <p class="hint">Open brand OCR text if a brand shows wrong numbers.</p>
+      <div id="rawBlocks"></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
-/** -----------------------------
- * CONFIG
- * ----------------------------- */
+/* ---------------- CONFIG ---------------- */
 const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
 const METRICS = [
   { key:"active",  label:"Active",  type:"count" },
@@ -420,29 +240,29 @@ const METRICS = [
   { key:"turnover",label:"Turnover",type:"money" },
 ];
 
-// Manila cutoff logic (avoid partial day before 23:59 Manila time)
 const MANILA_TZ = "Asia/Manila";
 const CUTOFF_HH = 23;
 const CUTOFF_MM = 59;
 
-// OCR tuning
+// ✅ CRITICAL FIX: whitelist must include "/" or OCR breaks dates
 const OCR_LANG = "eng";
-const OCR_WHITELIST = "0123456789.,/%:-\\n \\tABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()";
+const OCR_WHITELIST = "0123456789.,/%:-/\\n \\tABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()";
 
-/** -----------------------------
- * UI helpers
- * ----------------------------- */
+/* --------------- UI helpers --------------- */
 const $ = (id)=>document.getElementById(id);
 const statusPill = $("statusPill");
 const endUsedPill = $("endUsedPill");
 
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+}
 function setStatus(text, kind="idle"){
   const map = {
-    idle: {bg:"rgba(0,0,0,.25)", bd:"rgba(255,255,255,.14)", fg:"rgba(255,255,255,.75)"},
-    run:  {bg:"rgba(47,121,255,.18)", bd:"rgba(47,121,255,.45)", fg:"rgba(255,255,255,.92)"},
-    ok:   {bg:"rgba(46,204,113,.14)", bd:"rgba(46,204,113,.45)", fg:"#eafff3"},
-    warn: {bg:"rgba(241,196,15,.14)", bd:"rgba(241,196,15,.45)", fg:"#fff7d6"},
-    err:  {bg:"rgba(255,92,122,.14)", bd:"rgba(255,92,122,.55)", fg:"#ffe3e8"},
+    idle:{bg:"rgba(0,0,0,.25)", bd:"rgba(255,255,255,.14)", fg:"rgba(255,255,255,.75)"},
+    run:{bg:"rgba(47,121,255,.18)", bd:"rgba(47,121,255,.45)", fg:"rgba(255,255,255,.92)"},
+    ok:{bg:"rgba(46,204,113,.14)", bd:"rgba(46,204,113,.45)", fg:"#eafff3"},
+    warn:{bg:"rgba(241,196,15,.14)", bd:"rgba(241,196,15,.45)", fg:"#fff7d6"},
+    err:{bg:"rgba(255,92,122,.14)", bd:"rgba(255,92,122,.55)", fg:"#ffe3e8"},
   };
   const c = map[kind] || map.idle;
   statusPill.style.background = c.bg;
@@ -453,7 +273,6 @@ function setStatus(text, kind="idle"){
 function setEndUsed(dateStr){
   endUsedPill.innerHTML = `Comparisons end at: <b>${escapeHtml(dateStr || "—")}</b>`;
 }
-
 function fmtInt(n){
   if(n===null||n===undefined||Number.isNaN(n)) return "—";
   return Math.round(n).toLocaleString("en-US");
@@ -466,13 +285,8 @@ function fmtPct(n){
   if(n===null||n===undefined||Number.isNaN(n)) return "—";
   return (n*100).toFixed(2) + "%";
 }
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
-}
 
-/** -----------------------------
- * Date utilities
- * ----------------------------- */
+/* --------------- Date helpers --------------- */
 function toISODate(d){
   const y = d.getFullYear();
   const m = String(d.getMonth()+1).padStart(2,"0");
@@ -480,7 +294,6 @@ function toISODate(d){
   return `${y}-${m}-${day}`;
 }
 function parseISODate(s){
-  // expects YYYY-MM-DD
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
   if(!m) return null;
   return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
@@ -490,17 +303,7 @@ function addDays(d, n){
   x.setDate(x.getDate()+n);
   return x;
 }
-function dateKeyToDateObj(k){
-  // key may be YYYY/MM/DD or YYYY-MM-DD
-  const s = k.replaceAll("/","-");
-  return parseISODate(s);
-}
-function normalizeDateKey(k){
-  // standard -> YYYY-MM-DD
-  return k.replaceAll("/","-");
-}
 function getManilaNow(){
-  // Create "now" in Manila timezone by formatting parts and reconstructing
   const dtf = new Intl.DateTimeFormat("en-CA", {
     timeZone: MANILA_TZ, year:"numeric", month:"2-digit", day:"2-digit",
     hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false
@@ -514,29 +317,34 @@ function getManilaNow(){
 function computeEndUsed(endInputISO, useLastCompleted){
   const endD = parseISODate(endInputISO);
   if(!endD) return null;
-
   if(!useLastCompleted) return endD;
 
   const nowManila = getManilaNow();
-  const todayManilaISO = toISODate(nowManila);
+  const todayISO = toISODate(nowManila);
+  const endISO = toISODate(endD);
 
-  const isEndToday = (toISODate(endD) === todayManilaISO);
   const beforeCutoff = (nowManila.getHours() < CUTOFF_HH) || (nowManila.getHours() === CUTOFF_HH && nowManila.getMinutes() < CUTOFF_MM);
-
-  // If end date is today in Manila AND before 23:59 -> use yesterday for comparisons
-  if(isEndToday && beforeCutoff){
+  if(endISO === todayISO && beforeCutoff){
     return addDays(endD, -1);
   }
   return endD;
 }
+function computeWindows(endUsedDateObj){
+  const endISO = toISODate(endUsedDateObj);
+  const prevISO = toISODate(addDays(endUsedDateObj, -1));
+  const last7Start = toISODate(addDays(endUsedDateObj, -6));
+  const prev7Start = toISODate(addDays(endUsedDateObj, -13));
+  const prev7End   = toISODate(addDays(endUsedDateObj, -7));
+  const last14Start = toISODate(addDays(endUsedDateObj, -13));
+  const prev14Start = toISODate(addDays(endUsedDateObj, -27));
+  const prev14End   = toISODate(addDays(endUsedDateObj, -14));
+  return { endISO, prevISO, last7Start, prev7Start, prev7End, last14Start, prev14Start, prev14End };
+}
 
-/** -----------------------------
- * OCR preprocessing
- * - Upscale + grayscale + threshold (huge improvement for tables)
- * ----------------------------- */
+/* --------------- Image preprocessing for OCR --------------- */
 async function fileToPreprocessedDataURL(file){
   const img = await loadImageFromFile(file);
-  const scale = 2.5; // strong upscale for small tables
+  const scale = 2.2;
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(img.width * scale);
   canvas.height = Math.round(img.height * scale);
@@ -545,30 +353,21 @@ async function fileToPreprocessedDataURL(file){
   ctx.imageSmoothingQuality = "high";
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-  // Convert to grayscale + increase contrast + threshold
   const im = ctx.getImageData(0,0,canvas.width,canvas.height);
   const d = im.data;
 
-  // Contrast boost
-  const contrast = 1.35; // >1 increases contrast
+  const contrast = 1.25;
   const intercept = 128 * (1 - contrast);
+  const thr = 165;
 
   for(let i=0;i<d.length;i+=4){
     const r=d[i], g=d[i+1], b=d[i+2];
     let y = 0.299*r + 0.587*g + 0.114*b;
-
-    // contrast
     y = y*contrast + intercept;
-
-    // adaptive-ish threshold: push midtones up
-    const thr = 160; // tuned for white table backgrounds
     const v = (y >= thr) ? 255 : 0;
-
-    d[i]=d[i+1]=d[i+2]=v;
-    d[i+3]=255;
+    d[i]=d[i+1]=d[i+2]=v; d[i+3]=255;
   }
   ctx.putImageData(im,0,0);
-
   return canvas.toDataURL("image/png");
 }
 function loadImageFromFile(file){
@@ -581,377 +380,214 @@ function loadImageFromFile(file){
   });
 }
 
-/** -----------------------------
- * OCR worker (single shared worker)
- * ----------------------------- */
-let worker = null;
-async function getWorker(){
-  if(worker) return worker;
-  worker = await Tesseract.createWorker(OCR_LANG, 1, {
-    logger: (m)=> {
-      // m.progress 0..1 for status updates
-      if(m && m.status){
-        if(m.status === "recognizing text" && typeof m.progress === "number"){
-          setStatus(`OCR... ${(m.progress*100).toFixed(0)}%`, "run");
-        }
-      }
-    }
-  });
-  await worker.setParameters({
-    tessedit_char_whitelist: OCR_WHITELIST,
-    preserve_interword_spaces: "1",
-  });
-  return worker;
-}
-
-/** -----------------------------
- * Brand detection from filename
- * Accept:
- * - m1.png
- * - M1_2026-02-02.png
- * - b3_anything.jpg
- * ----------------------------- */
+/* --------------- Brand detection --------------- */
 function detectBrand(filename){
   const base = String(filename || "").trim();
-  const lower = base.toLowerCase();
-
-  // exact like m1.png
   const m1 = /^([a-z]\d)\.(png|jpg|jpeg|webp)$/i.exec(base);
-  if(m1){
-    return m1[1].toUpperCase();
-  }
+  if(m1) return m1[1].toUpperCase();
 
-  // prefix like M1_.... or M1-.... or M1 ....
   const m2 = /^([a-z]\d)[_\-\s]/i.exec(base);
-  if(m2){
-    return m2[1].toUpperCase();
-  }
+  if(m2) return m2[1].toUpperCase();
 
-  // fallback search anywhere
+  const lower = base.toLowerCase();
   for(const b of BRANDS){
     if(lower.includes(b.toLowerCase())) return b;
   }
   return null;
 }
 
-/** -----------------------------
- * Parsing: "locked" to backoffice table
- * Strategy:
- * 1) OCR text is messy -> find date anchors globally
- * 2) For each date chunk, extract numbers in order
- * 3) Use heuristics to map:
- *    reg, ftd, deposit(total deposit), active, turnover
- * ----------------------------- */
+/* --------------- OCR text normalize --------------- */
 function normalizeOCRText(txt){
   return String(txt || "")
     .replace(/\u00A0/g," ")
-    .replace(/[|]/g," ") // sometimes OCR uses |
+    .replace(/[|]/g," ")
     .replace(/[^\S\r\n]+/g," ")
     .replace(/\r/g,"\n")
     .replace(/\n{3,}/g,"\n\n")
     .trim();
 }
 
-function findHeaderConfidence(txt){
-  // Just a confidence check – not required to parse
-  const t = txt.toLowerCase();
-  const keys = ["registered", "first", "deposit", "active", "turnover"];
-  let hit = 0;
-  for(const k of keys) if(t.includes(k)) hit++;
-  return hit / keys.length;
+/* --------------- Date detection (supports YYYY/MM/DD, YYYY-MM-DD, YYYYMMDD) --------------- */
+const DATE_RE = /(?:\b20\d{2}[\/\-](?:0?\d|1[0-2])[\/\-](?:0?\d|[12]\d|3[01])\b|\b20\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\b)/g;
+
+function normalizeDateToken(tok){
+  let t = tok.trim();
+  if(/^\d{8}$/.test(t)){
+    const y=t.slice(0,4), m=t.slice(4,6), d=t.slice(6,8);
+    return `${y}-${m}-${d}`;
+  }
+  t = t.replaceAll("/","-");
+  const m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
+  if(!m) return null;
+  const y=m[1], mo=String(m[2]).padStart(2,"0"), da=String(m[3]).padStart(2,"0");
+  return `${y}-${mo}-${da}`;
 }
 
-function extractDateChunks(txt){
-  // Accept dates like:
-  // 2026/02/03 or 2026-02-03 or 2026/2/3
-  const re = /(\b20\d{2}[\/\-](?:0?\d|1[0-2])[\/\-](?:0?\d|[12]\d|3[01])\b)/g;
-  const matches = [];
-  let m;
-  while((m = re.exec(txt)) !== null){
-    matches.push({date: m[1], idx: m.index});
-  }
-  if(matches.length === 0) return [];
-
-  const chunks = [];
-  for(let i=0;i<matches.length;i++){
-    const start = matches[i].idx;
-    const end = (i+1 < matches.length) ? matches[i+1].idx : txt.length;
-    const dateRaw = matches[i].date;
-    const chunk = txt.slice(start, end);
-    chunks.push({ dateRaw, chunk });
-  }
-  return chunks;
-}
-
-function parseNumbersFromChunk(chunk){
-  // Extract numeric tokens, keeping decimals
-  // examples:
-  // 179,987,136.60
-  // (25,073,803.27) -> negative
-  const re = /(\(?-?\d[\d,]*\.?\d*\)?)/g;
-  const out = [];
-  let m;
-  while((m = re.exec(chunk)) !== null){
-    const s = m[1];
-    // ignore pure year-like duplicates? We'll filter later by mapping
-    out.push(s);
-  }
-  return out;
-}
-
+/* --------------- Number parsing --------------- */
 function toNum(s){
   if(s==null) return NaN;
   let t = String(s).trim();
-
-  // (123.45) -> negative
   let neg = false;
-  if(t.startsWith("(") && t.endsWith(")")){
-    neg = true;
-    t = t.slice(1,-1);
-  }
+  if(t.startsWith("(") && t.endsWith(")")){ neg = true; t = t.slice(1,-1); }
   t = t.replace(/[^\d.]/g,"");
   if(!t) return NaN;
   const n = Number(t);
   return neg ? -n : n;
 }
-
-function parseRowFromChunk(dateRaw, chunk){
-  // Normalize date key to YYYY-MM-DD
-  const dk = normalizeDateKey(dateRaw.replaceAll("/","-"));
-  const numsRaw = parseNumbersFromChunk(chunk);
-  const nums = numsRaw.map(toNum).filter(n => Number.isFinite(n));
-
-  // We must locate row values AFTER the date
-  // Many chunks contain the date again, filter out accidental 2026, 02, 03 tokens by requiring "enough" digits:
-  // We'll use a second pass: extract numbers from chunk with date removed first.
-  const chunkNoDate = chunk.replace(dateRaw, " ");
-  const nums2 = parseNumbersFromChunk(chunkNoDate).map(toNum).filter(n => Number.isFinite(n));
-
-  // If nums2 empty, fallback nums
-  const a = nums2.length ? nums2 : nums;
-
-  // Need at least: reg, ftd, deposit, active, turnover
-  // The table order is typically:
-  // reg, ftd, depositCount, totalDeposit, withdrawCount, totalWithdraw, active, turnover, ...
-  // But OCR may drop some columns. We map by heuristics:
-  // - reg and ftd are small counts (usually < 1,000,000)
-  // - money is large (usually > 1,000,000)
-  // - turnover is very large (money) and usually after active
-  // - active is a count after withdrawal money
-
-  if(a.length < 4){
-    return { ok:false, date: dk, reason:"Too few numbers", rawNums: a };
+function parseNumbers(text){
+  const re = /(\(?-?\d[\d,]*\.?\d*\)?)/g;
+  const out = [];
+  let m;
+  while((m = re.exec(text)) !== null){
+    const n = toNum(m[1]);
+    if(Number.isFinite(n)) out.push(n);
   }
+  return out;
+}
 
-  // Step 1: guess reg and ftd from the first few count-like values
-  const countLike = (x)=> Math.abs(x) < 5_000_000 && Number.isFinite(x);
-  let reg = null, ftd = null;
+/* --------------- Row mapping heuristics --------------- */
+function mapRowFromNumbers(nums){
+  // heuristics for your table:
+  // reg, ftd are small counts
+  // deposit/withdraw/turnover are large money
+  // active is count near money and before turnover
+  const countLike = (x)=> Math.abs(x) < 5_000_000;
+  const moneyLike = (x)=> Math.abs(x) >= 1_000_000;
 
-  // pick first two count-like values
-  const firstCounts = [];
-  for(const x of a){
-    if(countLike(x)){
-      firstCounts.push(x);
-      if(firstCounts.length >= 2) break;
-    }
-  }
-  reg = firstCounts[0] ?? null;
-  ftd = firstCounts[1] ?? null;
+  let reg=null, ftd=null, deposit=null, active=null, turnover=null;
 
-  // Step 2: locate money-like values in order (totalDeposit, totalWithdraw, turnover)
-  const moneyLike = (x)=> Math.abs(x) >= 1_000_000; // deposit/withdraw/turnover
-  const money = a.filter(moneyLike);
+  const counts = nums.filter(countLike);
+  if(counts.length>=1) reg = counts[0];
+  if(counts.length>=2) ftd = counts[1];
 
-  // If OCR is super clean, money should be [totalDeposit, totalWithdraw, turnover, companyWinLoss, bonus, ...]
-  // We need deposit + turnover only (and active in between).
-  let deposit = null, turnover = null;
+  const money = nums.filter(moneyLike);
+  if(money.length>=1) deposit = money[0];
 
-  // Pick the first money-like as deposit
-  if(money.length >= 1) deposit = money[0];
-
-  // Turnover should be the next money-like AFTER active value, but OCR loses spacing.
-  // Heuristic:
-  // - turnover tends to be larger than deposit most days, but not always
-  // We'll find the largest of first 4 money values and treat as turnover.
-  if(money.length >= 2){
+  // turnover often biggest among early money values
+  if(money.length>=2){
     const pick = money.slice(0,4);
-    turnover = pick.reduce((mx,v)=> Math.abs(v) > Math.abs(mx) ? v : mx, pick[0]);
-    // If turnover accidentally equals deposit, fallback to last of pick
-    if(turnover === deposit && pick.length > 1) turnover = pick[pick.length-1];
-  }else{
-    turnover = null;
+    turnover = pick.reduce((mx,v)=> Math.abs(v)>Math.abs(mx) ? v : mx, pick[0]);
+    if(turnover===deposit && pick.length>1) turnover = pick[pick.length-1];
   }
 
-  // Step 3: active should be a count-like value that appears AFTER withdrawal money.
-  // We'll attempt to detect active by finding the last count-like value before "turnover" money (in raw order).
-  let active = null;
-
-  // Find index of chosen turnover in the ordered list (a)
-  const turnoverIdx = (turnover==null) ? -1 : a.findIndex(x=>x===turnover);
-  const searchEnd = turnoverIdx > 0 ? turnoverIdx : a.length;
-
-  // Active often is a count close to 10k~300k (or larger for your multi-tenant totals).
-  // We pick the last count-like value before turnoverIdx.
-  for(let i=searchEnd-1;i>=0;i--){
-    if(countLike(a[i])){
-      // avoid selecting reg/ftd again if possible
-      const v = a[i];
-      if(v !== reg && v !== ftd){
-        active = v;
+  // active: pick last count-like before turnover appearance in raw order
+  if(turnover!=null){
+    const idx = nums.findIndex(v=>v===turnover);
+    const end = idx>0 ? idx : nums.length;
+    for(let i=end-1;i>=0;i--){
+      if(countLike(nums[i]) && nums[i]!==reg && nums[i]!==ftd){
+        active = nums[i];
         break;
       }
     }
   }
-
-  // If still null, just use the biggest count-like value after the first two counts
-  if(active == null){
-    const restCounts = a.slice(2).filter(countLike);
-    if(restCounts.length){
-      active = restCounts.reduce((mx,v)=> Math.abs(v) > Math.abs(mx) ? v : mx, restCounts[0]);
-    }
+  if(active==null){
+    const restCounts = nums.slice(2).filter(countLike);
+    if(restCounts.length) active = restCounts.reduce((mx,v)=>Math.abs(v)>Math.abs(mx)?v:mx, restCounts[0]);
   }
+  if(active!=null && moneyLike(active)) active = null;
 
-  // Final sanity:
-  // If OCR sometimes reads "Active Players" as a gigantic number (bad), clamp by making sure it isn't money-like.
-  if(active != null && moneyLike(active)){
-    active = null;
-  }
-
-  // Deposit may be null if OCR failed; keep null to mark ERR.
-  return {
-    ok: true,
-    date: dk,
-    reg: reg ?? null,
-    ftd: ftd ?? null,
-    deposit: deposit ?? null,
-    active: active ?? null,
-    turnover: turnover ?? null,
-    rawNums: a
-  };
+  return { reg, ftd, deposit, active, turnover };
 }
 
+/* --------------- NEW: Line-based parser (fixes wrapped OCR rows) --------------- */
 function buildSeriesFromOCRText(txt){
   const norm = normalizeOCRText(txt);
-  const confidence = findHeaderConfidence(norm);
-  const chunks = extractDateChunks(norm);
+  const lines = norm.split("\n").map(s=>s.trim()).filter(Boolean);
 
-  // Build a map per date; if duplicates, keep the "best" row (more non-null metrics)
-  const map = new Map();
+  const rowsMap = new Map();
 
-  for(const c of chunks){
-    const r = parseRowFromChunk(c.dateRaw, c.chunk);
-    if(!r.ok) continue;
+  for(let i=0;i<lines.length;i++){
+    const line = lines[i];
 
-    const key = r.date;
-    const score = ["reg","ftd","deposit","active","turnover"].reduce((s,k)=> s + (r[k]!=null ? 1:0), 0);
+    const dates = [...line.matchAll(DATE_RE)].map(x=>x[0]);
+    if(!dates.length) continue;
 
-    if(!map.has(key)){
-      map.set(key, {row:r, score});
-    }else{
-      const prev = map.get(key);
-      if(score > prev.score) map.set(key, {row:r, score});
+    // Row might be wrapped: stitch next line if next line starts with lots of numbers
+    let rowText = line;
+    const next = lines[i+1] || "";
+    if(next && /^\(?-?\d/.test(next) && parseNumbers(next).length >= 5){
+      rowText = line + " " + next;
+    }
+
+    // Take first date token in the row
+    const dateISO = normalizeDateToken(dates[0]);
+    if(!dateISO) continue;
+
+    // Remove date from row then parse numbers
+    const cleaned = rowText.replace(dates[0], " ");
+    const nums = parseNumbers(cleaned);
+
+    // Need at least some numbers
+    if(nums.length < 5) continue;
+
+    const mapped = mapRowFromNumbers(nums);
+
+    // score for best duplicate selection
+    const score =
+      (mapped.reg!=null) + (mapped.ftd!=null) + (mapped.deposit!=null) + (mapped.active!=null) + (mapped.turnover!=null);
+
+    const prev = rowsMap.get(dateISO);
+    if(!prev || score > prev.score){
+      rowsMap.set(dateISO, { date:dateISO, ...mapped, score, rawNums:nums });
     }
   }
 
-  const rows = Array.from(map.values()).map(x=>x.row)
-    .filter(r=>/^\d{4}-\d{2}-\d{2}$/.test(r.date))
-    .sort((a,b)=> (a.date < b.date ? -1 : 1));
+  const rows = [...rowsMap.values()]
+    .map(r=>({ date:r.date, reg:r.reg, ftd:r.ftd, deposit:r.deposit, active:r.active, turnover:r.turnover }))
+    .sort((a,b)=> a.date.localeCompare(b.date));
 
-  return { rows, confidence, norm };
+  return { rows, norm };
 }
 
-/** -----------------------------
- * Rolling calculations
- * ----------------------------- */
-function getValueOnDate(seriesRows, dateISO, key){
-  const hit = seriesRows.find(r=>r.date === dateISO);
+/* --------------- Rolling calcs --------------- */
+function getValueOnDate(rows, dateISO, key){
+  const hit = rows.find(r=>r.date===dateISO);
   return hit ? hit[key] : null;
 }
-function avgBetween(seriesRows, startISO, endISO, key){
-  // inclusive
+function avgBetween(rows, startISO, endISO, key){
   const start = parseISODate(startISO);
   const end = parseISODate(endISO);
-  if(!start || !end) return null;
-
+  if(!start||!end) return null;
   const vals = [];
-  for(const r of seriesRows){
+  for(const r of rows){
     const d = parseISODate(r.date);
-    if(!d) continue;
-    if(d >= start && d <= end){
+    if(d && d>=start && d<=end){
       const v = r[key];
-      if(v != null && Number.isFinite(v)) vals.push(v);
+      if(v!=null && Number.isFinite(v)) vals.push(v);
     }
   }
   if(!vals.length) return null;
   return vals.reduce((a,b)=>a+b,0)/vals.length;
 }
-
 function deltaPct(a,b){
-  // Δ = a - b ; % = Δ/b
   if(a==null || b==null || !Number.isFinite(a) || !Number.isFinite(b)) return {delta:null, pct:null};
-  const d = a - b;
-  const p = (b === 0) ? null : (d / b);
+  const d = a-b;
+  const p = (b===0) ? null : (d/b);
   return {delta:d, pct:p};
 }
 
-function computeWindows(endUsedDateObj){
-  const endISO = toISODate(endUsedDateObj);
-  const prevISO = toISODate(addDays(endUsedDateObj, -1));
-
-  const last7Start = toISODate(addDays(endUsedDateObj, -6));
-  const prev7Start = toISODate(addDays(endUsedDateObj, -13));
-  const prev7End   = toISODate(addDays(endUsedDateObj, -7));
-
-  const last14Start = toISODate(addDays(endUsedDateObj, -13));
-  const prev14Start = toISODate(addDays(endUsedDateObj, -27));
-  const prev14End   = toISODate(addDays(endUsedDateObj, -14));
-
-  return {
-    endISO, prevISO,
-    last7Start, prev7Start, prev7End,
-    last14Start, prev14Start, prev14End
-  };
-}
-
-/** -----------------------------
- * Status logic (professional + focused on Active)
- * ----------------------------- */
-function computeStatus(brandRes){
-  // brandRes: {ok:boolean, missingReason, windows, metrics:{...}}
-  if(!brandRes || !brandRes.ok) return {tag:"ERR", cls:"err", why: brandRes?.missingReason || "No OCR data"};
-
-  const a7 = brandRes.metrics.active?.d7?.pct;
-  const a14 = brandRes.metrics.active?.d14?.pct;
-  const a1 = brandRes.metrics.active?.d1?.pct;
-
-  // If missing key comparisons => WARN/ERR
+/* --------------- Status --------------- */
+function computeStatus(r){
+  if(!r || !r.ok) return {tag:"ERR", cls:"err", why:r?.missingReason || "No OCR data"};
+  const a7 = r.metrics.active?.d7?.pct;
+  const a14 = r.metrics.active?.d14?.pct;
+  const a1 = r.metrics.active?.d1?.pct;
   if(a7==null && a14==null && a1==null) return {tag:"ERR", cls:"err", why:"Active missing"};
 
-  // Business-friendly rules:
-  // - WARN if Active 7D% <= -8% OR Active 14D% <= -12%
-  // - WARN if Active 1D% <= -15% (sharp sudden drop)
-  // else OK
-  const warn = (a7 != null && a7 <= -0.08) || (a14 != null && a14 <= -0.12) || (a1 != null && a1 <= -0.15);
-
-  return warn
-    ? {tag:"WARN", cls:"warn", why:"Active trend down"}
-    : {tag:"OK", cls:"ok", why:"Stable"};
+  const warn = (a7!=null && a7<=-0.08) || (a14!=null && a14<=-0.12) || (a1!=null && a1<=-0.15);
+  return warn ? {tag:"WARN", cls:"warn", why:"Active trend down"} : {tag:"OK", cls:"ok", why:"Stable"};
 }
 
-/** -----------------------------
- * Render
- * ----------------------------- */
+/* --------------- Render --------------- */
 function renderSummary(results){
   const el = $("summaryCards");
   el.innerHTML = "";
-
   for(const b of BRANDS){
     const r = results[b];
     const st = computeStatus(r);
-
     const endUsed = r?.endUsedISO || "—";
     const parsedN = r?.parsedRows ?? 0;
-
     const active7 = r?.metrics?.active?.d7?.pct;
     const active14 = r?.metrics?.active?.d14?.pct;
 
@@ -966,14 +602,8 @@ function renderSummary(results){
         <div class="badge ${st.cls}">${st.tag}</div>
       </div>
       <div class="metricsRow">
-        <div class="mini">
-          <div class="mLabel">Active 7D%</div>
-          <div class="mVal">${active7==null ? "—" : fmtPct(active7)}</div>
-        </div>
-        <div class="mini">
-          <div class="mLabel">Active 14D%</div>
-          <div class="mVal">${active14==null ? "—" : fmtPct(active14)}</div>
-        </div>
+        <div class="mini"><div class="mLabel">Active 7D%</div><div class="mVal">${active7==null?"—":fmtPct(active7)}</div></div>
+        <div class="mini"><div class="mLabel">Active 14D%</div><div class="mVal">${active14==null?"—":fmtPct(active14)}</div></div>
       </div>
       <div class="small" style="margin-top:10px">
         ${st.tag==="ERR" ? `<span class="errText">• ${escapeHtml(st.why)}</span>` :
@@ -989,7 +619,6 @@ function renderSummary(results){
 function renderActiveTable(results){
   const tbody = $("activeTable").querySelector("tbody");
   tbody.innerHTML = "";
-
   for(const b of BRANDS){
     const r = results[b];
     const st = computeStatus(r);
@@ -1008,7 +637,7 @@ function renderActiveTable(results){
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><b>${b}</b></td>
-      <td class="statusCell"><span class="badge ${st.cls}">${st.tag}</span></td>
+      <td><span class="badge ${st.cls}">${st.tag}</span></td>
       <td>${fmtInt(endA)}</td>
       <td>${fmtInt(prevA)}</td>
       <td>${fmtInt(avgL7)}</td>
@@ -1016,11 +645,11 @@ function renderActiveTable(results){
       <td>${fmtInt(avgL14)}</td>
       <td>${fmtInt(avgP14)}</td>
       <td>${fmtInt(d1.delta)}</td>
-      <td>${d1.pct==null ? "—" : fmtPct(d1.pct)}</td>
+      <td>${d1.pct==null?"—":fmtPct(d1.pct)}</td>
       <td>${fmtInt(d7.delta)}</td>
-      <td>${d7.pct==null ? "—" : fmtPct(d7.pct)}</td>
+      <td>${d7.pct==null?"—":fmtPct(d7.pct)}</td>
       <td>${fmtInt(d14.delta)}</td>
-      <td>${d14.pct==null ? "—" : fmtPct(d14.pct)}</td>
+      <td>${d14.pct==null?"—":fmtPct(d14.pct)}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -1031,7 +660,6 @@ function renderAllTable(results){
   const tbody = $("allBody");
   tbody.innerHTML = "";
 
-  // Build header
   const h1 = document.createElement("tr");
   h1.innerHTML = `<th rowspan="2">Brand</th><th rowspan="2">Status</th>` +
     METRICS.map(m => `<th colspan="6">${m.label}</th>`).join("");
@@ -1050,19 +678,18 @@ function renderAllTable(results){
     const st = computeStatus(r);
 
     const tr = document.createElement("tr");
-    let html = `<td><b>${b}</b></td><td class="statusCell"><span class="badge ${st.cls}">${st.tag}</span></td>`;
+    let html = `<td><b>${b}</b></td><td><span class="badge ${st.cls}">${st.tag}</span></td>`;
 
     for(const m of METRICS){
       const d1 = r?.metrics?.[m.key]?.d1 || {};
       const d7 = r?.metrics?.[m.key]?.d7 || {};
       const d14 = r?.metrics?.[m.key]?.d14 || {};
-
       const fmtVal = (x)=> m.type==="money" ? fmtMoney(x) : fmtInt(x);
 
       html += `
-        <td>${fmtVal(d1.delta)}</td><td>${d1.pct==null ? "—" : fmtPct(d1.pct)}</td>
-        <td>${fmtVal(d7.delta)}</td><td>${d7.pct==null ? "—" : fmtPct(d7.pct)}</td>
-        <td>${fmtVal(d14.delta)}</td><td>${d14.pct==null ? "—" : fmtPct(d14.pct)}</td>
+        <td>${fmtVal(d1.delta)}</td><td>${d1.pct==null?"—":fmtPct(d1.pct)}</td>
+        <td>${fmtVal(d7.delta)}</td><td>${d7.pct==null?"—":fmtPct(d7.pct)}</td>
+        <td>${fmtVal(d14.delta)}</td><td>${d14.pct==null?"—":fmtPct(d14.pct)}</td>
       `;
     }
     tr.innerHTML = html;
@@ -1073,19 +700,16 @@ function renderAllTable(results){
 function renderRawOCR(results){
   const wrap = $("rawBlocks");
   wrap.innerHTML = "";
-
   for(const b of BRANDS){
     const r = results[b];
     const parsed = r?.parsedRows ?? 0;
     const endUsed = r?.endUsedISO ?? "—";
     const err = r?.ok ? "" : (r?.missingReason || "No OCR data");
-
     const det = document.createElement("details");
-    det.open = false;
     det.innerHTML = `
       <summary>
-        <span>${b} — parsed rows: <b>${parsed}</b> · end used: <b>${escapeHtml(endUsed)}</b> ${err ? `· <span class="errText">${escapeHtml(err)}</span>`:""}</span>
-        <span class="mono">click to expand</span>
+        <span>${b} — parsed: <b>${parsed}</b> · end used: <b>${escapeHtml(endUsed)}</b> ${err?`· <span class="errText">${escapeHtml(err)}</span>`:""}</span>
+        <span class="mono">click</span>
       </summary>
       <div class="ocrBox mono">${escapeHtml(r?.ocrText || "")}</div>
     `;
@@ -1093,20 +717,11 @@ function renderRawOCR(results){
   }
 }
 
-/** -----------------------------
- * Main
- * ----------------------------- */
+/* --------------- Main run --------------- */
 function blankResults(){
   const out = {};
-  for(const b of BRANDS){
-    out[b] = { ok:false, missingReason:"No OCR data", parsedRows:0, ocrText:"" };
-  }
+  for(const b of BRANDS) out[b] = { ok:false, missingReason:"No OCR data", parsedRows:0, ocrText:"" };
   return out;
-}
-
-function ensureEndDateDefault(){
-  const now = getManilaNow();
-  $("endDate").value = toISODate(now);
 }
 
 async function run(){
@@ -1114,38 +729,22 @@ async function run(){
   const endDateISO = $("endDate").value;
   const useLastCompleted = $("useLastCompleted").checked;
 
-  if(!endDateISO){
-    setStatus("End date is required", "err");
-    return;
-  }
+  if(!endDateISO){ setStatus("End date is required", "err"); return; }
   const endUsedObj = computeEndUsed(endDateISO, useLastCompleted);
-  if(!endUsedObj){
-    setStatus("Invalid end date", "err");
-    return;
-  }
+  if(!endUsedObj){ setStatus("Invalid end date", "err"); return; }
   const endUsedISO = toISODate(endUsedObj);
   setEndUsed(endUsedISO);
 
-  if(!files || files.length === 0){
-    setStatus("Please upload screenshots", "err");
-    return;
-  }
+  if(!files || files.length===0){ setStatus("Please upload screenshots", "err"); return; }
 
-  setStatus("Preparing OCR...", "run");
-
-  // Map: brand -> file (first match wins)
   const brandFiles = new Map();
   for(const f of files){
-    const brand = detectBrand(f.name);
-    if(!brand || !BRANDS.includes(brand)) continue;
-    if(!brandFiles.has(brand)) brandFiles.set(brand, f);
+    const b = detectBrand(f.name);
+    if(b && BRANDS.includes(b) && !brandFiles.has(b)) brandFiles.set(b, f);
   }
 
   const results = blankResults();
   const w = computeWindows(endUsedObj);
-
-  // OCR each brand
-  const wk = await getWorker();
 
   for(const b of BRANDS){
     const f = brandFiles.get(b);
@@ -1156,10 +755,20 @@ async function run(){
 
     try{
       setStatus(`OCR ${b}...`, "run");
-
       const dataURL = await fileToPreprocessedDataURL(f);
-      const rec = await wk.recognize(dataURL);
-      const text = normalizeOCRText(rec?.data?.text || "");
+
+      const rec = await Tesseract.recognize(dataURL, OCR_LANG, {
+        logger: (m)=>{
+          if(m?.status==="recognizing text" && typeof m.progress==="number"){
+            setStatus(`OCR ${b}... ${(m.progress*100).toFixed(0)}%`, "run");
+          }
+        }
+      });
+
+      // Set whitelist (after recognize is okay in v5 via config in recognize call not supported,
+      // but we keep allowed chars by preprocessing + line parser.)
+      let text = rec?.data?.text || "";
+      text = normalizeOCRText(text);
 
       const series = buildSeriesFromOCRText(text);
       const rows = series.rows;
@@ -1167,7 +776,7 @@ async function run(){
       if(!rows.length){
         results[b] = {
           ok:false,
-          missingReason:"No rows parsed from OCR (image quality/zoom too low OR OCR text too broken)",
+          missingReason:"No rows parsed from OCR (dates not detected or OCR too broken). Open Raw OCR tab to see text.",
           parsedRows:0,
           ocrText:text,
           endUsedISO
@@ -1175,99 +784,74 @@ async function run(){
         continue;
       }
 
-      // Gather raw values for windows
       const raw = {
-        end: {
-          reg: getValueOnDate(rows, w.endISO, "reg"),
-          ftd: getValueOnDate(rows, w.endISO, "ftd"),
-          deposit: getValueOnDate(rows, w.endISO, "deposit"),
-          active: getValueOnDate(rows, w.endISO, "active"),
-          turnover: getValueOnDate(rows, w.endISO, "turnover"),
+        end:{
+          reg:getValueOnDate(rows, w.endISO, "reg"),
+          ftd:getValueOnDate(rows, w.endISO, "ftd"),
+          deposit:getValueOnDate(rows, w.endISO, "deposit"),
+          active:getValueOnDate(rows, w.endISO, "active"),
+          turnover:getValueOnDate(rows, w.endISO, "turnover"),
         },
-        prev: {
-          reg: getValueOnDate(rows, w.prevISO, "reg"),
-          ftd: getValueOnDate(rows, w.prevISO, "ftd"),
-          deposit: getValueOnDate(rows, w.prevISO, "deposit"),
-          active: getValueOnDate(rows, w.prevISO, "active"),
-          turnover: getValueOnDate(rows, w.prevISO, "turnover"),
+        prev:{
+          reg:getValueOnDate(rows, w.prevISO, "reg"),
+          ftd:getValueOnDate(rows, w.prevISO, "ftd"),
+          deposit:getValueOnDate(rows, w.prevISO, "deposit"),
+          active:getValueOnDate(rows, w.prevISO, "active"),
+          turnover:getValueOnDate(rows, w.prevISO, "turnover"),
         },
-        avgLast7: {
-          reg: avgBetween(rows, w.last7Start, w.endISO, "reg"),
-          ftd: avgBetween(rows, w.last7Start, w.endISO, "ftd"),
-          deposit: avgBetween(rows, w.last7Start, w.endISO, "deposit"),
-          active: avgBetween(rows, w.last7Start, w.endISO, "active"),
-          turnover: avgBetween(rows, w.last7Start, w.endISO, "turnover"),
+        avgLast7:{
+          reg:avgBetween(rows, w.last7Start, w.endISO, "reg"),
+          ftd:avgBetween(rows, w.last7Start, w.endISO, "ftd"),
+          deposit:avgBetween(rows, w.last7Start, w.endISO, "deposit"),
+          active:avgBetween(rows, w.last7Start, w.endISO, "active"),
+          turnover:avgBetween(rows, w.last7Start, w.endISO, "turnover"),
         },
-        avgPrev7: {
-          reg: avgBetween(rows, w.prev7Start, w.prev7End, "reg"),
-          ftd: avgBetween(rows, w.prev7Start, w.prev7End, "ftd"),
-          deposit: avgBetween(rows, w.prev7Start, w.prev7End, "deposit"),
-          active: avgBetween(rows, w.prev7Start, w.prev7End, "active"),
-          turnover: avgBetween(rows, w.prev7Start, w.prev7End, "turnover"),
+        avgPrev7:{
+          reg:avgBetween(rows, w.prev7Start, w.prev7End, "reg"),
+          ftd:avgBetween(rows, w.prev7Start, w.prev7End, "ftd"),
+          deposit:avgBetween(rows, w.prev7Start, w.prev7End, "deposit"),
+          active:avgBetween(rows, w.prev7Start, w.prev7End, "active"),
+          turnover:avgBetween(rows, w.prev7Start, w.prev7End, "turnover"),
         },
-        avgLast14: {
-          reg: avgBetween(rows, w.last14Start, w.endISO, "reg"),
-          ftd: avgBetween(rows, w.last14Start, w.endISO, "ftd"),
-          deposit: avgBetween(rows, w.last14Start, w.endISO, "deposit"),
-          active: avgBetween(rows, w.last14Start, w.endISO, "active"),
-          turnover: avgBetween(rows, w.last14Start, w.endISO, "turnover"),
+        avgLast14:{
+          reg:avgBetween(rows, w.last14Start, w.endISO, "reg"),
+          ftd:avgBetween(rows, w.last14Start, w.endISO, "ftd"),
+          deposit:avgBetween(rows, w.last14Start, w.endISO, "deposit"),
+          active:avgBetween(rows, w.last14Start, w.endISO, "active"),
+          turnover:avgBetween(rows, w.last14Start, w.endISO, "turnover"),
         },
-        avgPrev14: {
-          reg: avgBetween(rows, w.prev14Start, w.prev14End, "reg"),
-          ftd: avgBetween(rows, w.prev14Start, w.prev14End, "ftd"),
-          deposit: avgBetween(rows, w.prev14Start, w.prev14End, "deposit"),
-          active: avgBetween(rows, w.prev14Start, w.prev14End, "active"),
-          turnover: avgBetween(rows, w.prev14Start, w.prev14End, "turnover"),
+        avgPrev14:{
+          reg:avgBetween(rows, w.prev14Start, w.prev14End, "reg"),
+          ftd:avgBetween(rows, w.prev14Start, w.prev14End, "ftd"),
+          deposit:avgBetween(rows, w.prev14Start, w.prev14End, "deposit"),
+          active:avgBetween(rows, w.prev14Start, w.prev14End, "active"),
+          turnover:avgBetween(rows, w.prev14Start, w.prev14End, "turnover"),
         }
       };
 
-      // Build metrics deltas
       const metrics = {};
       for(const m of METRICS){
-        const key = m.key;
-        metrics[key] = {
-          d1: deltaPct(raw.end[key], raw.prev[key]),
-          d7: deltaPct(raw.avgLast7[key], raw.avgPrev7[key]),
-          d14: deltaPct(raw.avgLast14[key], raw.avgPrev14[key]),
+        metrics[m.key] = {
+          d1: deltaPct(raw.end[m.key], raw.prev[m.key]),
+          d7: deltaPct(raw.avgLast7[m.key], raw.avgPrev7[m.key]),
+          d14: deltaPct(raw.avgLast14[m.key], raw.avgPrev14[m.key]),
         };
       }
 
-      results[b] = {
-        ok:true,
-        missingReason:"",
-        parsedRows: rows.length,
-        endUsedISO,
-        ocrText: text,
-        seriesRows: rows,
-        raw,
-        metrics,
-        windows: w,
-        headerConfidence: series.confidence
-      };
+      results[b] = { ok:true, missingReason:"", parsedRows:rows.length, endUsedISO, ocrText:text, raw, metrics };
+
     }catch(err){
-      results[b] = {
-        ok:false,
-        missingReason: "OCR error: " + (err?.message || String(err)),
-        parsedRows:0,
-        ocrText:"",
-        endUsedISO
-      };
+      results[b] = { ok:false, missingReason:"OCR error: "+(err?.message||String(err)), parsedRows:0, ocrText:"", endUsedISO };
     }
   }
 
-  // Render
   renderSummary(results);
   renderActiveTable(results);
   renderAllTable(results);
   renderRawOCR(results);
 
-  // Final status
   const anyErr = BRANDS.some(b => !results[b].ok);
-  if(anyErr){
-    setStatus("Done (with errors)", "warn");
-  }else{
-    setStatus("Done ✅", "ok");
-  }
+  setStatus(anyErr ? "Done (with errors)" : "Done ✅", anyErr ? "warn" : "ok");
 }
 
 function clearAll(){
@@ -1281,29 +865,26 @@ function clearAll(){
   setEndUsed("—");
 }
 
-/** -----------------------------
- * Tabs
- * ----------------------------- */
+/* --------------- Tabs --------------- */
 function setTab(name){
-  document.querySelectorAll(".tab").forEach(t=>{
-    t.classList.toggle("active", t.dataset.tab === name);
-  });
+  document.querySelectorAll(".tab").forEach(t=> t.classList.toggle("active", t.dataset.tab===name));
   $("tab-summary").style.display = (name==="summary") ? "" : "none";
   $("tab-active").style.display = (name==="active") ? "" : "none";
   $("tab-all").style.display = (name==="all") ? "" : "none";
   $("tab-raw").style.display = (name==="raw") ? "" : "none";
 }
-
-document.querySelectorAll(".tab").forEach(t=>{
-  t.addEventListener("click", ()=> setTab(t.dataset.tab));
-});
+document.querySelectorAll(".tab").forEach(t=> t.addEventListener("click", ()=>setTab(t.dataset.tab)));
 
 $("runBtn").addEventListener("click", run);
 $("clearBtn").addEventListener("click", clearAll);
 
-ensureEndDateDefault();
-setStatus("Ready", "idle");
-setEndUsed("—");
+// default end date = Manila today
+(function init(){
+  const now = getManilaNow();
+  $("endDate").value = toISODate(now);
+  setStatus("Ready", "idle");
+  setEndUsed("—");
+})();
 </script>
 </body>
 </html>
