@@ -6,49 +6,37 @@
   <title>8 Brand JSON Dashboard</title>
   <style>
     :root{
-      --bg1:#061a2e;
-      --bg2:#0a2b4a;
+      --bg1:#061a2e; --bg2:#0a2b4a;
       --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.08);
       --stroke: rgba(255,255,255,.12);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --muted2: rgba(255,255,255,.55);
       --accent:#3aa0ff;
-      --ok:#27d39f;
-      --warn:#f4c24f;
-      --alert:#ff5a6b;
-      --err:#ff4d4d;
+      --ok:#27d39f; --warn:#f4c24f; --alert:#ff5a6b; --err:#ff4d4d;
       --shadow: 0 12px 34px rgba(0,0,0,.35);
-      --r:16px;
-      --r2:12px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --r:16px; --r2:12px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:var(--sans);
-      color:var(--text);
-      min-height:100vh;
+      margin:0; font-family:var(--sans); color:var(--text); min-height:100vh;
       background:
         radial-gradient(1200px 700px at 20% 10%, rgba(58,160,255,.30), transparent 60%),
         radial-gradient(900px 600px at 70% 20%, rgba(39,211,159,.16), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
     .wrap{max-width:1200px;margin:0 auto;padding:28px 18px 70px}
-    h1{margin:0 0 6px;font-size:30px;letter-spacing:.2px}
+    h1{margin:0 0 6px;font-size:30px}
     .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
     .topbar{
-      display:grid;
-      grid-template-columns: 1.1fr 1.4fr 1fr;
-      gap:14px;
-      align-items:stretch;
+      display:grid; grid-template-columns: 1.1fr 1.4fr 1fr;
+      gap:14px; align-items:stretch;
       background:var(--card);
       border:1px solid var(--stroke);
       border-radius:var(--r);
-      padding:14px;
-      box-shadow:var(--shadow);
+      padding:14px; box-shadow:var(--shadow);
     }
     .panel{
       background:rgba(0,0,0,.10);
@@ -70,12 +58,9 @@
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .btn{
       background: linear-gradient(180deg, rgba(58,160,255,.95), rgba(58,160,255,.75));
-      color:#061a2e;
-      font-weight:700;
-      border:none;
-      border-radius:12px;
-      padding:10px 14px;
-      cursor:pointer;
+      color:#061a2e; font-weight:700;
+      border:none; border-radius:12px;
+      padding:10px 14px; cursor:pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,.25);
     }
     .btn.secondary{
@@ -85,7 +70,6 @@
       box-shadow:none;
       font-weight:600;
     }
-    .btn:disabled{opacity:.5;cursor:not-allowed}
     .pill{
       display:inline-flex;align-items:center;gap:8px;
       padding:8px 10px;border-radius:999px;
@@ -104,8 +88,7 @@
     .toggle .t1{font-weight:700;color:var(--text);font-size:13px;line-height:1.2}
     .toggle .t2{color:var(--muted);font-size:12px;line-height:1.2;margin-top:2px}
     .tabs{
-      margin-top:16px;
-      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:16px; display:flex;gap:10px;flex-wrap:wrap;
       justify-content:center;
     }
     .tab{
@@ -144,8 +127,6 @@
       border:1px solid var(--stroke);
       border-radius:14px;
       padding:12px;
-      position:relative;
-      overflow:hidden;
     }
     .brandline{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .brand{font-weight:800;letter-spacing:.3px}
@@ -161,12 +142,7 @@
     .status.warn .dot{background:var(--warn)} .status.warn{color:rgba(244,194,79,.95); border-color:rgba(244,194,79,.35)}
     .status.alert .dot{background:var(--alert)} .status.alert{color:rgba(255,90,107,.95); border-color:rgba(255,90,107,.35)}
     .status.err .dot{background:var(--err)} .status.err{color:rgba(255,77,77,.95); border-color:rgba(255,77,77,.35)}
-    .two{
-      margin-top:10px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
+    .two{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .mini{
       background:rgba(255,255,255,.05);
       border:1px solid var(--stroke);
@@ -196,13 +172,9 @@
 
     /* Modal */
     .modalBackdrop{
-      position:fixed;inset:0;
-      background:rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:9999;
+      position:fixed;inset:0;background:rgba(0,0,0,.55);
+      display:none;align-items:center;justify-content:center;
+      padding:18px;z-index:9999;
     }
     .modal{
       width:min(760px, 100%);
@@ -214,8 +186,7 @@
     }
     .modalHeader{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.12);
+      padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.04);
     }
     .modalTitle{font-weight:900}
@@ -319,16 +290,13 @@
       <div class="tab" data-tab="raw">Raw JSON</div>
     </div>
 
-    <!-- Summary -->
     <div id="tab-summary" class="section">
       <h2>At a glance</h2>
       <p class="hint">Summary shows only the most important trend: <b>Active 7D%</b> and <b>Active 14D%</b>.</p>
-
       <div id="cards" class="grid"></div>
       <div id="notes" class="noteBox hidden"></div>
     </div>
 
-    <!-- Active Focus -->
     <div id="tab-active" class="section hidden">
       <h2>Active Players Focus</h2>
       <p class="hint">Shows end day values + rolling averages (last7 vs prev7, last14 vs prev14).</p>
@@ -355,7 +323,6 @@
       </div>
     </div>
 
-    <!-- All Metrics -->
     <div id="tab-all" class="section hidden">
       <h2>All Metrics (1D / 7D / 14D)</h2>
       <p class="hint">This table is wider. Scroll horizontally if needed.</p>
@@ -386,7 +353,6 @@
       </div>
     </div>
 
-    <!-- Raw JSON -->
     <div id="tab-raw" class="section hidden">
       <h2>Raw JSON (debug)</h2>
       <p class="hint">If a brand looks wrong, open its parsed rows here.</p>
@@ -394,7 +360,6 @@
     </div>
   </div>
 
-  <!-- Boss Report Modal -->
   <div id="modalBackdrop" class="modalBackdrop">
     <div class="modal">
       <div class="modalHeader">
@@ -430,366 +395,280 @@
 (() => {
   const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
 
-  // ---------- utils ----------
   function pad2(n){ return String(n).padStart(2,"0"); }
-  function toISODate(d){
-    return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate());
-  }
-  function parseISO(s){
-    // s = YYYY-MM-DD
-    const [y,m,d] = s.split("-").map(Number);
-    return new Date(y, m-1, d);
-  }
-  function addDays(iso, days){
-    const d = parseISO(iso);
-    d.setDate(d.getDate()+days);
-    return toISODate(d);
-  }
+  function toISODate(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+  function parseISO(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
+  function addDays(iso, days){ const d=parseISO(iso); d.setDate(d.getDate()+days); return toISODate(d); }
   function normDateAny(s){
-    // supports: YYYY/MM/DD, YYYY-MM-DD
     if(!s) return null;
-    const t = String(s).trim();
-    const m = t.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
+    const t=String(s).trim();
+    const m=t.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
     if(!m) return null;
     return `${m[1]}-${m[2]}-${m[3]}`;
   }
   function fmtNum(n){
-    if(n === null || n === undefined || Number.isNaN(n)) return "—";
-    const x = Number(n);
-    if(!Number.isFinite(x)) return "—";
-    return x.toLocaleString(undefined, {maximumFractionDigits:0});
+    if(n===null||n===undefined||Number.isNaN(n)) return "—";
+    const x=Number(n); if(!Number.isFinite(x)) return "—";
+    return x.toLocaleString(undefined,{maximumFractionDigits:0});
   }
   function fmtMoney(n){
-    if(n === null || n === undefined || Number.isNaN(n)) return "—";
-    const x = Number(n);
-    if(!Number.isFinite(x)) return "—";
-    return x.toLocaleString(undefined, {maximumFractionDigits:2});
+    if(n===null||n===undefined||Number.isNaN(n)) return "—";
+    const x=Number(n); if(!Number.isFinite(x)) return "—";
+    return x.toLocaleString(undefined,{maximumFractionDigits:2});
   }
-  function pct(delta, base){
-    if(base === 0 || base === null || base === undefined) return null;
-    return (delta / base) * 100;
-  }
+  function pct(delta, base){ if(base===0||base===null||base===undefined) return null; return (delta/base)*100; }
   function fmtPct(x){
-    if(x === null || x === undefined || Number.isNaN(x)) return "—";
-    const v = Number(x);
-    if(!Number.isFinite(v)) return "—";
-    return (v>=0?"+":"") + v.toFixed(2) + "%";
+    if(x===null||x===undefined||Number.isNaN(x)) return "—";
+    const v=Number(x); if(!Number.isFinite(v)) return "—";
+    return (v>=0?"+":"")+v.toFixed(2)+"%";
   }
-  function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
-
-  function statusFromWorst(worstPct, has14){
-    // worstPct is the worst among available windows (1D/7D/14D)
-    if(worstPct === null || worstPct === undefined || Number.isNaN(worstPct)) return "ERR";
-    // If no 14D, we still can show WARN if 7D exists, but do not ERR.
-    // Only ERR if missing data entirely handled earlier.
-    if(worstPct <= -20) return "ALERT";
-    if(worstPct <= -10) return "WARN";
+  function statusFromWorst(worstPct){
+    if(worstPct===null||worstPct===undefined||Number.isNaN(worstPct)) return "ERR";
+    if(worstPct<=-20) return "ALERT";
+    if(worstPct<=-10) return "WARN";
     return "OK";
   }
-
   function statusBadge(status){
-    const cls = status.toLowerCase();
-    const label = status;
-    return `<span class="status ${cls}"><span class="dot"></span>${label}</span>`;
+    const cls=status.toLowerCase();
+    return `<span class="status ${cls}"><span class="dot"></span>${status}</span>`;
   }
-
   function pickBrandFromFilename(name){
-    const upper = name.toUpperCase();
-    for(const b of BRANDS){
-      if(upper.startsWith(b)) return b;
-    }
-    // also allow like m1_... or m1-...
-    for(const b of BRANDS){
-      if(upper.includes(b)) return b;
-    }
+    const upper=name.toUpperCase();
+    for(const b of BRANDS){ if(upper.startsWith(b)) return b; }
+    for(const b of BRANDS){ if(upper.includes(b)) return b; }
     return null;
   }
 
-  // ---------- data store ----------
-  let store = {
-    endDate: null,
-    endUsed: null,
-    useLastCompleted: true,
-    brands: {}, // brand -> { rows: [{date, active, deposit, turnover, reg, ftd}], meta }
-    computed: {}, // brand -> computed comparisons
-    notes: []
-  };
+  let store = null;
 
-  function resetStore(){
-    store = {
-      endDate: null,
-      endUsed: null,
-      useLastCompleted: document.getElementById("useLastCompleted").checked,
-      brands: {},
-      computed: {},
-      notes: []
-    };
-    BRANDS.forEach(b => store.brands[b] = { rows: [], meta: {loaded:false, file:null, error:null} });
-  }
-
-  // ---------- computations ----------
-  function getValueOnDate(rows, isoDate, key){
-    const hit = rows.find(r => r.date === isoDate);
-    if(!hit) return null;
-    const v = hit[key];
-    return (v === null || v === undefined) ? null : Number(v);
-  }
-
-  function avgInWindow(rows, endIso, days, key){
-    // average over last `days` days including endIso, only if full window exists
-    const end = parseISO(endIso);
-    const start = new Date(end); start.setDate(start.getDate() - (days-1));
-    const startIso = toISODate(start);
-
-    const window = rows.filter(r => r.date >= startIso && r.date <= endIso);
-    if(window.length < days) return null;
-
-    let sum = 0;
-    for(const r of window){
-      const v = Number(r[key]);
-      if(!Number.isFinite(v)) return null;
-      sum += v;
+  function initStoreKeepDates(){
+    // IMPORTANT: This does NOT wipe endUsed/endDate if already set
+    if(!store){
+      store = {
+        endDate:null,
+        endUsed:null,
+        useLastCompleted:true,
+        brands:{},
+        computed:{},
+        notes:[]
+      };
     }
-    return sum / days;
+    // ensure brand containers exist
+    BRANDS.forEach(b=>{
+      if(!store.brands[b]){
+        store.brands[b]={ rows:[], meta:{loaded:false,file:null,error:null} };
+      }
+    });
   }
 
+  function clearBrandsOnly(){
+    initStoreKeepDates();
+    for(const b of BRANDS){
+      store.brands[b].rows = [];
+      store.brands[b].meta = {loaded:false,file:null,error:null};
+    }
+    store.computed = {};
+    store.notes = [];
+  }
+
+  function getValueOnDate(rows, isoDate, key){
+    const hit=rows.find(r=>r.date===isoDate);
+    if(!hit) return null;
+    const v=hit[key];
+    return (v===null||v===undefined)?null:Number(v);
+  }
+  function avgInWindow(rows, endIso, days, key){
+    const end=parseISO(endIso);
+    const start=new Date(end); start.setDate(start.getDate()-(days-1));
+    const startIso=toISODate(start);
+    const window=rows.filter(r=>r.date>=startIso && r.date<=endIso);
+    if(window.length<days) return null;
+    let sum=0;
+    for(const r of window){
+      const v=Number(r[key]);
+      if(!Number.isFinite(v)) return null;
+      sum+=v;
+    }
+    return sum/days;
+  }
   function computeWindows(rows, endIso, key){
-    const prevIso = addDays(endIso, -1);
+    const prevIso=addDays(endIso,-1);
+    const endVal=getValueOnDate(rows,endIso,key);
+    const prevVal=getValueOnDate(rows,prevIso,key);
+    const oneDDelta=(endVal!==null && prevVal!==null)?(endVal-prevVal):null;
+    const oneDPct=(oneDDelta!==null && prevVal!==null)?pct(oneDDelta,prevVal):null;
 
-    const endVal = getValueOnDate(rows, endIso, key);
-    const prevVal = getValueOnDate(rows, prevIso, key);
+    const a7=avgInWindow(rows,endIso,7,key);
+    const a7p=avgInWindow(rows,addDays(endIso,-7),7,key);
+    const d7=(a7!==null && a7p!==null)?(a7-a7p):null;
+    const p7=(d7!==null && a7p!==null)?pct(d7,a7p):null;
 
-    const oneDDelta = (endVal !== null && prevVal !== null) ? (endVal - prevVal) : null;
-    const oneDPct = (oneDDelta !== null && prevVal !== null) ? pct(oneDDelta, prevVal) : null;
+    const a14=avgInWindow(rows,endIso,14,key);
+    const a14p=avgInWindow(rows,addDays(endIso,-14),14,key);
+    const d14=(a14!==null && a14p!==null)?(a14-a14p):null;
+    const p14=(d14!==null && a14p!==null)?pct(d14,a14p):null;
 
-    const a7 = avgInWindow(rows, endIso, 7, key);
-    const a7p = avgInWindow(rows, addDays(endIso,-7), 7, key); // prev7 ends at end-7
-    const d7 = (a7 !== null && a7p !== null) ? (a7 - a7p) : null;
-    const p7 = (d7 !== null && a7p !== null) ? pct(d7, a7p) : null;
+    const list=[oneDPct,p7,p14].filter(v=>v!==null && Number.isFinite(v));
+    const worst=list.length?Math.min(...list):null;
 
-    const a14 = avgInWindow(rows, endIso, 14, key);
-    const a14p = avgInWindow(rows, addDays(endIso,-14), 14, key); // prev14 ends at end-14
-    const d14 = (a14 !== null && a14p !== null) ? (a14 - a14p) : null;
-    const p14 = (d14 !== null && a14p !== null) ? pct(d14, a14p) : null;
-
-    // worst among available (prefer 14D + 7D + 1D)
-    const list = [oneDPct, p7, p14].filter(v => v !== null && Number.isFinite(v));
-    const worst = list.length ? Math.min(...list) : null;
-
-    return {
-      endVal, prevVal,
-      oneDPct, p7, p14,
-      a7, a7p, d7,
-      a14, a14p, d14,
-      worst
-    };
+    return { endVal, prevVal, oneDPct, p7, p14, a7, a7p, d7, a14, a14p, d14, worst };
   }
 
   function computeBrand(brand){
-    const b = store.brands[brand];
-    const rows = b.rows.slice().sort((x,y)=> x.date.localeCompare(y.date));
-    if(!rows.length) return { status:"ERR", reason:"No data rows" };
+    const b=store.brands[brand];
+    const rows=b.rows.slice().sort((x,y)=>x.date.localeCompare(y.date));
+    if(!rows.length) return { status:"ERR", reason:"No data rows", rowCount:0 };
 
-    const endIso = store.endUsed;
-    const endRow = rows.find(r => r.date === endIso);
-    if(!endRow){
-      return { status:"ERR", reason:`No end-date row for ${endIso}` };
-    }
+    const endIso=store.endUsed;
+    if(!endIso) return { status:"ERR", reason:"endUsed is null (build bug)", rowCount:rows.length };
 
-    const active = computeWindows(rows, endIso, "active");
-    const deposit = computeWindows(rows, endIso, "totalDeposit");
-    const turnover = computeWindows(rows, endIso, "turnover");
-    const reg = computeWindows(rows, endIso, "registered");
-    const ftd = computeWindows(rows, endIso, "ftd");
+    const endRow=rows.find(r=>r.date===endIso);
+    if(!endRow) return { status:"ERR", reason:`No end-date row for ${endIso}`, rowCount:rows.length };
 
-    // overall status: based on Active (most important) using its worst.
-    const has14 = active.p14 !== null;
-    const status = statusFromWorst(active.worst, has14);
+    const active=computeWindows(rows,endIso,"active");
+    const deposit=computeWindows(rows,endIso,"totalDeposit");
+    const turnover=computeWindows(rows,endIso,"turnover");
+    const reg=computeWindows(rows,endIso,"registered");
+    const ftd=computeWindows(rows,endIso,"ftd");
 
-    // If 14D missing but 7D exists -> WARN (not ERR), and add note.
-    if(active.p14 === null && active.p7 !== null){
+    const status=statusFromWorst(active.worst);
+    if(active.p14===null && active.p7!==null){
       store.notes.push(`${brand}: Not enough history for 14D comparisons (need at least 14 days).`);
     }
 
-    return {
-      status,
-      reason: null,
-      endIso,
-      rowCount: rows.length,
-      active, deposit, turnover, reg, ftd
-    };
+    return { status, reason:null, endIso, rowCount:rows.length, active, deposit, turnover, reg, ftd };
   }
 
   function buildAllComputations(){
-    store.computed = {};
-    store.notes = [];
-
+    store.computed={};
+    store.notes=[];
     for(const brand of BRANDS){
-      const meta = store.brands[brand].meta;
+      const meta=store.brands[brand].meta;
       if(!meta.loaded){
-        store.computed[brand] = { status:"ERR", reason:"File missing", endIso: store.endUsed, rowCount:0 };
+        store.computed[brand]={ status:"ERR", reason:"File missing", rowCount:0 };
         store.notes.push(`${brand}: missing JSON file.`);
         continue;
       }
-      const out = computeBrand(brand);
-      store.computed[brand] = out;
-      if(out.status === "ERR" && out.reason) store.notes.push(`${brand}: ${out.reason}.`);
+      const out=computeBrand(brand);
+      store.computed[brand]=out;
+      if(out.status==="ERR" && out.reason) store.notes.push(`${brand}: ${out.reason}.`);
     }
   }
 
-  // ---------- boss report generation ----------
+  function mapMetric(k){
+    if(k==="active") return "active";
+    if(k==="totalDeposit") return "deposit";
+    if(k==="turnover") return "turnover";
+    if(k==="registered") return "reg";
+    if(k==="ftd") return "ftd";
+    return k;
+  }
+
   function summarizeCounts(metricKey){
-    // metricKey: "active" | "totalDeposit" | "turnover"
-    const results = [];
-
+    const results=[];
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      if(!c || c.status === "ERR" || !c[mapMetric(metricKey)]) continue;
-
-      const obj = c[mapMetric(metricKey)];
-      const worst = obj.worst;
-      const p7 = obj.p7;
-      const p14 = obj.p14;
-
-      results.push({
-        brand,
-        status: statusFromWorst(worst, p14 !== null),
-        worst,
-        p7,
-        p14
-      });
+      const c=store.computed[brand];
+      if(!c || c.status==="ERR") continue;
+      const obj=c[mapMetric(metricKey)];
+      if(!obj) continue;
+      results.push({ brand, status: statusFromWorst(obj.worst), worst: obj.worst, p7: obj.p7, p14: obj.p14 });
     }
     return results;
   }
 
-  function mapMetric(k){
-    // in computed: active/deposit/turnover/reg/ftd
-    if(k === "active") return "active";
-    if(k === "totalDeposit") return "deposit";
-    if(k === "turnover") return "turnover";
-    if(k === "registered") return "reg";
-    if(k === "ftd") return "ftd";
-    return k;
-  }
-
   function overallTotals(metricKey){
-    // sum across brands for end date and prev day, plus 7D avg sums vs prev7 avg sums, 14D same.
-    let endSum = 0, prevSum = 0;
-    let a7Sum = 0, a7pSum = 0;
-    let a14Sum = 0, a14pSum = 0;
-
+    let endSum=0, prevSum=0, a7Sum=0, a7pSum=0, a14Sum=0, a14pSum=0;
     let endOk=0, prevOk=0, a7Ok=0, a7pOk=0, a14Ok=0, a14pOk=0;
 
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      if(!c || c.status === "ERR") continue;
-
-      const obj = c[mapMetric(metricKey)];
+      const c=store.computed[brand];
+      if(!c || c.status==="ERR") continue;
+      const obj=c[mapMetric(metricKey)];
       if(!obj) continue;
 
-      if(Number.isFinite(obj.endVal)){ endSum += obj.endVal; endOk++; }
-      if(Number.isFinite(obj.prevVal)){ prevSum += obj.prevVal; prevOk++; }
-
-      if(Number.isFinite(obj.a7)){ a7Sum += obj.a7; a7Ok++; }
-      if(Number.isFinite(obj.a7p)){ a7pSum += obj.a7p; a7pOk++; }
-
-      if(Number.isFinite(obj.a14)){ a14Sum += obj.a14; a14Ok++; }
-      if(Number.isFinite(obj.a14p)){ a14pSum += obj.a14p; a14pOk++; }
+      if(Number.isFinite(obj.endVal)){ endSum+=obj.endVal; endOk++; }
+      if(Number.isFinite(obj.prevVal)){ prevSum+=obj.prevVal; prevOk++; }
+      if(Number.isFinite(obj.a7)){ a7Sum+=obj.a7; a7Ok++; }
+      if(Number.isFinite(obj.a7p)){ a7pSum+=obj.a7p; a7pOk++; }
+      if(Number.isFinite(obj.a14)){ a14Sum+=obj.a14; a14Ok++; }
+      if(Number.isFinite(obj.a14p)){ a14pSum+=obj.a14p; a14pOk++; }
     }
 
-    const oneDDelta = (endOk && prevOk) ? (endSum - prevSum) : null;
-    const oneDPct = (oneDDelta !== null && prevSum !== 0) ? pct(oneDDelta, prevSum) : null;
+    const oneDDelta=(endOk && prevOk)?(endSum-prevSum):null;
+    const oneDPct=(oneDDelta!==null && prevSum!==0)?pct(oneDDelta,prevSum):null;
+    const d7=(a7Ok && a7pOk)?(a7Sum-a7pSum):null;
+    const p7=(d7!==null && a7pSum!==0)?pct(d7,a7pSum):null;
+    const d14=(a14Ok && a14pOk)?(a14Sum-a14pSum):null;
+    const p14=(d14!==null && a14pSum!==0)?pct(d14,a14pSum):null;
 
-    const d7 = (a7Ok && a7pOk) ? (a7Sum - a7pSum) : null;
-    const p7 = (d7 !== null && a7pSum !== 0) ? pct(d7, a7pSum) : null;
-
-    const d14 = (a14Ok && a14pOk) ? (a14Sum - a14pSum) : null;
-    const p14 = (d14 !== null && a14pSum !== 0) ? pct(d14, a14pSum) : null;
-
-    return { endSum, prevSum, oneDPct, p7, p14 };
+    return { endSum, oneDPct, p7, p14 };
   }
 
   function buildBossMessage(metricKey){
-    const endIso = store.endUsed;
+    const endIso=store.endUsed;
     const title =
-      metricKey === "active" ? "Daily Business Trend — Active Players" :
-      metricKey === "totalDeposit" ? "Daily Business Trend — Total Deposit" :
+      metricKey==="active" ? "Daily Business Trend — Active Players" :
+      metricKey==="totalDeposit" ? "Daily Business Trend — Total Deposit" :
       "Daily Business Trend — Turnover";
 
-    const totals = overallTotals(metricKey);
+    const totals=overallTotals(metricKey);
+    const list=summarizeCounts(metricKey).filter(x=>x.worst!==null && Number.isFinite(x.worst)).sort((a,b)=>a.worst-b.worst);
 
-    // status breakdown by brands
-    const list = summarizeCounts(metricKey);
-    const counts = { OK:0, WARN:0, ALERT:0, ERR:0 };
+    const counts={OK:0,WARN:0,ALERT:0,ERR:0};
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      if(!c || c.status === "ERR"){ counts.ERR++; continue; }
-      const st = (metricKey === "active") ? c.status : statusFromWorst(c[mapMetric(metricKey)].worst, c[mapMetric(metricKey)].p14 !== null);
-      counts[st] = (counts[st]||0) + 1;
+      const c=store.computed[brand];
+      if(!c || c.status==="ERR"){ counts.ERR++; continue; }
+      const obj=c[mapMetric(metricKey)];
+      const st=obj ? statusFromWorst(obj.worst) : "ERR";
+      counts[st] = (counts[st]||0)+1;
     }
 
-    // pick top drops (ALERT + WARN first)
-    const sorted = list
-      .filter(x => x.worst !== null && Number.isFinite(x.worst))
-      .sort((a,b)=> a.worst - b.worst);
+    const issues=list.filter(x=>x.status==="WARN" || x.status==="ALERT").slice(0,5);
+    const worst3=list.slice(0,3);
 
-    const worst3 = sorted.slice(0,3);
-    const warnAlert = sorted.filter(x => x.status === "ALERT" || x.status === "WARN").slice(0,4);
-
-    const lines = [];
+    const lines=[];
     lines.push(`${title}`);
     lines.push(`Comparison end date: ${endIso}`);
     lines.push("");
     lines.push(`Overall status: OK ${counts.OK} | WARN ${counts.WARN} | ALERT ${counts.ALERT} | ERR ${counts.ERR}`);
     lines.push("");
 
-    // totals line (short)
-    const t1 =
-      metricKey === "turnover" ? fmtMoney(totals.endSum) :
-      fmtNum(totals.endSum);
-
-    lines.push(`All brands total (end day): ${t1}`);
+    const endTotal = (metricKey==="turnover") ? fmtMoney(totals.endSum) : fmtNum(totals.endSum);
+    lines.push(`All brands total (end day): ${endTotal}`);
     lines.push(`Trend: 7D ${fmtPct(totals.p7)} | 14D ${fmtPct(totals.p14)} | 1D ${fmtPct(totals.oneDPct)}`);
     lines.push("");
 
-    if(warnAlert.length){
-      lines.push(`Issues (WARN/ALERT): ${warnAlert.map(x => `${x.brand} ${fmtPct(x.p14 ?? x.p7 ?? x.worst)}`).join(", ")}`);
+    if(issues.length){
+      lines.push(`Issues (WARN/ALERT): ${issues.map(x => `${x.brand} ${fmtPct(x.p14 ?? x.p7 ?? x.worst)}`).join(", ")}`);
       lines.push("");
     }
-
     if(worst3.length){
       lines.push(`Biggest drops:`);
       for(const x of worst3){
-        const keyPct = (x.p14 !== null) ? x.p14 : (x.p7 !== null) ? x.p7 : x.worst;
-        lines.push(`- ${x.brand}: 7D ${fmtPct(x.p7)} | 14D ${fmtPct(x.p14)} (worst ${fmtPct(keyPct)})`);
+        lines.push(`- ${x.brand}: 7D ${fmtPct(x.p7)} | 14D ${fmtPct(x.p14)} (worst ${fmtPct(x.p14 ?? x.p7 ?? x.worst)})`);
       }
     }
-
-    // keep very short — no suggestions
     return lines.join("\n");
   }
 
-  // ---------- rendering ----------
   function renderSummary(){
-    const cards = document.getElementById("cards");
-    cards.innerHTML = "";
+    const cards=document.getElementById("cards");
+    cards.innerHTML="";
 
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      const meta = store.brands[brand].meta;
+      const c=store.computed[brand];
+      const meta=store.brands[brand].meta;
 
-      const status = c?.status || "ERR";
-      const statusClass = status.toLowerCase();
+      const status=c?.status || "ERR";
+      const endIso=store.endUsed || "—";
+      const rows=meta.loaded ? (c?.rowCount ?? 0) : 0;
 
-      const endIso = store.endUsed || "—";
-      const rows = meta.loaded ? (c?.rowCount ?? 0) : 0;
+      const a7=c?.active?.p7 ?? null;
+      const a14=c?.active?.p14 ?? null;
 
-      const a7 = c?.active?.p7 ?? null;
-      const a14 = c?.active?.p14 ?? null;
-
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
+      const card=document.createElement("div");
+      card.className="card";
+      card.innerHTML=`
         <div class="brandline">
           <div>
             <div class="brand">${brand}</div>
@@ -801,48 +680,40 @@
         <div class="two">
           <div class="mini">
             <div class="k">Active 7D%</div>
-            <div class="v ${a7!==null && a7<0 ? "neg" : "pos"}">${fmtPct(a7)}</div>
+            <div class="v ${a7!==null && a7<0 ? "neg":"pos"}">${fmtPct(a7)}</div>
             <div class="s">Rolling avg vs previous window</div>
           </div>
           <div class="mini">
             <div class="k">Active 14D%</div>
-            <div class="v ${a14!==null && a14<0 ? "neg" : "pos"}">${fmtPct(a14)}</div>
+            <div class="v ${a14!==null && a14<0 ? "neg":"pos"}">${fmtPct(a14)}</div>
             <div class="s">Rolling avg vs previous window</div>
           </div>
         </div>
 
         <div class="meta" style="margin-top:10px;color:${status==="ERR" ? "rgba(255,77,77,.9)" : "rgba(255,255,255,.55)"}">
-          ${meta.loaded ? (c?.reason ? c.reason : "") : "No file loaded"}
+          ${meta.loaded ? (c?.reason ? c.reason : "") : (meta.error || "No file loaded")}
         </div>
       `;
       cards.appendChild(card);
     }
 
-    const notes = document.getElementById("notes");
+    const notes=document.getElementById("notes");
     if(store.notes.length){
       notes.classList.remove("hidden");
-      notes.innerHTML = `<b>Notes:</b><br>` + store.notes.map(x => `• ${escapeHtml(x)}`).join("<br>");
+      notes.innerHTML = `<b>Notes:</b><br>` + store.notes.map(x=>`• ${escapeHtml(x)}`).join("<br>");
     }else{
       notes.classList.add("hidden");
-      notes.innerHTML = "";
+      notes.innerHTML="";
     }
-
-    document.getElementById("statusPill").textContent = "Done: OK/WARN/ALERT/ERR computed";
   }
 
   function renderActiveTable(){
-    const tbody = document.querySelector("#activeTable tbody");
-    tbody.innerHTML = "";
-
+    const tbody=document.querySelector("#activeTable tbody");
+    tbody.innerHTML="";
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      if(!c){
-        tbody.insertAdjacentHTML("beforeend", `<tr><td>${brand}</td><td colspan="11">—</td></tr>`);
-        continue;
-      }
-      const a = c.active || {};
-      const st = c.status || "ERR";
-
+      const c=store.computed[brand];
+      const a=c?.active || {};
+      const st=c?.status || "ERR";
       tbody.insertAdjacentHTML("beforeend", `
         <tr>
           <td><b>${brand}</b></td>
@@ -863,114 +734,103 @@
   }
 
   function renderAllMetrics(){
-    const tbody = document.querySelector("#allTable tbody");
-    tbody.innerHTML = "";
+    const tbody=document.querySelector("#allTable tbody");
+    tbody.innerHTML="";
 
     function rowFor(obj){
-      const one = obj?.oneDPct ?? null;
-      const p7 = obj?.p7 ?? null;
-      const p14 = obj?.p14 ?? null;
-      const worst = obj?.worst ?? null;
-      return `<td class="mono">${fmtPct(one)}</td><td class="mono">${fmtPct(p7)}</td><td class="mono">${fmtPct(p14)}</td><td class="mono">${fmtPct(worst)}</td>`;
+      return `<td class="mono">${fmtPct(obj?.oneDPct ?? null)}</td>
+              <td class="mono">${fmtPct(obj?.p7 ?? null)}</td>
+              <td class="mono">${fmtPct(obj?.p14 ?? null)}</td>
+              <td class="mono">${fmtPct(obj?.worst ?? null)}</td>`;
     }
 
     for(const brand of BRANDS){
-      const c = store.computed[brand];
-      const st = c?.status || "ERR";
-      const a = c?.active, d=c?.deposit, t=c?.turnover, r=c?.reg, f=c?.ftd;
-
+      const c=store.computed[brand] || {};
       tbody.insertAdjacentHTML("beforeend", `
         <tr>
           <td><b>${brand}</b></td>
-          ${rowFor(a)}
-          ${rowFor(d)}
-          ${rowFor(t)}
-          ${rowFor(r)}
-          ${rowFor(f)}
-          <td>${statusBadge(st)}</td>
+          ${rowFor(c.active)}
+          ${rowFor(c.deposit)}
+          ${rowFor(c.turnover)}
+          ${rowFor(c.reg)}
+          ${rowFor(c.ftd)}
+          <td>${statusBadge(c.status || "ERR")}</td>
         </tr>
       `);
     }
   }
 
   function renderRaw(){
-    const box = document.getElementById("rawBox");
-    box.innerHTML = "";
-
+    const box=document.getElementById("rawBox");
+    box.innerHTML="";
     for(const brand of BRANDS){
-      const meta = store.brands[brand].meta;
-      const rows = store.brands[brand].rows || [];
-      const c = store.computed[brand];
+      const meta=store.brands[brand].meta;
+      const rows=store.brands[brand].rows || [];
+      const c=store.computed[brand];
 
-      const head = document.createElement("div");
-      head.className = "card";
-      head.style.marginBottom = "10px";
-
-      const preview = rows.slice(0, 8).map(r =>
+      const preview = rows.slice(0, 10).map(r =>
         `${r.date}  reg:${r.registered}  ftd:${r.ftd}  dep:${r.totalDeposit}  active:${r.active}  to:${r.turnover}`
       ).join("\n");
 
-      head.innerHTML = `
+      const card=document.createElement("div");
+      card.className="card";
+      card.style.marginBottom="10px";
+      card.innerHTML=`
         <div class="brandline">
           <div>
             <div class="brand">${brand}</div>
-            <div class="meta">${meta.loaded ? "loaded" : "missing"} • rows: ${rows.length} • end used: ${store.endUsed || "—"} • status: ${c?.status || "—"}</div>
+            <div class="meta">${meta.loaded ? "loaded":"missing"} • rows: ${rows.length} • end used: ${store.endUsed || "—"} • status: ${c?.status || "—"}</div>
           </div>
           <div class="meta mono">${meta.file ? escapeHtml(meta.file) : ""}</div>
         </div>
         <div style="height:10px"></div>
         <textarea class="textarea" readonly>${preview || (meta.error || "No rows")}</textarea>
       `;
-      box.appendChild(head);
+      box.appendChild(card);
     }
   }
 
-  // ---------- file loading ----------
   async function readFileAsJSON(file){
     const text = await file.text();
     return JSON.parse(text);
   }
 
   function normalizeRowsFromJSON(json){
-    // expects structure like:
-    // { headers: [...], rows:[{date, registered, ftd, totalDeposit, active, turnover}] }
-    const out = [];
-    const rows = Array.isArray(json?.rows) ? json.rows : [];
+    const out=[];
+    const rows=Array.isArray(json?.rows) ? json.rows : [];
     for(const r of rows){
-      const iso = normDateAny(r.date);
+      const iso=normDateAny(r.date);
       if(!iso) continue;
-
       out.push({
         date: iso,
-        registered: Number(r.registered ?? r.reg ?? 0),
+        registered: Number(r.registered ?? 0),
         ftd: Number(r.ftd ?? 0),
         totalDeposit: Number(r.totalDeposit ?? 0),
         active: Number(r.active ?? 0),
         turnover: Number(r.turnover ?? 0)
       });
     }
-    // sort unique by date (keep last if duplicates)
-    const map = new Map();
+    const map=new Map();
     for(const rr of out){ map.set(rr.date, rr); }
-    return Array.from(map.values()).sort((a,b)=> a.date.localeCompare(b.date));
+    return Array.from(map.values()).sort((a,b)=>a.date.localeCompare(b.date));
   }
 
   async function loadFiles(files){
-    resetStore();
+    // ✅ FIX: DO NOT reset endUsed/endDate here
+    clearBrandsOnly();
 
-    const list = Array.from(files || []);
+    const list=Array.from(files || []);
     for(const f of list){
-      const brand = pickBrandFromFilename(f.name);
+      const brand=pickBrandFromFilename(f.name);
       if(!brand) continue;
       try{
-        const json = await readFileAsJSON(f);
-        const norm = normalizeRowsFromJSON(json);
+        const json=await readFileAsJSON(f);
+        const norm=normalizeRowsFromJSON(json);
 
         store.brands[brand].rows = norm;
         store.brands[brand].meta.loaded = true;
         store.brands[brand].meta.file = f.name;
         store.brands[brand].meta.error = null;
-
       }catch(err){
         store.brands[brand].meta.loaded = false;
         store.brands[brand].meta.file = f.name;
@@ -979,62 +839,12 @@
     }
   }
 
-  // ---------- tabs ----------
   function setTab(key){
-    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === key));
-    document.getElementById("tab-summary").classList.toggle("hidden", key !== "summary");
-    document.getElementById("tab-active").classList.toggle("hidden", key !== "active");
-    document.getElementById("tab-all").classList.toggle("hidden", key !== "all");
-    document.getElementById("tab-raw").classList.toggle("hidden", key !== "raw");
-  }
-
-  // ---------- modal ----------
-  let currentReportKey = "active";
-
-  function openBossReport(){
-    const back = document.getElementById("modalBackdrop");
-    back.style.display = "flex";
-
-    const meta = document.getElementById("bossMeta");
-    meta.textContent = `Comparison end date: ${store.endUsed || "—"} • Files loaded: ${countLoaded()}/8`;
-
-    currentReportKey = "active";
-    document.querySelectorAll(".rTab").forEach(t => t.classList.toggle("active", t.dataset.r === currentReportKey));
-    updateBossText();
-  }
-
-  function closeBossReport(){
-    document.getElementById("modalBackdrop").style.display = "none";
-  }
-
-  function updateBossText(){
-    let key = currentReportKey;
-
-    let metric = "active";
-    if(key === "deposit") metric = "totalDeposit";
-    if(key === "turnover") metric = "turnover";
-
-    const text = buildBossMessage(metric);
-    const ta = document.getElementById("reportText");
-    ta.value = text;
-
-    document.getElementById("activeChars").textContent = `${text.length} chars`;
-  }
-
-  async function copyBossText(){
-    const ta = document.getElementById("reportText");
-    ta.select();
-    ta.setSelectionRange(0, ta.value.length);
-    try{
-      await navigator.clipboard.writeText(ta.value);
-      const btn = document.getElementById("copyBtn");
-      const old = btn.textContent;
-      btn.textContent = "Copied ✓";
-      setTimeout(()=> btn.textContent = old, 900);
-    }catch{
-      // fallback
-      document.execCommand("copy");
-    }
+    document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===key));
+    document.getElementById("tab-summary").classList.toggle("hidden", key!=="summary");
+    document.getElementById("tab-active").classList.toggle("hidden", key!=="active");
+    document.getElementById("tab-all").classList.toggle("hidden", key!=="all");
+    document.getElementById("tab-raw").classList.toggle("hidden", key!=="raw");
   }
 
   function countLoaded(){
@@ -1043,44 +853,37 @@
     return n;
   }
 
-  // ---------- build ----------
-  async function build(){
-    const endDate = document.getElementById("endDate").value;
-    if(!endDate){
-      alert("End Date is required.");
-      return;
-    }
-
-    store.endDate = endDate;
-    store.useLastCompleted = document.getElementById("useLastCompleted").checked;
-
-    store.endUsed = store.useLastCompleted ? addDays(endDate, -1) : endDate;
-    document.getElementById("endUsedPill").textContent = `Comparisons end at: ${store.endUsed}`;
-
-    const files = document.getElementById("files").files;
-    await loadFiles(files);
-
-    buildAllComputations();
-    renderSummary();
-    renderActiveTable();
-    renderAllMetrics();
-    renderRaw();
-
-    const loaded = countLoaded();
-    document.getElementById("statusPill").textContent = `Done: loaded ${loaded}/8`;
+  // Modal
+  let currentReportKey="active";
+  function openBossReport(){
+    document.getElementById("modalBackdrop").style.display="flex";
+    document.getElementById("bossMeta").textContent = `Comparison end date: ${store.endUsed || "—"} • Files loaded: ${countLoaded()}/8`;
+    currentReportKey="active";
+    document.querySelectorAll(".rTab").forEach(t=>t.classList.toggle("active", t.dataset.r===currentReportKey));
+    updateBossText();
   }
-
-  function clearAll(){
-    document.getElementById("files").value = "";
-    document.getElementById("cards").innerHTML = "";
-    document.getElementById("rawBox").innerHTML = "";
-    document.querySelector("#activeTable tbody").innerHTML = "";
-    document.querySelector("#allTable tbody").innerHTML = "";
-    document.getElementById("notes").classList.add("hidden");
-    document.getElementById("notes").innerHTML = "";
-    document.getElementById("statusPill").textContent = "Done: —";
-    document.getElementById("endUsedPill").textContent = "Comparisons end at: —";
-    resetStore();
+  function closeBossReport(){ document.getElementById("modalBackdrop").style.display="none"; }
+  function updateBossText(){
+    let metric="active";
+    if(currentReportKey==="deposit") metric="totalDeposit";
+    if(currentReportKey==="turnover") metric="turnover";
+    const text=buildBossMessage(metric);
+    const ta=document.getElementById("reportText");
+    ta.value=text;
+    document.getElementById("activeChars").textContent = `${text.length} chars`;
+  }
+  async function copyBossText(){
+    const ta=document.getElementById("reportText");
+    try{
+      await navigator.clipboard.writeText(ta.value);
+      const btn=document.getElementById("copyBtn");
+      const old=btn.textContent;
+      btn.textContent="Copied ✓";
+      setTimeout(()=>btn.textContent=old, 900);
+    }catch{
+      ta.select();
+      document.execCommand("copy");
+    }
   }
 
   function escapeHtml(s){
@@ -1089,36 +892,66 @@
     }[m]));
   }
 
-  // ---------- wire ----------
-  resetStore();
+  async function build(){
+    initStoreKeepDates();
 
-  // default end date today
-  const now = new Date();
-  document.getElementById("endDate").value = toISODate(now);
+    const endDate=document.getElementById("endDate").value;
+    if(!endDate){ alert("End Date is required."); return; }
+
+    store.endDate=endDate;
+    store.useLastCompleted=document.getElementById("useLastCompleted").checked;
+    store.endUsed = store.useLastCompleted ? addDays(endDate,-1) : endDate;
+
+    document.getElementById("endUsedPill").textContent = `Comparisons end at: ${store.endUsed}`;
+
+    const files=document.getElementById("files").files;
+    await loadFiles(files);
+
+    buildAllComputations();
+    renderSummary();
+    renderActiveTable();
+    renderAllMetrics();
+    renderRaw();
+
+    document.getElementById("statusPill").textContent = `Done: loaded ${countLoaded()}/8`;
+  }
+
+  function clearAll(){
+    document.getElementById("files").value="";
+    document.getElementById("cards").innerHTML="";
+    document.getElementById("rawBox").innerHTML="";
+    document.querySelector("#activeTable tbody").innerHTML="";
+    document.querySelector("#allTable tbody").innerHTML="";
+    const notes=document.getElementById("notes");
+    notes.classList.add("hidden"); notes.innerHTML="";
+    document.getElementById("statusPill").textContent="Done: —";
+    document.getElementById("endUsedPill").textContent="Comparisons end at: —";
+    store = null;
+  }
+
+  // wire
+  initStoreKeepDates();
+  document.getElementById("endDate").value = toISODate(new Date());
 
   document.getElementById("buildBtn").addEventListener("click", build);
   document.getElementById("clearBtn").addEventListener("click", clearAll);
 
-  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setTab(t.dataset.tab)));
+  document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>setTab(t.dataset.tab)));
 
-  document.getElementById("bossBtn").addEventListener("click", () => {
-    if(!store.endUsed){
-      alert("Build Dashboard first.");
-      return;
-    }
+  document.getElementById("bossBtn").addEventListener("click", ()=>{
+    if(!store || !store.endUsed){ alert("Build Dashboard first."); return; }
     openBossReport();
   });
 
   document.getElementById("closeBtn").addEventListener("click", closeBossReport);
-  document.getElementById("modalBackdrop").addEventListener("click", (e) => {
-    if(e.target.id === "modalBackdrop") closeBossReport();
+  document.getElementById("modalBackdrop").addEventListener("click",(e)=>{
+    if(e.target.id==="modalBackdrop") closeBossReport();
   });
-
   document.getElementById("copyBtn").addEventListener("click", copyBossText);
 
-  document.querySelectorAll(".rTab").forEach(t => t.addEventListener("click", () => {
-    currentReportKey = t.dataset.r;
-    document.querySelectorAll(".rTab").forEach(x => x.classList.toggle("active", x.dataset.r === currentReportKey));
+  document.querySelectorAll(".rTab").forEach(t=>t.addEventListener("click", ()=>{
+    currentReportKey=t.dataset.r;
+    document.querySelectorAll(".rTab").forEach(x=>x.classList.toggle("active", x.dataset.r===currentReportKey));
     updateBossText();
   }));
 
