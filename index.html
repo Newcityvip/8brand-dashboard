@@ -6,279 +6,283 @@
   <title>8 Brand JSON Dashboard</title>
   <style>
     :root{
-      --bg1:#061a2e; --bg2:#0a2b4a;
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --muted2: rgba(255,255,255,.55);
-      --accent:#3aa0ff;
-      --ok:#27d39f; --warn:#f4c24f; --alert:#ff5a6b; --err:#ff4d4d;
-      --shadow: 0 12px 34px rgba(0,0,0,.35);
-      --r:16px; --r2:12px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --bg0:#061529; --bg1:#0b2037; --card:#0c2a45; --card2:#0d2f50;
+      --line:rgba(255,255,255,.12); --muted:rgba(255,255,255,.65);
+      --text:rgba(255,255,255,.92); --accent:#3b82f6;
+      --ok:#16a34a; --warn:#f59e0b; --alert:#ef4444; --err:#dc2626;
+      --chip:rgba(255,255,255,.10);
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:var(--sans); color:var(--text); min-height:100vh;
-      background:
-        radial-gradient(1200px 700px at 20% 10%, rgba(58,160,255,.30), transparent 60%),
-        radial-gradient(900px 600px at 70% 20%, rgba(39,211,159,.16), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1100px 620px at 50% 0%, #133a66 0%, var(--bg0) 45%, #030a14 100%);
+      min-height:100vh;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:28px 18px 70px}
-    h1{margin:0 0 6px;font-size:30px}
-    .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-    .topbar{
-      display:grid; grid-template-columns: 1.1fr 1.4fr 1fr;
-      gap:14px; align-items:stretch;
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:var(--r);
-      padding:14px; box-shadow:var(--shadow);
-    }
+    .wrap{max-width:1280px; margin:0 auto; padding:28px 18px 40px}
+    h1{margin:4px 0 4px; font-size:30px; letter-spacing:.2px; text-align:center}
+    .sub{margin:0 0 18px; text-align:center; color:var(--muted); font-size:13px}
+
     .panel{
-      background:rgba(0,0,0,.10);
-      border:1px solid var(--stroke);
-      border-radius:var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.35);
+    }
+    .topGrid{
+      display:grid; gap:12px;
+      grid-template-columns: 1.2fr 1.4fr 1fr;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){ .topGrid{grid-template-columns:1fr} }
+
+    .field{
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      border-radius:14px;
       padding:12px;
     }
-    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
-    input[type="date"], input[type="text"]{
-      width:100%;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
+    .label{font-size:12px; color:var(--muted); margin-bottom:8px}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    input[type="date"]{
+      width:220px; max-width:100%;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--line);
       color:var(--text);
       border-radius:10px;
-      padding:10px 10px;
+      padding:10px 12px;
       outline:none;
     }
-    input[type="file"]{width:100%;color:var(--muted)}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input[type="file"]{
+      width:100%;
+      background: rgba(255,255,255,.06);
+      border:1px dashed rgba(255,255,255,.25);
+      color:var(--muted);
+      border-radius:10px;
+      padding:10px 12px;
+      outline:none;
+    }
+    .hint{font-size:12px; color:var(--muted); margin-top:8px; line-height:1.4}
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: var(--chip);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap}
     .btn{
-      background: linear-gradient(180deg, rgba(58,160,255,.95), rgba(58,160,255,.75));
-      color:#061a2e; font-weight:700;
-      border:none; border-radius:12px;
-      padding:10px 14px; cursor:pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.25);
-    }
-    .btn.secondary{
-      background: rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
       color:var(--text);
-      border:1px solid var(--stroke);
-      box-shadow:none;
-      font-weight:600;
-    }
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
-      color:var(--muted);
-      font-size:12px;
-      white-space:nowrap;
-    }
-    .toggle{
-      display:flex;gap:10px;align-items:flex-start;
-      padding:10px;border-radius:12px;background:rgba(0,0,0,.10);
-      border:1px solid var(--stroke);
-    }
-    .toggle input{margin-top:2px}
-    .toggle .t1{font-weight:700;color:var(--text);font-size:13px;line-height:1.2}
-    .toggle .t2{color:var(--muted);font-size:12px;line-height:1.2;margin-top:2px}
-    .tabs{
-      margin-top:16px; display:flex;gap:10px;flex-wrap:wrap;
-      justify-content:center;
-    }
-    .tab{
-      padding:8px 12px;border-radius:999px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.06);
-      color:var(--muted);
+      padding:10px 12px;
+      border-radius:12px;
       cursor:pointer;
-      font-size:12px;
+      font-weight:600;
+      transition:.15s;
+    }
+    .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.09)}
+    .btn.primary{background: rgba(59,130,246,.25); border-color: rgba(59,130,246,.45)}
+    .btn.ghost{background: rgba(255,255,255,.04)}
+    .btn.small{padding:8px 10px; border-radius:10px; font-size:12px}
+    .toggle{
+      display:flex; gap:10px; align-items:flex-start;
+      user-select:none;
+    }
+    .toggle input{margin-top:4px}
+    .toggle .tTitle{font-weight:700; font-size:13px}
+    .toggle .tSub{font-size:12px; color:var(--muted); line-height:1.35}
+
+    .tabs{display:flex; gap:8px; justify-content:center; margin:14px 0 10px; flex-wrap:wrap}
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
       font-weight:700;
+      font-size:12px;
     }
-    .tab.active{
-      background:rgba(58,160,255,.18);
-      border-color:rgba(58,160,255,.40);
-      color:var(--text);
-    }
-    .section{
-      margin-top:16px;
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:var(--r);
-      padding:16px;
-      box-shadow:var(--shadow);
-    }
-    .section h2{margin:0 0 6px;font-size:16px}
-    .section .hint{margin:0 0 14px;color:var(--muted);font-size:12px}
-    .grid{
+    .tab.active{background: rgba(59,130,246,.18); color:var(--text); border-color: rgba(59,130,246,.40)}
+    .section{display:none}
+    .section.active{display:block}
+
+    .sectionTitle{display:flex; align-items:end; justify-content:space-between; gap:10px; margin:0 0 10px}
+    .sectionTitle h2{margin:0; font-size:16px}
+    .sectionTitle .meta{font-size:12px; color:var(--muted)}
+
+    .cards{
       display:grid;
       grid-template-columns: repeat(4, minmax(220px, 1fr));
       gap:12px;
     }
-    @media (max-width: 1100px){ .grid{grid-template-columns: repeat(2, minmax(220px,1fr));} }
-    @media (max-width: 560px){ .grid{grid-template-columns: 1fr;} .topbar{grid-template-columns:1fr;} }
+    @media (max-width: 1100px){ .cards{grid-template-columns:repeat(2, minmax(220px,1fr));} }
+    @media (max-width: 520px){ .cards{grid-template-columns:1fr;} }
+
     .card{
-      background:rgba(0,0,0,.10);
-      border:1px solid var(--stroke);
-      border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:16px;
       padding:12px;
+      min-height:132px;
     }
-    .brandline{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .brand{font-weight:800;letter-spacing:.3px}
-    .meta{color:var(--muted2);font-size:11px}
-    .status{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;font-weight:800;font-size:11px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.06);
+    .cardHead{display:flex; justify-content:space-between; align-items:center; gap:10px}
+    .brand{font-weight:900; letter-spacing:.3px}
+    .badge{
+      font-weight:900; font-size:11px;
+      padding:5px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
     }
-    .dot{width:8px;height:8px;border-radius:50%}
-    .status.ok .dot{background:var(--ok)} .status.ok{color:rgba(39,211,159,.95); border-color:rgba(39,211,159,.35)}
-    .status.warn .dot{background:var(--warn)} .status.warn{color:rgba(244,194,79,.95); border-color:rgba(244,194,79,.35)}
-    .status.alert .dot{background:var(--alert)} .status.alert{color:rgba(255,90,107,.95); border-color:rgba(255,90,107,.35)}
-    .status.err .dot{background:var(--err)} .status.err{color:rgba(255,77,77,.95); border-color:rgba(255,77,77,.35)}
-    .two{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .mini{
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--stroke);
+    .badge.ok{border-color:rgba(22,163,74,.55); background:rgba(22,163,74,.18)}
+    .badge.warn{border-color:rgba(245,158,11,.55); background:rgba(245,158,11,.18)}
+    .badge.alert{border-color:rgba(239,68,68,.55); background:rgba(239,68,68,.18)}
+    .badge.err{border-color:rgba(220,38,38,.65); background:rgba(220,38,38,.18)}
+    .mini{color:var(--muted); font-size:12px; margin-top:6px}
+    .metricRow{display:flex; gap:10px; margin-top:10px}
+    .metricBox{
+      flex:1;
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--line);
       border-radius:12px;
       padding:10px;
     }
-    .mini .k{font-size:11px;color:var(--muted)}
-    .mini .v{font-size:18px;font-weight:900;margin-top:4px}
-    .mini .s{font-size:11px;color:var(--muted2);margin-top:3px}
-    .mini .v.neg{color:#ff8a96}
-    .mini .v.pos{color:#7ff3cc}
+    .mName{font-size:11px; color:var(--muted); font-weight:700}
+    .mVal{font-size:22px; font-weight:900; margin-top:3px}
+    .mSub{font-size:11px; color:var(--muted); margin-top:2px}
+    .neg{color:#fca5a5}
+    .pos{color:#86efac}
+    .zero{color:#e5e7eb}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(0,0,0,.12);
+    }
+    th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); font-size:12px}
+    th{color:rgba(255,255,255,.85); text-align:left; background: rgba(255,255,255,.05)}
+    td{color:rgba(255,255,255,.88)}
+    tr:hover td{background: rgba(255,255,255,.03)}
+    .right{text-align:right}
+    .muted{color:var(--muted)}
     .noteBox{
       margin-top:12px;
-      background:rgba(255,90,107,.08);
-      border:1px solid rgba(255,90,107,.22);
+      border:1px solid rgba(239,68,68,.35);
+      background: rgba(239,68,68,.08);
       border-radius:14px;
-      padding:12px;
-      color:rgba(255,255,255,.86);
+      padding:10px 12px;
       font-size:12px;
+      color:rgba(255,255,255,.88);
+      line-height:1.5;
+      white-space:pre-wrap;
     }
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;text-align:left;white-space:nowrap}
-    th{color:rgba(255,255,255,.80);font-weight:800}
-    .tableWrap{overflow:auto;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(0,0,0,.10)}
-    .mono{font-family:var(--mono)}
-    .hidden{display:none !important}
 
     /* Modal */
-    .modalBackdrop{
-      position:fixed;inset:0;background:rgba(0,0,0,.55);
-      display:none;align-items:center;justify-content:center;
-      padding:18px;z-index:9999;
+    .backdrop{
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center;
+      padding:16px;
+      z-index:999;
     }
     .modal{
-      width:min(760px, 100%);
-      background:linear-gradient(180deg, rgba(8,28,48,.95), rgba(6,20,34,.95));
+      width:min(980px, 96vw);
+      max-height: 90vh;
+      overflow:auto;
+      background: linear-gradient(180deg, rgba(15,41,70,.96), rgba(8,24,41,.96));
       border:1px solid rgba(255,255,255,.14);
-      border-radius:20px;
-      box-shadow: 0 24px 70px rgba(0,0,0,.60);
-      overflow:hidden;
+      border-radius:18px;
+      box-shadow: 0 28px 90px rgba(0,0,0,.55);
     }
     .modalHeader{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.12);
     }
     .modalTitle{font-weight:900}
-    .modalActions{display:flex;gap:10px;align-items:center}
-    .iconBtn{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      color:var(--text);
-      padding:8px 10px;border-radius:12px;
-      cursor:pointer;font-weight:800;font-size:12px;
+    .modalMeta{font-size:12px; color:var(--muted); margin-top:2px}
+    .modalActions{display:flex; gap:8px; flex-wrap:wrap}
+    .modalBody{padding:12px 14px}
+    .pillTabs{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 10px}
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:var(--muted);
+      padding:8px 12px; border-radius:999px;
+      cursor:pointer; font-weight:800; font-size:12px;
     }
-    .modalBody{padding:14px 16px}
-    .reportTabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-    .rTab{
-      padding:8px 10px;border-radius:999px;
+    .pill.active{background: rgba(59,130,246,.18); color:var(--text); border-color: rgba(59,130,246,.40)}
+    textarea{
+      width:100%;
+      min-height:260px;
+      background: rgba(0,0,0,.20);
       border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      cursor:pointer;font-weight:900;font-size:12px;color:var(--muted)
-    }
-    .rTab.active{background:rgba(58,160,255,.18);border-color:rgba(58,160,255,.35);color:var(--text)}
-    .reportBox{
-      background:rgba(0,0,0,.12);
-      border:1px solid rgba(255,255,255,.12);
       border-radius:14px;
       padding:12px;
-    }
-    .textarea{
-      width:100%;
-      min-height:190px;
+      color:rgba(255,255,255,.92);
+      outline:none;
       resize:vertical;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      font-family:var(--mono);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size:12px;
       line-height:1.45;
-      padding:10px;
-      outline:none;
-      white-space:pre;
     }
-    .copyLine{
-      display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px
-    }
-    .smallHint{color:var(--muted2);font-size:11px}
+    .smallHelp{font-size:12px; color:var(--muted); margin:6px 0 0}
+    .hidden{display:none !important;}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>8 Brand JSON Dashboard</h1>
-    <div class="sub">
-      Upload 8 JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). We compute 1D / 7D / 14D rolling comparisons ending at End Date.
-    </div>
+<div class="wrap">
+  <h1>8 Brand JSON Dashboard</h1>
+  <p class="sub">Upload 8 JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). Computes 1D / 7D / 14D rolling comparisons ending at End Date (or last completed day if toggle ON).</p>
 
-    <div class="topbar">
-      <div class="panel">
-        <label>End Date (YYYY-MM-DD)</label>
-        <input id="endDate" type="date" />
-        <div style="margin-top:10px" class="pill" id="endUsedPill">Comparisons end at: —</div>
-      </div>
-
-      <div class="panel">
-        <label>Upload JSON files (8 files)</label>
-        <input id="files" type="file" accept=".json,application/json" multiple />
-        <div class="sub" style="margin:8px 0 0; font-size:12px">
-          Filename: <b>M1.json</b>, <b>M2.json</b> ... (case-insensitive). It also works if it starts with the brand name (e.g., <span class="mono">M1_2026-02-04.json</span>).
+  <div class="panel">
+    <div class="topGrid">
+      <div class="field">
+        <div class="label">End Date (YYYY-MM-DD)</div>
+        <div class="row">
+          <input id="endDate" type="date" />
+          <span class="chip" id="compChip">Comparisons end at: —</span>
+        </div>
+        <div class="hint">
+          Tip: If End Date is today, enable “Use last completed day” to avoid partial-day drops before 23:59.
         </div>
       </div>
 
-      <div class="panel">
-        <div class="row" style="justify-content:space-between">
-          <button class="btn" id="buildBtn">Build Dashboard</button>
-          <button class="btn secondary" id="clearBtn">Clear</button>
-          <button class="btn secondary" id="bossBtn">Boss Report</button>
+      <div class="field">
+        <div class="label">Upload JSON files (8 files)</div>
+        <input id="files" type="file" multiple accept=".json,application/json" />
+        <div class="hint">
+          Filename rule: <b>M1.json</b>, <b>M2.json</b>, <b>B1.json</b>, <b>B2.json</b>, <b>B3.json</b>, <b>B4.json</b>, <b>K1.json</b>, <b>TK.json</b> (case-insensitive).<br/>
+          Also OK if filename starts with brand (e.g. <b>M1_2026-02-04.json</b>).
         </div>
+      </div>
 
+      <div class="field">
+        <div class="btnRow">
+          <button class="btn primary" id="buildBtn">Build Dashboard</button>
+          <button class="btn ghost" id="clearBtn">Clear</button>
+          <button class="btn" id="bossBtn">Boss Report</button>
+          <button class="btn" id="fullCsvBtn">Full CSV</button>
+          <button class="btn" id="fullPdfBtn">Full PDF</button>
+        </div>
         <div style="height:10px"></div>
-
-        <div class="toggle">
+        <label class="toggle">
           <input id="useLastCompleted" type="checkbox" checked />
           <div>
-            <div class="t1">Use last completed day</div>
-            <div class="t2">Avoid partial-day drops before 11:59pm (uses End Date - 1 day for comparisons).</div>
+            <div class="tTitle">Use last completed day</div>
+            <div class="tSub">Avoid partial-day drops before 23:59 (comparisons use End Date - 1 day).</div>
           </div>
-        </div>
-
+        </label>
         <div style="height:10px"></div>
-
         <div class="row">
-          <span class="pill" id="statusPill">Done: —</span>
-          <span class="pill">Cutoff: 23:59 (local time)</span>
+          <span class="chip" id="doneChip">Done: loaded 0/8</span>
+          <span class="chip" id="cutoffChip">Cutoff: 23:59 (local time)</span>
         </div>
       </div>
     </div>
@@ -290,760 +294,964 @@
       <div class="tab" data-tab="raw">Raw JSON</div>
     </div>
 
-    <div id="tab-summary" class="section">
-      <h2>At a glance</h2>
-      <p class="hint">Summary shows only the most important trend: <b>Active 7D%</b> and <b>Active 14D%</b>.</p>
-      <div id="cards" class="grid"></div>
-      <div id="notes" class="noteBox hidden"></div>
-    </div>
+    <div id="reportArea">
+      <!-- SUMMARY -->
+      <div class="section active" id="tab-summary">
+        <div class="sectionTitle">
+          <h2>At a glance</h2>
+          <div class="meta" id="summaryMeta">Summary shows Active 7D% and 14D% only.</div>
+        </div>
+        <div class="cards" id="summaryCards"></div>
+        <div class="noteBox hidden" id="notesBox"></div>
+      </div>
 
-    <div id="tab-active" class="section hidden">
-      <h2>Active Players Focus</h2>
-      <p class="hint">Shows end day values + rolling averages (last7 vs prev7, last14 vs prev14).</p>
-      <div class="tableWrap">
-        <table id="activeTable">
-          <thead>
+      <!-- ACTIVE FOCUS TABLE -->
+      <div class="section" id="tab-active">
+        <div class="sectionTitle">
+          <h2>Active Players Focus (Most Important)</h2>
+          <div class="meta">End day + rolling averages (last7 vs prev7, last14 vs prev14).</div>
+        </div>
+        <div style="overflow:auto; border-radius:14px">
+          <table id="activeTable">
+            <thead>
             <tr>
               <th>Brand</th>
-              <th>End Day Active</th>
-              <th>Prev Day Active</th>
-              <th>Avg(last7)</th>
-              <th>Avg(prev7)</th>
-              <th>7D Δ</th>
-              <th>7D %</th>
-              <th>Avg(last14)</th>
-              <th>Avg(prev14)</th>
-              <th>14D Δ</th>
-              <th>14D %</th>
+              <th class="right">End Day Active</th>
+              <th class="right">Prev Day Active</th>
+              <th class="right">Avg(last7)</th>
+              <th class="right">Avg(prev7)</th>
+              <th class="right">Avg(last14)</th>
+              <th class="right">Avg(prev14)</th>
+              <th class="right">1D%</th>
+              <th class="right">7D%</th>
+              <th class="right">14D%</th>
               <th>Status</th>
             </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <div id="tab-all" class="section hidden">
-      <h2>All Metrics (1D / 7D / 14D)</h2>
-      <p class="hint">This table is wider. Scroll horizontally if needed.</p>
-      <div class="tableWrap">
-        <table id="allTable">
-          <thead>
+      <!-- ALL METRICS -->
+      <div class="section" id="tab-all">
+        <div class="sectionTitle">
+          <h2>All Metrics</h2>
+          <div class="meta">Active / Deposit / Turnover (same rolling logic).</div>
+        </div>
+        <div style="overflow:auto; border-radius:14px">
+          <table id="allMetricsTable">
+            <thead>
             <tr>
               <th>Brand</th>
-              <th colspan="4">Active</th>
-              <th colspan="4">Deposit</th>
-              <th colspan="4">Turnover</th>
-              <th colspan="4">Reg</th>
-              <th colspan="4">FTD</th>
-              <th>Status</th>
+              <th>Metric</th>
+              <th class="right">End Day</th>
+              <th class="right">Prev Day</th>
+              <th class="right">Avg(last7)</th>
+              <th class="right">Avg(prev7)</th>
+              <th class="right">Avg(last14)</th>
+              <th class="right">Avg(prev14)</th>
+              <th class="right">1D%</th>
+              <th class="right">7D%</th>
+              <th class="right">14D%</th>
             </tr>
-            <tr>
-              <th></th>
-              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
-              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
-              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
-              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
-              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <div id="tab-raw" class="section hidden">
-      <h2>Raw JSON (debug)</h2>
-      <p class="hint">If a brand looks wrong, open its parsed rows here.</p>
-      <div id="rawBox"></div>
+      <!-- RAW -->
+      <div class="section" id="tab-raw">
+        <div class="sectionTitle">
+          <h2>Raw JSON (debug)</h2>
+          <div class="meta">If something looks wrong, open its parsed rows here.</div>
+        </div>
+        <div id="rawBox"></div>
+      </div>
     </div>
   </div>
-
-  <div id="modalBackdrop" class="modalBackdrop">
-    <div class="modal">
-      <div class="modalHeader">
-        <div>
-          <div class="modalTitle">Boss Report (English)</div>
-          <div class="smallHint" id="bossMeta">—</div>
-        </div>
-        <div class="modalActions">
-  <button class="iconBtn" id="copyBtn">Copy</button>
-  <button class="iconBtn" id="csvBtn">CSV</button>
-  <button class="iconBtn" id="pdfBtn">PDF</button>
-  <button class="iconBtn" id="closeBtn">Close</button>
 </div>
+
+<!-- Boss Report Modal -->
+<div class="backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modalHeader">
+      <div>
+        <div class="modalTitle">Boss Report (English)</div>
+        <div class="modalMeta" id="bossMeta">—</div>
       </div>
-      <div class="modalBody">
-        <div class="reportTabs">
-          <div class="rTab active" data-r="active">Active Players</div>
-          <div class="rTab" data-r="deposit">Deposit</div>
-          <div class="rTab" data-r="turnover">Turnover</div>
-        </div>
-
-        <div class="copyLine">
-          <div class="smallHint">Short + boss-ready. No advice. Just what changed and where issues are.</div>
-          <div class="smallHint mono" id="activeChars">—</div>
-        </div>
-
-        <div class="reportBox">
-          <textarea id="bossReportText" class="textarea" readonly></textarea>
-        </div>
+      <div class="modalActions">
+        <button class="btn small" id="bossCopyBtn">Copy</button>
+        <button class="btn small" id="bossCsvBtn">CSV</button>
+        <button class="btn small" id="bossPdfBtn">PDF</button>
+        <button class="btn small ghost" id="bossCloseBtn">Close</button>
       </div>
     </div>
+    <div class="modalBody">
+      <div class="pillTabs">
+        <div class="pill active" data-r="active">Active Players</div>
+        <div class="pill" data-r="deposit">Deposit</div>
+        <div class="pill" data-r="turnover">Turnover</div>
+      </div>
+      <textarea id="reportText" readonly></textarea>
+      <!-- alias id (kept for compatibility if you used it before somewhere) -->
+      <textarea id="bossReportText" readonly style="display:none"></textarea>
+      <div class="smallHelp">Short, boss-ready. Per-brand 7D% and 14D% with drop/increase.</div>
+    </div>
   </div>
+</div>
 
 <script>
 (() => {
+  /* ================================
+     CONFIG
+  ================================ */
   const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
+  const METRICS = [
+    { key:"active",   label:"Active Players", format:"int" },
+    { key:"totalDeposit", label:"Total Deposit", format:"int" },
+    { key:"turnover", label:"Turnover", format:"money2" },
+    { key:"ftd", label:"FTD", format:"int" }, // kept for parsing sanity, not shown in summary
+    { key:"registered", label:"Registered", format:"int" } // kept for parsing sanity, not shown in summary
+  ];
 
+  // thresholds for status by worst(7D%,14D%) drop:
+  // OK: > -10%, WARN: <= -10% and > -20%, ALERT: <= -20%, ERR: missing end date row.
+  const WARN_AT = -10;
+  const ALERT_AT = -20;
+
+  /* ================================
+     STATE
+  ================================ */
+  const state = {
+    filesLoaded: new Map(), // brand -> { source, exportedAt, rows: [{dateISO, ...metrics}] }
+    endDateISO: "",
+    compareEndISO: "",
+    notes: [],
+    computed: {
+      perBrand: new Map(), // brand -> { active:calc, totalDeposit:calc, turnover:calc }
+      allRows: [] // rows for allMetricsTable export
+    },
+    boss: {
+      activeText: "",
+      depositText: "",
+      turnoverText: ""
+    }
+  };
+
+  /* ================================
+     DOM
+  ================================ */
+  const $ = (id)=>document.getElementById(id);
+  const endDateEl = $("endDate");
+  const filesEl = $("files");
+  const useLastCompletedEl = $("useLastCompleted");
+  const compChip = $("compChip");
+  const doneChip = $("doneChip");
+
+  const buildBtn = $("buildBtn");
+  const clearBtn = $("clearBtn");
+  const bossBtn = $("bossBtn");
+  const fullCsvBtn = $("fullCsvBtn");
+  const fullPdfBtn = $("fullPdfBtn");
+
+  const tabs = document.querySelectorAll(".tab");
+  const sections = {
+    summary: $("tab-summary"),
+    active: $("tab-active"),
+    all: $("tab-all"),
+    raw: $("tab-raw")
+  };
+
+  const summaryCards = $("summaryCards");
+  const notesBox = $("notesBox");
+  const activeTableBody = $("activeTable").querySelector("tbody");
+  const allMetricsBody = $("allMetricsTable").querySelector("tbody");
+  const rawBox = $("rawBox");
+
+  const modalBackdrop = $("modalBackdrop");
+  const reportTextEl = $("reportText");
+  const bossReportTextEl = $("bossReportText");
+  const bossMeta = $("bossMeta");
+  const bossCopyBtn = $("bossCopyBtn");
+  const bossCsvBtn = $("bossCsvBtn");
+  const bossPdfBtn = $("bossPdfBtn");
+  const bossCloseBtn = $("bossCloseBtn");
+  const pillTabs = document.querySelectorAll(".pill");
+
+  /* ================================
+     HELPERS (dates + formatting)
+  ================================ */
   function pad2(n){ return String(n).padStart(2,"0"); }
-  function toISODate(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
-  function parseISO(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
-  function addDays(iso, days){ const d=parseISO(iso); d.setDate(d.getDate()+days); return toISODate(d); }
-  function normDateAny(s){
-    if(!s) return null;
-    const t=String(s).trim();
-    const m=t.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
-    if(!m) return null;
-    return `${m[1]}-${m[2]}-${m[3]}`;
+  function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+  function parseISODate(iso){
+    const [y,m,dd] = (iso||"").split("-").map(Number);
+    if(!y||!m||!dd) return null;
+    return new Date(y, m-1, dd);
   }
-  function fmtNum(n){
+  function addDaysISO(iso, delta){
+    const d = parseISODate(iso);
+    if(!d) return "";
+    d.setDate(d.getDate()+delta);
+    return toISODate(d);
+  }
+  function normalizeAnyDateToISO(s){
+    // supports: YYYY-MM-DD, YYYY/MM/DD, YYYYMMDD
+    if(!s) return "";
+    const t = String(s).trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
+    if(/^\d{4}\/\d{2}\/\d{2}$/.test(t)) return t.replaceAll("/","-");
+    if(/^\d{8}$/.test(t)) return `${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;
+    // try generic
+    const m = t.match(/(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
+    if(m){
+      return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
+    }
+    return "";
+  }
+
+  function fmtInt(n){
     if(n===null||n===undefined||Number.isNaN(n)) return "—";
-    const x=Number(n); if(!Number.isFinite(x)) return "—";
-    return x.toLocaleString(undefined,{maximumFractionDigits:0});
+    return Math.round(Number(n)).toLocaleString("en-US");
   }
-  function fmtMoney(n){
+  function fmtMoney2(n){
     if(n===null||n===undefined||Number.isNaN(n)) return "—";
-    const x=Number(n); if(!Number.isFinite(x)) return "—";
-    return x.toLocaleString(undefined,{maximumFractionDigits:2});
+    return Number(n).toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2});
   }
-  function pct(delta, base){ if(base===0||base===null||base===undefined) return null; return (delta/base)*100; }
   function fmtPct(x){
     if(x===null||x===undefined||Number.isNaN(x)) return "—";
-    const v=Number(x); if(!Number.isFinite(v)) return "—";
-    return (v>=0?"+":"")+v.toFixed(2)+"%";
+    const v = Number(x);
+    const s = (v>=0?"+":"") + v.toFixed(2) + "%";
+    return s;
   }
-  function statusFromWorst(worstPct){
-    if(worstPct===null||worstPct===undefined||Number.isNaN(worstPct)) return "ERR";
-    if(worstPct<=-20) return "ALERT";
-    if(worstPct<=-10) return "WARN";
+  function pctClass(v){
+    if(v===null||v===undefined||Number.isNaN(v)) return "zero";
+    if(v>0.0001) return "pos";
+    if(v<-0.0001) return "neg";
+    return "zero";
+  }
+  function safeNum(v){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function statusFromWorstDrop(worst){
+    // worst is negative when dropping
+    if(worst===null) return "ERR";
+    if(worst <= ALERT_AT) return "ALERT";
+    if(worst <= WARN_AT) return "WARN";
     return "OK";
   }
-  function statusBadge(status){
-    const cls=status.toLowerCase();
-    return `<span class="status ${cls}"><span class="dot"></span>${status}</span>`;
-  }
-  function pickBrandFromFilename(name){
-    const upper=name.toUpperCase();
-    for(const b of BRANDS){ if(upper.startsWith(b)) return b; }
-    for(const b of BRANDS){ if(upper.includes(b)) return b; }
-    return null;
+
+  function badgeClass(status){
+    if(status==="OK") return "ok";
+    if(status==="WARN") return "warn";
+    if(status==="ALERT") return "alert";
+    return "err";
   }
 
-  let store = null;
-
-  function initStoreKeepDates(){
-    // IMPORTANT: This does NOT wipe endUsed/endDate if already set
-    if(!store){
-      store = {
-        endDate:null,
-        endUsed:null,
-        useLastCompleted:true,
-        brands:{},
-        computed:{},
-        notes:[]
-      };
-    }
-    // ensure brand containers exist
-    BRANDS.forEach(b=>{
-      if(!store.brands[b]){
-        store.brands[b]={ rows:[], meta:{loaded:false,file:null,error:null} };
-      }
-    });
-  }
-
-  function clearBrandsOnly(){
-    initStoreKeepDates();
+  /* ================================
+     PARSE JSON FILES
+  ================================ */
+  function detectBrandFromFilename(name){
+    const upper = (name||"").toUpperCase();
     for(const b of BRANDS){
-      store.brands[b].rows = [];
-      store.brands[b].meta = {loaded:false,file:null,error:null};
+      if(upper.startsWith(b) || upper.includes(`${b}.JSON`) || upper.includes(`${b}_`) || upper.includes(`${b}-`)) return b;
     }
-    store.computed = {};
-    store.notes = [];
+    return "";
   }
 
-  function getValueOnDate(rows, isoDate, key){
-    const hit=rows.find(r=>r.date===isoDate);
-    if(!hit) return null;
-    const v=hit[key];
-    return (v===null||v===undefined)?null:Number(v);
-  }
-  function avgInWindow(rows, endIso, days, key){
-    const end=parseISO(endIso);
-    const start=new Date(end); start.setDate(start.getDate()-(days-1));
-    const startIso=toISODate(start);
-    const window=rows.filter(r=>r.date>=startIso && r.date<=endIso);
-    if(window.length<days) return null;
-    let sum=0;
-    for(const r of window){
-      const v=Number(r[key]);
-      if(!Number.isFinite(v)) return null;
-      sum+=v;
-    }
-    return sum/days;
-  }
-  function computeWindows(rows, endIso, key){
-    const prevIso=addDays(endIso,-1);
-    const endVal=getValueOnDate(rows,endIso,key);
-    const prevVal=getValueOnDate(rows,prevIso,key);
-    const oneDDelta=(endVal!==null && prevVal!==null)?(endVal-prevVal):null;
-    const oneDPct=(oneDDelta!==null && prevVal!==null)?pct(oneDDelta,prevVal):null;
-
-    const a7=avgInWindow(rows,endIso,7,key);
-    const a7p=avgInWindow(rows,addDays(endIso,-7),7,key);
-    const d7=(a7!==null && a7p!==null)?(a7-a7p):null;
-    const p7=(d7!==null && a7p!==null)?pct(d7,a7p):null;
-
-    const a14=avgInWindow(rows,endIso,14,key);
-    const a14p=avgInWindow(rows,addDays(endIso,-14),14,key);
-    const d14=(a14!==null && a14p!==null)?(a14-a14p):null;
-    const p14=(d14!==null && a14p!==null)?pct(d14,a14p):null;
-
-    const list=[oneDPct,p7,p14].filter(v=>v!==null && Number.isFinite(v));
-    const worst=list.length?Math.min(...list):null;
-
-    return { endVal, prevVal, oneDPct, p7, p14, a7, a7p, d7, a14, a14p, d14, worst };
-  }
-
-  function computeBrand(brand){
-    const b=store.brands[brand];
-    const rows=b.rows.slice().sort((x,y)=>x.date.localeCompare(y.date));
-    if(!rows.length) return { status:"ERR", reason:"No data rows", rowCount:0 };
-
-    const endIso=store.endUsed;
-    if(!endIso) return { status:"ERR", reason:"endUsed is null (build bug)", rowCount:rows.length };
-
-    const endRow=rows.find(r=>r.date===endIso);
-    if(!endRow) return { status:"ERR", reason:`No end-date row for ${endIso}`, rowCount:rows.length };
-
-    const active=computeWindows(rows,endIso,"active");
-    const deposit=computeWindows(rows,endIso,"totalDeposit");
-    const turnover=computeWindows(rows,endIso,"turnover");
-    const reg=computeWindows(rows,endIso,"registered");
-    const ftd=computeWindows(rows,endIso,"ftd");
-
-    const status=statusFromWorst(active.worst);
-    if(active.p14===null && active.p7!==null){
-      store.notes.push(`${brand}: Not enough history for 14D comparisons (need at least 14 days).`);
-    }
-
-    return { status, reason:null, endIso, rowCount:rows.length, active, deposit, turnover, reg, ftd };
-  }
-
-  function buildAllComputations(){
-    store.computed={};
-    store.notes=[];
-    for(const brand of BRANDS){
-      const meta=store.brands[brand].meta;
-      if(!meta.loaded){
-        store.computed[brand]={ status:"ERR", reason:"File missing", rowCount:0 };
-        store.notes.push(`${brand}: missing JSON file.`);
-        continue;
-      }
-      const out=computeBrand(brand);
-      store.computed[brand]=out;
-      if(out.status==="ERR" && out.reason) store.notes.push(`${brand}: ${out.reason}.`);
-    }
-  }
-
-  function mapMetric(k){
-    if(k==="active") return "active";
-    if(k==="totalDeposit") return "deposit";
-    if(k==="turnover") return "turnover";
-    if(k==="registered") return "reg";
-    if(k==="ftd") return "ftd";
-    return k;
-  }
-
-  function summarizeCounts(metricKey){
-    const results=[];
-    for(const brand of BRANDS){
-      const c=store.computed[brand];
-      if(!c || c.status==="ERR") continue;
-      const obj=c[mapMetric(metricKey)];
-      if(!obj) continue;
-      results.push({ brand, status: statusFromWorst(obj.worst), worst: obj.worst, p7: obj.p7, p14: obj.p14 });
-    }
-    return results;
-  }
-
-  function overallTotals(metricKey){
-    let endSum=0, prevSum=0, a7Sum=0, a7pSum=0, a14Sum=0, a14pSum=0;
-    let endOk=0, prevOk=0, a7Ok=0, a7pOk=0, a14Ok=0, a14pOk=0;
-
-    for(const brand of BRANDS){
-      const c=store.computed[brand];
-      if(!c || c.status==="ERR") continue;
-      const obj=c[mapMetric(metricKey)];
-      if(!obj) continue;
-
-      if(Number.isFinite(obj.endVal)){ endSum+=obj.endVal; endOk++; }
-      if(Number.isFinite(obj.prevVal)){ prevSum+=obj.prevVal; prevOk++; }
-      if(Number.isFinite(obj.a7)){ a7Sum+=obj.a7; a7Ok++; }
-      if(Number.isFinite(obj.a7p)){ a7pSum+=obj.a7p; a7pOk++; }
-      if(Number.isFinite(obj.a14)){ a14Sum+=obj.a14; a14Ok++; }
-      if(Number.isFinite(obj.a14p)){ a14pSum+=obj.a14p; a14pOk++; }
-    }
-
-    const oneDDelta=(endOk && prevOk)?(endSum-prevSum):null;
-    const oneDPct=(oneDDelta!==null && prevSum!==0)?pct(oneDDelta,prevSum):null;
-    const d7=(a7Ok && a7pOk)?(a7Sum-a7pSum):null;
-    const p7=(d7!==null && a7pSum!==0)?pct(d7,a7pSum):null;
-    const d14=(a14Ok && a14pOk)?(a14Sum-a14pSum):null;
-    const p14=(d14!==null && a14pSum!==0)?pct(d14,a14pSum):null;
-
-    return { endSum, oneDPct, p7, p14 };
-  }
-
-  function buildBossMessage(metricKey){
-  const endIso = store.endUsed;
-
-  const title =
-    metricKey==="active" ? "Daily Trend — Active Players" :
-    metricKey==="totalDeposit" ? "Daily Trend — Total Deposit" :
-    "Daily Trend — Turnover";
-
-  const key = mapMetric(metricKey);
-
-  // collect brand rows
-  const rows = [];
-  for (const brand of BRANDS){
-    const c = store.computed[brand];
-    if (!c || c.status==="ERR"){
-      rows.push({ brand, p7:null, p14:null, err:true });
-      continue;
-    }
-    const obj = c[key];
-    rows.push({
-      brand,
-      p7: (obj && Number.isFinite(obj.p7)) ? obj.p7 : null,
-      p14: (obj && Number.isFinite(obj.p14)) ? obj.p14 : null,
-      err: false
-    });
-  }
-
-  function dirLabel(p){
-    if (p === null) return "n/a";
-    if (p > 0) return "up";
-    if (p < 0) return "drop";
-    return "flat";
-  }
-
-  const lines = [];
-  lines.push(`${title}`);
-  lines.push(`Comparison end date: ${endIso}`);
-  lines.push("");
-
-  // brand-by-brand lines
-  for (const r of rows){
-    if (r.err){
-      lines.push(`${r.brand}: n/a | n/a (missing/invalid data)`);
-      continue;
-    }
-    const p7txt = r.p7===null ? "7D n/a" : `7D ${fmtPct(r.p7)} (${dirLabel(r.p7)})`;
-    const p14txt = r.p14===null ? "14D n/a" : `14D ${fmtPct(r.p14)} (${dirLabel(r.p14)})`;
-    lines.push(`${r.brand}: ${p7txt} | ${p14txt}`);
-  }
-
-  // NOTE: biggest drops (prefer 14D; fallback 7D)
-  const movers = rows
-    .filter(r => !r.err && (r.p14!==null || r.p7!==null))
-    .map(r => ({
-      brand: r.brand,
-      score: (r.p14!==null ? r.p14 : r.p7),
-      which: (r.p14!==null ? "14D" : "7D")
-    }))
-    .sort((a,b)=> a.score - b.score);
-
-  const worst3 = movers.slice(0,3);
-  if (worst3.length){
-    lines.push("");
-    lines.push(`Note: Biggest drops: ${worst3.map(x=>`${x.brand} (${x.which} ${fmtPct(x.score)})`).join(", ")}.`);
-  }
-
-  return lines.join("\n");
-}
-
-  function renderSummary(){
-    const cards=document.getElementById("cards");
-    cards.innerHTML="";
-
-    for(const brand of BRANDS){
-      const c=store.computed[brand];
-      const meta=store.brands[brand].meta;
-
-      const status=c?.status || "ERR";
-      const endIso=store.endUsed || "—";
-      const rows=meta.loaded ? (c?.rowCount ?? 0) : 0;
-
-      const a7=c?.active?.p7 ?? null;
-      const a14=c?.active?.p14 ?? null;
-
-      const card=document.createElement("div");
-      card.className="card";
-      card.innerHTML=`
-        <div class="brandline">
-          <div>
-            <div class="brand">${brand}</div>
-            <div class="meta">End used: ${endIso} • rows: ${rows}</div>
-          </div>
-          <div>${statusBadge(status)}</div>
-        </div>
-
-        <div class="two">
-          <div class="mini">
-            <div class="k">Active 7D%</div>
-            <div class="v ${a7!==null && a7<0 ? "neg":"pos"}">${fmtPct(a7)}</div>
-            <div class="s">Rolling avg vs previous window</div>
-          </div>
-          <div class="mini">
-            <div class="k">Active 14D%</div>
-            <div class="v ${a14!==null && a14<0 ? "neg":"pos"}">${fmtPct(a14)}</div>
-            <div class="s">Rolling avg vs previous window</div>
-          </div>
-        </div>
-
-        <div class="meta" style="margin-top:10px;color:${status==="ERR" ? "rgba(255,77,77,.9)" : "rgba(255,255,255,.55)"}">
-          ${meta.loaded ? (c?.reason ? c.reason : "") : (meta.error || "No file loaded")}
-        </div>
-      `;
-      cards.appendChild(card);
-    }
-
-    const notes=document.getElementById("notes");
-    if(store.notes.length){
-      notes.classList.remove("hidden");
-      notes.innerHTML = `<b>Notes:</b><br>` + store.notes.map(x=>`• ${escapeHtml(x)}`).join("<br>");
-    }else{
-      notes.classList.add("hidden");
-      notes.innerHTML="";
-    }
-  }
-
-  function renderActiveTable(){
-    const tbody=document.querySelector("#activeTable tbody");
-    tbody.innerHTML="";
-    for(const brand of BRANDS){
-      const c=store.computed[brand];
-      const a=c?.active || {};
-      const st=c?.status || "ERR";
-      tbody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td><b>${brand}</b></td>
-          <td class="mono">${fmtNum(a.endVal)}</td>
-          <td class="mono">${fmtNum(a.prevVal)}</td>
-          <td class="mono">${fmtNum(a.a7)}</td>
-          <td class="mono">${fmtNum(a.a7p)}</td>
-          <td class="mono">${fmtNum(a.d7)}</td>
-          <td class="mono">${fmtPct(a.p7)}</td>
-          <td class="mono">${fmtNum(a.a14)}</td>
-          <td class="mono">${fmtNum(a.a14p)}</td>
-          <td class="mono">${fmtNum(a.d14)}</td>
-          <td class="mono">${fmtPct(a.p14)}</td>
-          <td>${statusBadge(st)}</td>
-        </tr>
-      `);
-    }
-  }
-
-  function renderAllMetrics(){
-    const tbody=document.querySelector("#allTable tbody");
-    tbody.innerHTML="";
-
-    function rowFor(obj){
-      return `<td class="mono">${fmtPct(obj?.oneDPct ?? null)}</td>
-              <td class="mono">${fmtPct(obj?.p7 ?? null)}</td>
-              <td class="mono">${fmtPct(obj?.p14 ?? null)}</td>
-              <td class="mono">${fmtPct(obj?.worst ?? null)}</td>`;
-    }
-
-    for(const brand of BRANDS){
-      const c=store.computed[brand] || {};
-      tbody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td><b>${brand}</b></td>
-          ${rowFor(c.active)}
-          ${rowFor(c.deposit)}
-          ${rowFor(c.turnover)}
-          ${rowFor(c.reg)}
-          ${rowFor(c.ftd)}
-          <td>${statusBadge(c.status || "ERR")}</td>
-        </tr>
-      `);
-    }
-  }
-
-  function renderRaw(){
-    const box=document.getElementById("rawBox");
-    box.innerHTML="";
-    for(const brand of BRANDS){
-      const meta=store.brands[brand].meta;
-      const rows=store.brands[brand].rows || [];
-      const c=store.computed[brand];
-
-      const preview = rows.slice(0, 10).map(r =>
-        `${r.date}  reg:${r.registered}  ftd:${r.ftd}  dep:${r.totalDeposit}  active:${r.active}  to:${r.turnover}`
-      ).join("\n");
-
-      const card=document.createElement("div");
-      card.className="card";
-      card.style.marginBottom="10px";
-      card.innerHTML=`
-        <div class="brandline">
-          <div>
-            <div class="brand">${brand}</div>
-            <div class="meta">${meta.loaded ? "loaded":"missing"} • rows: ${rows.length} • end used: ${store.endUsed || "—"} • status: ${c?.status || "—"}</div>
-          </div>
-          <div class="meta mono">${meta.file ? escapeHtml(meta.file) : ""}</div>
-        </div>
-        <div style="height:10px"></div>
-        <textarea class="textarea" readonly>${preview || (meta.error || "No rows")}</textarea>
-      `;
-      box.appendChild(card);
-    }
-  }
-
-  async function readFileAsJSON(file){
+  async function readJsonFile(file){
     const text = await file.text();
     return JSON.parse(text);
   }
 
-  function normalizeRowsFromJSON(json){
-    const out=[];
-    const rows=Array.isArray(json?.rows) ? json.rows : [];
+  function normalizeRows(raw){
+    // Expected: raw.rows: [{ date, registered, ftd, totalDeposit, active, turnover }]
+    const rows = Array.isArray(raw?.rows) ? raw.rows : [];
+    const out = [];
     for(const r of rows){
-      const iso=normDateAny(r.date);
-      if(!iso) continue;
+      const dateISO = normalizeAnyDateToISO(r.date);
+      if(!dateISO) continue;
       out.push({
-        date: iso,
-        registered: Number(r.registered ?? 0),
-        ftd: Number(r.ftd ?? 0),
-        totalDeposit: Number(r.totalDeposit ?? 0),
-        active: Number(r.active ?? 0),
-        turnover: Number(r.turnover ?? 0)
+        dateISO,
+        registered: safeNum(r.registered),
+        ftd: safeNum(r.ftd),
+        totalDeposit: safeNum(r.totalDeposit),
+        active: safeNum(r.active),
+        turnover: safeNum(r.turnover)
       });
     }
-    const map=new Map();
-    for(const rr of out){ map.set(rr.date, rr); }
-    return Array.from(map.values()).sort((a,b)=>a.date.localeCompare(b.date));
+    // sort ascending by date
+    out.sort((a,b)=> a.dateISO.localeCompare(b.dateISO));
+    return out;
   }
 
-  async function loadFiles(files){
-    // ✅ FIX: DO NOT reset endUsed/endDate here
-    clearBrandsOnly();
-
-    const list=Array.from(files || []);
-    for(const f of list){
-      const brand=pickBrandFromFilename(f.name);
-      if(!brand) continue;
+  async function handleFiles(files){
+    state.notes = [];
+    for(const file of files){
+      const brand = detectBrandFromFilename(file.name);
+      if(!brand){
+        state.notes.push(`Unrecognized file name: ${file.name} (ignored). Use M1.json, M2.json, ...`);
+        continue;
+      }
       try{
-        const json=await readFileAsJSON(f);
-        const norm=normalizeRowsFromJSON(json);
-
-        store.brands[brand].rows = norm;
-        store.brands[brand].meta.loaded = true;
-        store.brands[brand].meta.file = f.name;
-        store.brands[brand].meta.error = null;
+        const raw = await readJsonFile(file);
+        const rows = normalizeRows(raw);
+        state.filesLoaded.set(brand, {
+          source: raw?.source || "json",
+          exportedAt: raw?.exportedAt || "",
+          pageTitle: raw?.pageTitle || "",
+          headers: Array.isArray(raw?.headers) ? raw.headers : [],
+          rows,
+          raw
+        });
       }catch(err){
-        store.brands[brand].meta.loaded = false;
-        store.brands[brand].meta.file = f.name;
-        store.brands[brand].meta.error = "JSON parse failed: " + (err?.message || String(err));
+        state.notes.push(`${brand}: Failed to parse JSON (${String(err.message||err)})`);
       }
     }
+    doneChip.textContent = `Done: loaded ${state.filesLoaded.size}/8`;
   }
 
-  function setTab(key){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===key));
-    document.getElementById("tab-summary").classList.toggle("hidden", key!=="summary");
-    document.getElementById("tab-active").classList.toggle("hidden", key!=="active");
-    document.getElementById("tab-all").classList.toggle("hidden", key!=="all");
-    document.getElementById("tab-raw").classList.toggle("hidden", key!=="raw");
+  /* ================================
+     COMPUTE ROLLING WINDOWS
+  ================================ */
+  function pickRowByDate(rows, dateISO){
+    return rows.find(r => r.dateISO === dateISO) || null;
   }
 
-  function countLoaded(){
-    let n=0;
-    for(const b of BRANDS){ if(store.brands[b].meta.loaded) n++; }
-    return n;
+  function avgForRange(rows, startISO, endISO, metricKey){
+    // inclusive range, requires exact date presence; compute avg over available days in range
+    const inRange = rows.filter(r => r.dateISO >= startISO && r.dateISO <= endISO);
+    const vals = inRange.map(r => safeNum(r[metricKey])).filter(v => v!==null);
+    if(!vals.length) return { avg:null, count:0 };
+    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+    return { avg, count: vals.length };
   }
 
-  // Modal
-  let currentReportKey="active";
-  function openBossReport(){
-    document.getElementById("modalBackdrop").style.display="flex";
-    document.getElementById("bossMeta").textContent = `Comparison end date: ${store.endUsed || "—"} • Files loaded: ${countLoaded()}/8`;
-    currentReportKey="active";
-    document.querySelectorAll(".rTab").forEach(t=>t.classList.toggle("active", t.dataset.r===currentReportKey));
-    updateBossText();
+  function pctChange(a, b){
+    // compare a vs b: (a-b)/b * 100
+    if(a===null || b===null) return null;
+    if(Math.abs(b) < 1e-9) return null;
+    return ((a - b) / b) * 100;
   }
-  function closeBossReport(){ document.getElementById("modalBackdrop").style.display="none"; }
- function updateBossText(){
-  let metric="active";
-  if(currentReportKey==="deposit") metric="totalDeposit";
-  if(currentReportKey==="turnover") metric="turnover";
 
-  const text = buildBossMessage(metric);
-  const ta = document.getElementById("reportText");
-  ta.value = text;
+  function computeMetric(rows, metricKey, compareEndISO){
+    const endRow = pickRowByDate(rows, compareEndISO);
+    const prevISO = addDaysISO(compareEndISO, -1);
+    const prevRow = pickRowByDate(rows, prevISO);
 
-  document.getElementById("activeChars").textContent = `${text.length} chars`;
-}
+    if(!endRow){
+      return { ok:false, reason:`No end-date row for ${compareEndISO}`, end:null, prev:null };
+    }
 
-  async function copyBossText(){
-    const ta=document.getElementById("reportText");
-    try{
-      await navigator.clipboard.writeText(ta.value);
-      const btn=document.getElementById("copyBtn");
-      const old=btn.textContent;
-      btn.textContent="Copied ✓";
-      setTimeout(()=>btn.textContent=old, 900);
-    }catch{
-      ta.select();
-      document.execCommand("copy");
+    // 7D windows
+    const last7Start = addDaysISO(compareEndISO, -6);
+    const prev7Start = addDaysISO(compareEndISO, -13);
+    const prev7End   = addDaysISO(compareEndISO, -7);
+
+    const last14Start = addDaysISO(compareEndISO, -13);
+    const prev14Start = addDaysISO(compareEndISO, -27);
+    const prev14End   = addDaysISO(compareEndISO, -14);
+
+    const endVal = safeNum(endRow[metricKey]);
+    const prevVal = prevRow ? safeNum(prevRow[metricKey]) : null;
+
+    const last7 = avgForRange(rows, last7Start, compareEndISO, metricKey);
+    const prev7 = avgForRange(rows, prev7Start, prev7End, metricKey);
+
+    const last14 = avgForRange(rows, last14Start, compareEndISO, metricKey);
+    const prev14 = avgForRange(rows, prev14Start, prev14End, metricKey);
+
+    const p1d = pctChange(endVal, prevVal);
+    const p7d = pctChange(last7.avg, prev7.avg);
+    const p14d = pctChange(last14.avg, prev14.avg);
+
+    const worst = Math.min(
+      (p7d===null ? 0 : p7d),
+      (p14d===null ? 0 : p14d)
+    );
+
+    return {
+      ok:true,
+      endVal, prevVal,
+      last7Avg:last7.avg, prev7Avg:prev7.avg,
+      last14Avg:last14.avg, prev14Avg:prev14.avg,
+      c1:last7.count, c2:prev7.count, c3:last14.count, c4:prev14.count,
+      p1d, p7d, p14d,
+      worstDrop: (p7d===null && p14d===null) ? null : Math.min(p7d ?? 0, p14d ?? 0)
+    };
+  }
+
+  function computeAll(){
+    state.notes = [];
+
+    const endISO = endDateEl.value || "";
+    if(!endISO){
+      state.notes.push("End Date is required.");
+      renderNotes();
+      return false;
+    }
+    state.endDateISO = endISO;
+
+    const useLast = !!useLastCompletedEl.checked;
+    state.compareEndISO = useLast ? addDaysISO(endISO, -1) : endISO;
+    compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
+
+    // compute per brand
+    state.computed.perBrand = new Map();
+    state.computed.allRows = [];
+
+    for(const brand of BRANDS){
+      const pack = state.filesLoaded.get(brand);
+      if(!pack){
+        state.notes.push(`${brand}: missing JSON file.`);
+        continue;
+      }
+      const rows = pack.rows;
+
+      const activeCalc = computeMetric(rows, "active", state.compareEndISO);
+      const depCalc = computeMetric(rows, "totalDeposit", state.compareEndISO);
+      const turnCalc = computeMetric(rows, "turnover", state.compareEndISO);
+
+      state.computed.perBrand.set(brand, {
+        active: activeCalc,
+        totalDeposit: depCalc,
+        turnover: turnCalc,
+        rowsCount: rows.length
+      });
+
+      // build all-metrics export rows
+      for(const mk of ["active","totalDeposit","turnover"]){
+        const c = (mk==="active") ? activeCalc : (mk==="totalDeposit" ? depCalc : turnCalc);
+        state.computed.allRows.push({
+          brand,
+          metric: mk,
+          end: c.endVal, prev: c.prevVal,
+          last7: c.last7Avg, prev7: c.prev7Avg,
+          last14: c.last14Avg, prev14: c.prev14Avg,
+          p1d: c.p1d, p7d: c.p7d, p14d: c.p14d,
+          ok: c.ok
+        });
+      }
+
+      // notes about missing window coverage (optional)
+      if(activeCalc.ok){
+        if(activeCalc.c1 < 7) state.notes.push(`${brand}: Active last7 has only ${activeCalc.c1}/7 days.`);
+        if(activeCalc.c2 < 7) state.notes.push(`${brand}: Active prev7 has only ${activeCalc.c2}/7 days.`);
+        if(activeCalc.c3 < 14) state.notes.push(`${brand}: Active last14 has only ${activeCalc.c3}/14 days.`);
+        if(activeCalc.c4 < 14) state.notes.push(`${brand}: Active prev14 has only ${activeCalc.c4}/14 days.`);
+      }else{
+        state.notes.push(`${brand}: ${activeCalc.reason}`);
+      }
+    }
+
+    return true;
+  }
+
+  /* ================================
+     RENDER
+  ================================ */
+  function renderNotes(){
+    if(!state.notes.length){
+      notesBox.classList.add("hidden");
+      notesBox.textContent = "";
+      return;
+    }
+    notesBox.classList.remove("hidden");
+    notesBox.textContent = "Notes:\n- " + state.notes.join("\n- ");
+  }
+
+  function renderSummary(){
+    summaryCards.innerHTML = "";
+
+    for(const brand of BRANDS){
+      const data = state.computed.perBrand.get(brand);
+      const pack = state.filesLoaded.get(brand);
+
+      let status = "ERR";
+      let reason = "";
+      let p7 = null, p14 = null;
+
+      if(!pack){
+        reason = "Missing JSON";
+        status = "ERR";
+      }else if(!data || !data.active || !data.active.ok){
+        reason = data?.active?.reason || "No end-date row";
+        status = "ERR";
+      }else{
+        p7 = data.active.p7d;
+        p14 = data.active.p14d;
+        const worst = data.active.worstDrop;
+        status = statusFromWorstDrop(worst);
+      }
+
+      const endUsed = state.compareEndISO || "—";
+      const rowsCount = data?.rowsCount ?? (pack?.rows?.length ?? 0);
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="cardHead">
+          <div>
+            <div class="brand">${brand}</div>
+            <div class="mini">End used: <b>${endUsed}</b> • rows: ${rowsCount}</div>
+          </div>
+          <div class="badge ${badgeClass(status)}">${status}</div>
+        </div>
+
+        <div class="metricRow">
+          <div class="metricBox">
+            <div class="mName">Active 7D%</div>
+            <div class="mVal ${pctClass(p7)}">${p7===null ? "—" : (p7.toFixed(2) + "%")}</div>
+            <div class="mSub">Rolling avg vs prev window</div>
+          </div>
+          <div class="metricBox">
+            <div class="mName">Active 14D%</div>
+            <div class="mVal ${pctClass(p14)}">${p14===null ? "—" : (p14.toFixed(2) + "%")}</div>
+            <div class="mSub">Rolling avg vs prev window</div>
+          </div>
+        </div>
+
+        <div class="mini" style="margin-top:10px; ${reason? '' : 'opacity:.0'}">
+          ${reason ? ("<span class='muted'>"+escapeHtml(reason)+"</span>") : "&nbsp;"}
+        </div>
+      `;
+      summaryCards.appendChild(card);
     }
   }
 
   function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
   }
 
-  async function build(){
-    initStoreKeepDates();
+  function renderActiveTable(){
+    activeTableBody.innerHTML = "";
+    for(const brand of BRANDS){
+      const d = state.computed.perBrand.get(brand);
+      const c = d?.active;
 
-    const endDate=document.getElementById("endDate").value;
-    if(!endDate){ alert("End Date is required."); return; }
+      let status = "ERR";
+      if(c?.ok){
+        status = statusFromWorstDrop(c.worstDrop);
+      }
 
-    store.endDate=endDate;
-    store.useLastCompleted=document.getElementById("useLastCompleted").checked;
-    store.endUsed = store.useLastCompleted ? addDays(endDate,-1) : endDate;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${brand}</b></td>
+        <td class="right">${fmtInt(c?.endVal)}</td>
+        <td class="right">${fmtInt(c?.prevVal)}</td>
+        <td class="right">${fmtInt(c?.last7Avg)}</td>
+        <td class="right">${fmtInt(c?.prev7Avg)}</td>
+        <td class="right">${fmtInt(c?.last14Avg)}</td>
+        <td class="right">${fmtInt(c?.prev14Avg)}</td>
+        <td class="right ${pctClass(c?.p1d)}">${fmtPct(c?.p1d)}</td>
+        <td class="right ${pctClass(c?.p7d)}">${fmtPct(c?.p7d)}</td>
+        <td class="right ${pctClass(c?.p14d)}">${fmtPct(c?.p14d)}</td>
+        <td><span class="badge ${badgeClass(status)}">${status}</span></td>
+      `;
+      activeTableBody.appendChild(tr);
+    }
+  }
 
-    document.getElementById("endUsedPill").textContent = `Comparisons end at: ${store.endUsed}`;
+  function renderAllMetrics(){
+    allMetricsBody.innerHTML = "";
 
-    const files=document.getElementById("files").files;
-    await loadFiles(files);
+    const metricPretty = (k)=>{
+      if(k==="active") return "Active Players";
+      if(k==="totalDeposit") return "Total Deposit";
+      if(k==="turnover") return "Turnover";
+      return k;
+    };
+    const fmtByMetric = (metricKey, v)=>{
+      if(metricKey==="turnover") return fmtMoney2(v);
+      return fmtInt(v);
+    };
 
-    buildAllComputations();
+    for(const r of state.computed.allRows){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${r.brand}</b></td>
+        <td>${metricPretty(r.metric)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.end)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.prev)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.last7)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.prev7)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.last14)}</td>
+        <td class="right">${fmtByMetric(r.metric, r.prev14)}</td>
+        <td class="right ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</td>
+        <td class="right ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</td>
+        <td class="right ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</td>
+      `;
+      allMetricsBody.appendChild(tr);
+    }
+  }
+
+  function renderRaw(){
+    rawBox.innerHTML = "";
+    for(const brand of BRANDS){
+      const pack = state.filesLoaded.get(brand);
+      const d = state.computed.perBrand.get(brand);
+      const rowsCount = pack?.rows?.length ?? 0;
+      const endUsed = state.compareEndISO || "—";
+      const ok = d?.active?.ok;
+
+      const box = document.createElement("div");
+      box.className = "field";
+      box.style.marginBottom = "10px";
+      box.innerHTML = `
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <b>${brand}</b> — rows: ${rowsCount} — end used: <b>${endUsed}</b> — ${ok ? "<span class='badge ok'>OK</span>" : "<span class='badge err'>ERR</span>"}
+          </div>
+          <span class="chip">source: ${(pack?.source||"—")}</span>
+        </div>
+        <div style="margin-top:10px">
+          <textarea readonly>${pack ? JSON.stringify(pack.raw, null, 2) : ""}</textarea>
+        </div>
+      `;
+      rawBox.appendChild(box);
+    }
+  }
+
+  /* ================================
+     BOSS REPORT TEXT (your requested format)
+     - per brand line: "M1 — 7D: -8.08% (drop) | 14D: -6.84% (drop)"
+     - short note about biggest drops only
+  ================================ */
+  function dirWord(p){
+    if(p===null||p===undefined||Number.isNaN(p)) return "";
+    if(p>0) return "increase";
+    if(p<0) return "drop";
+    return "flat";
+  }
+
+  function buildBossTextForMetric(metricKey){
+    const title =
+      metricKey==="active" ? "Daily Trend — Active Players" :
+      metricKey==="totalDeposit" ? "Daily Trend — Total Deposit" :
+      "Daily Trend — Turnover";
+
+    const lines = [];
+    lines.push(title);
+    lines.push(`Comparison end date: ${state.compareEndISO || "—"}`);
+    lines.push("");
+
+    // per-brand summary lines
+    const movers = []; // collect worst 14D or 7D
+    for(const brand of BRANDS){
+      const data = state.computed.perBrand.get(brand);
+      const c = data ? data[metricKey] : null;
+
+      if(!c || !c.ok){
+        lines.push(`${brand} — no data for end date`);
+        continue;
+      }
+      const p7 = c.p7d;
+      const p14 = c.p14d;
+
+      const p7s = (p7===null ? "—" : `${p7.toFixed(2)}% (${dirWord(p7)})`);
+      const p14s = (p14===null ? "—" : `${p14.toFixed(2)}% (${dirWord(p14)})`);
+      lines.push(`${brand} — 7D: ${p7s} | 14D: ${p14s}`);
+
+      const worst = Math.min(p7 ?? 0, p14 ?? 0);
+      movers.push({ brand, worst });
+    }
+
+    // short note: top 3 drops (most negative)
+    const worstDrops = movers
+      .filter(x => Number.isFinite(x.worst))
+      .sort((a,b)=> a.worst - b.worst)
+      .slice(0,3);
+
+    lines.push("");
+    if(worstDrops.length){
+      lines.push("Note (biggest drops): " + worstDrops.map(x => `${x.brand} ${x.worst.toFixed(2)}%`).join(", "));
+    } else {
+      lines.push("Note: —");
+    }
+
+    return lines.join("\n");
+  }
+
+  function refreshBossTexts(){
+    state.boss.activeText = buildBossTextForMetric("active");
+    state.boss.depositText = buildBossTextForMetric("totalDeposit");
+    state.boss.turnoverText = buildBossTextForMetric("turnover");
+  }
+
+  function openBossModal(){
+    bossMeta.textContent = `Comparison end date: ${state.compareEndISO || "—"} • Files loaded: ${state.filesLoaded.size}/8`;
+    modalBackdrop.style.display = "flex";
+    // default to active tab
+    setBossTab("active");
+  }
+
+  function closeBossModal(){
+    modalBackdrop.style.display = "none";
+  }
+
+  function setBossTab(which){
+    pillTabs.forEach(p => p.classList.toggle("active", p.dataset.r===which));
+    const text =
+      which==="active" ? state.boss.activeText :
+      which==="deposit" ? state.boss.depositText :
+      state.boss.turnoverText;
+
+    reportTextEl.value = text || "";
+    // keep alias synced
+    bossReportTextEl.value = reportTextEl.value;
+  }
+
+  /* ================================
+     EXPORTS
+     - Boss CSV/PDF: exports current modal text
+     - Full CSV: exports All Metrics table
+     - Full PDF: prints full report area
+  ================================ */
+  function downloadBlob(filename, content, mime){
+    const blob = new Blob([content], {type:mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function getBossReportText(){
+    const text = (reportTextEl.value || reportTextEl.innerText || "").trim();
+    return text;
+  }
+
+  function exportBossCSV(){
+    const text = getBossReportText();
+    if(!text) return alert("Boss report is empty.");
+    const csv = text.split("\n").map(l => `"${l.replace(/"/g,'""')}"`).join("\n");
+    downloadBlob("Boss_Report.csv", csv, "text/csv;charset=utf-8");
+  }
+
+  function exportBossPDF(){
+    const text = getBossReportText();
+    if(!text) return alert("Boss report is empty.");
+    const w = window.open("", "_blank", "width=900,height=700");
+    w.document.write(`
+      <html><head><title>Boss Report</title>
+      <style>body{font-family:Arial;padding:24px} pre{white-space:pre-wrap;font-size:13px;line-height:1.45}</style>
+      </head><body>
+      <pre>${escapeHtml(text)}</pre>
+      </body></html>
+    `);
+    w.document.close(); w.focus(); w.print();
+  }
+
+  function exportFullCSV(){
+    // export All Metrics table content as CSV
+    const rows = [];
+    const header = ["Brand","Metric","End Day","Prev Day","Avg(last7)","Avg(prev7)","Avg(last14)","Avg(prev14)","1D%","7D%","14D%"];
+    rows.push(header);
+
+    for(const r of state.computed.allRows){
+      const metricName =
+        r.metric==="active" ? "Active Players" :
+        r.metric==="totalDeposit" ? "Total Deposit" :
+        "Turnover";
+
+      const end = r.metric==="turnover" ? (r.end ?? "") : (r.end ?? "");
+      const prev = r.metric==="turnover" ? (r.prev ?? "") : (r.prev ?? "");
+
+      rows.push([
+        r.brand,
+        metricName,
+        r.end ?? "",
+        r.prev ?? "",
+        r.last7 ?? "",
+        r.prev7 ?? "",
+        r.last14 ?? "",
+        r.prev14 ?? "",
+        r.p1d===null? "" : r.p1d.toFixed(2),
+        r.p7d===null? "" : r.p7d.toFixed(2),
+        r.p14d===null? "" : r.p14d.toFixed(2),
+      ]);
+    }
+
+    const csv = rows.map(arr =>
+      arr.map(x => `"${String(x).replace(/"/g,'""')}"`).join(",")
+    ).join("\n");
+
+    downloadBlob("Full_Report.csv", csv, "text/csv;charset=utf-8");
+  }
+
+  function exportFullPDF(){
+    const root = document.getElementById("reportArea");
+    const w = window.open("", "_blank", "width=1200,height=800");
+
+    // clone report area only (clean)
+    const clone = root.cloneNode(true);
+
+    // hide raw json textareas (optional) in pdf
+    clone.querySelectorAll("textarea").forEach(t => {
+      t.style.display = "none";
+    });
+
+    w.document.write(`
+      <html>
+      <head>
+        <title>Full Report</title>
+        <style>
+          body{font-family:Arial; padding:18px;}
+          h2{margin:0 0 8px}
+          table{border-collapse:collapse; width:100%; margin:12px 0;}
+          th,td{border:1px solid #999; padding:6px 8px; font-size:12px;}
+          th{font-weight:700; background:#f2f2f2;}
+          .muted{color:#444;}
+        </style>
+      </head>
+      <body>
+        <h2>8 Brand JSON Dashboard — Full Report</h2>
+        <div class="muted">Comparison end date: ${state.compareEndISO || "—"}</div>
+        ${clone.innerHTML}
+      </body>
+      </html>
+    `);
+
+    w.document.close(); w.focus(); w.print();
+  }
+
+  /* ================================
+     EVENTS
+  ================================ */
+  tabs.forEach(t => t.addEventListener("click", () => {
+    tabs.forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    const key = t.dataset.tab;
+    Object.keys(sections).forEach(k => sections[k].classList.toggle("active", k===key));
+  }));
+
+  useLastCompletedEl.addEventListener("change", () => {
+    if(state.endDateISO){
+      state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(state.endDateISO, -1) : state.endDateISO;
+      compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
+    }
+  });
+
+  endDateEl.addEventListener("change", () => {
+    const endISO = endDateEl.value || "";
+    state.endDateISO = endISO;
+    state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(endISO, -1) : endISO;
+    compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
+  });
+
+  filesEl.addEventListener("change", async (e) => {
+    await handleFiles([...e.target.files]);
+  });
+
+  buildBtn.addEventListener("click", async () => {
+    // If user selected files but we haven't read them (rare), read now.
+    if(filesEl.files?.length){
+      await handleFiles([...filesEl.files]);
+    }
+
+    const ok = computeAll();
+    renderNotes();
+
+    if(!ok) return;
+
     renderSummary();
     renderActiveTable();
     renderAllMetrics();
     renderRaw();
-
-    document.getElementById("statusPill").textContent = `Done: loaded ${countLoaded()}/8`;
-  }
-
-  function clearAll(){
-    document.getElementById("files").value="";
-    document.getElementById("cards").innerHTML="";
-    document.getElementById("rawBox").innerHTML="";
-    document.querySelector("#activeTable tbody").innerHTML="";
-    document.querySelector("#allTable tbody").innerHTML="";
-    const notes=document.getElementById("notes");
-    notes.classList.add("hidden"); notes.innerHTML="";
-    document.getElementById("statusPill").textContent="Done: —";
-    document.getElementById("endUsedPill").textContent="Comparisons end at: —";
-    store = null;
-  }
-
-  // wire
-  initStoreKeepDates();
-  document.getElementById("endDate").value = toISODate(new Date());
-
-  document.getElementById("buildBtn").addEventListener("click", build);
-  document.getElementById("clearBtn").addEventListener("click", clearAll);
-
-  document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>setTab(t.dataset.tab)));
-
-  document.getElementById("bossBtn").addEventListener("click", ()=>{
-    if(!store || !store.endUsed){ alert("Build Dashboard first."); return; }
-    openBossReport();
+    refreshBossTexts();
   });
 
-  document.getElementById("closeBtn").addEventListener("click", closeBossReport);
-  document.getElementById("modalBackdrop").addEventListener("click",(e)=>{
-    if(e.target.id==="modalBackdrop") closeBossReport();
+  clearBtn.addEventListener("click", () => {
+    state.filesLoaded.clear();
+    state.notes = [];
+    state.computed.perBrand = new Map();
+    state.computed.allRows = [];
+    state.boss.activeText = state.boss.depositText = state.boss.turnoverText = "";
+    doneChip.textContent = "Done: loaded 0/8";
+    compChip.textContent = "Comparisons end at: —";
+    summaryCards.innerHTML = "";
+    activeTableBody.innerHTML = "";
+    allMetricsBody.innerHTML = "";
+    rawBox.innerHTML = "";
+    renderNotes();
+    filesEl.value = "";
   });
-  document.getElementById("copyBtn").addEventListener("click", copyBossText);
 
-  document.querySelectorAll(".rTab").forEach(t=>t.addEventListener("click", ()=>{
-    currentReportKey=t.dataset.r;
-    document.querySelectorAll(".rTab").forEach(x=>x.classList.toggle("active", x.dataset.r===currentReportKey));
-    updateBossText();
-  }));
+  bossBtn.addEventListener("click", () => {
+    // ensure boss report uses latest calculations
+    if(!state.compareEndISO || !state.computed.perBrand.size){
+      alert("Build Dashboard first.");
+      return;
+    }
+    refreshBossTexts();
+    openBossModal();
+  });
 
-/* ================================
-   Boss Report Export (CSV + PDF)
-================================ */
+  bossCloseBtn.addEventListener("click", closeBossModal);
+  modalBackdrop.addEventListener("click", (e) => {
+    if(e.target === modalBackdrop) closeBossModal();
+  });
 
-function getBossReportText_() {
-  const el = document.getElementById("bossReportText");
-  return (el?.value || el?.innerText || "").trim();
-}
+  pillTabs.forEach(p => p.addEventListener("click", () => setBossTab(p.dataset.r)));
 
-function downloadBlob_(filename, content, mime) {
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
+  bossCopyBtn.addEventListener("click", async () => {
+    const text = getBossReportText();
+    if(!text) return alert("Boss report is empty.");
+    try{
+      await navigator.clipboard.writeText(text);
+      bossCopyBtn.textContent = "Copied";
+      setTimeout(()=>bossCopyBtn.textContent="Copy", 900);
+    }catch(_){
+      // fallback
+      reportTextEl.select();
+      document.execCommand("copy");
+      bossCopyBtn.textContent = "Copied";
+      setTimeout(()=>bossCopyBtn.textContent="Copy", 900);
+    }
+  });
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  bossCsvBtn.addEventListener("click", exportBossCSV);
+  bossPdfBtn.addEventListener("click", exportBossPDF);
 
-  URL.revokeObjectURL(url);
-}
+  fullCsvBtn.addEventListener("click", () => {
+    if(!state.computed.allRows.length) return alert("Build Dashboard first.");
+    exportFullCSV();
+  });
+  fullPdfBtn.addEventListener("click", () => {
+    if(!state.computed.allRows.length) return alert("Build Dashboard first.");
+    exportFullPDF();
+  });
 
-/* CSV */
-function exportBossCSV() {
-  const text = getBossReportText_();
-  if (!text) return alert("Boss report is empty.");
+  /* ================================
+     INIT
+  ================================ */
+  // default endDate to today (local)
+  const now = new Date();
+  endDateEl.value = toISODate(now);
+  state.endDateISO = endDateEl.value;
+  state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(state.endDateISO, -1) : state.endDateISO;
+  compChip.textContent = `Comparisons end at: ${state.compareEndISO}`;
 
-  const csv = text
-    .split("\n")
-    .map(l => `"${l.replace(/"/g, '""')}"`)
-    .join("\n");
+  // modal default text
+  function setBossTab(which){
+    pillTabs.forEach(p => p.classList.toggle("active", p.dataset.r===which));
+    const text =
+      which==="active" ? state.boss.activeText :
+      which==="deposit" ? state.boss.depositText :
+      state.boss.turnoverText;
 
-  downloadBlob_("Boss_Report.csv", csv, "text/csv;charset=utf-8");
-}
-
-/* PDF */
-function exportBossPDF() {
-  const text = getBossReportText_();
-  if (!text) return alert("Boss report is empty.");
-
-  const w = window.open("", "_blank", "width=900,height=700");
-
-  w.document.write(`
-    <html>
-      <head>
-        <title>Boss Report</title>
-      </head>
-      <body style="font-family: Arial; padding: 24px;">
-        <pre style="white-space: pre-wrap; font-size:13px;">${text}</pre>
-      </body>
-    </html>
-  `);
-
-  w.document.close();
-  w.focus();
-  w.print();
-}
-
-/* Hook buttons */
-document.getElementById("csvBtn").onclick = exportBossCSV;
-document.getElementById("pdfBtn").onclick = exportBossPDF;
+    reportTextEl.value = text || "";
+    bossReportTextEl.value = reportTextEl.value;
+  }
 })();
 </script>
 </body>
