@@ -3,978 +3,1068 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>8 Brand Screenshot Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <title>8 Brand JSON Dashboard (1D / 7D / 14D)</title>
   <style>
     :root{
-      --bg1:#07162d;
-      --bg2:#0a2449;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --text:#eaf1ff;
-      --muted:rgba(234,241,255,.7);
-      --line:rgba(255,255,255,.10);
-      --btn:#2c66ff;
-      --btn2:#1b3a7a;
-      --ok:#34d399;
-      --warn:#fbbf24;
-      --err:#fb7185;
-      --pill:rgba(255,255,255,.10);
+      --bg:#061b33;
+      --panel:#0b274a;
+      --panel2:#0a2342;
+      --text:#e9f1ff;
+      --muted:#a9c0e8;
+      --line:rgba(255,255,255,.08);
+      --good:#2ecc71;
+      --warn:#f1c40f;
+      --bad:#ff5c5c;
+      --chip:#10335f;
+      --accent:#2f7dff;
+      --shadow: 0 10px 35px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family:var(--sans);
       color:var(--text);
-      background: radial-gradient(1200px 700px at 50% 10%, var(--bg2), var(--bg1));
+      background:
+        radial-gradient(1200px 600px at 30% 15%, rgba(47,125,255,.25), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(46,204,113,.15), transparent 55%),
+        linear-gradient(180deg, #04152b 0%, #061b33 55%, #04152b 100%);
       min-height:100vh;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:28px 16px 60px}
-    h1{margin:6px 0 6px;font-size:28px;letter-spacing:.2px;text-align:center}
-    .sub{margin:0 0 18px;text-align:center;color:var(--muted);font-size:13px}
-    .panel{
-      background:linear-gradient(180deg,var(--card2),var(--card));
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 60px}
+    .title{
+      text-align:center;margin:10px 0 18px;
+      font-weight:800;letter-spacing:.3px;
+      font-size:30px;
+    }
+    .subtitle{
+      text-align:center;color:var(--muted);
+      margin:0 0 20px;
+      font-size:13px;
+    }
+
+    .topbar{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border:1px solid var(--line);
-      border-radius:14px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       padding:16px;
-      box-shadow:0 10px 40px rgba(0,0,0,.25);
-    }
-    .grid{
       display:grid;
-      grid-template-columns: 1fr 1.4fr 1.2fr;
+      grid-template-columns: 1.2fr 1.2fr 1fr;
       gap:12px;
-      align-items:end;
+      align-items:center;
     }
-    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-    input[type="date"], input[type="text"]{
+    .field{
+      display:flex;flex-direction:column;gap:6px;
+      padding:10px 12px;
+      border-radius:var(--radius2);
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.12);
+    }
+    .field label{font-size:12px;color:var(--muted)}
+    .field input[type="date"], .field input[type="file"]{
       width:100%;
       padding:10px 10px;
-      border-radius:10px;
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.22);
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
       color:var(--text);
       outline:none;
     }
-    input[type="file"]{
-      width:100%;
-      padding:8px;
-      border-radius:10px;
-      border:1px dashed var(--line);
-      background:rgba(0,0,0,.18);
-      color:var(--muted);
+    .hint{font-size:11px;color:var(--muted)}
+    .actions{
+      display:flex;flex-direction:column;gap:10px;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-radius:var(--radius2);
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.12);
     }
-    .row2{
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px
-    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .btn{
-      border:none;
-      background:var(--btn);
-      color:white;
-      padding:10px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:600;
-      box-shadow:0 10px 24px rgba(44,102,255,.25);
-    }
-    .btn:hover{filter:brightness(1.05)}
-    .btn.secondary{background:rgba(255,255,255,.10);box-shadow:none}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      background:rgba(0,0,0,.25);
-      border:1px solid var(--line);
-      padding:8px 10px;border-radius:999px;
-      color:var(--muted);
-      font-size:12px;
-    }
-    .toggle{
-      display:flex;align-items:center;gap:10px;
-      padding:10px 12px;border-radius:12px;
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.18);
-    }
-    .toggle input{transform:scale(1.1)}
-    .tabs{
-      display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
-      margin:14px 0 0;
-    }
-    .tab{
-      background:rgba(255,255,255,.08);
-      border:1px solid var(--line);
+      padding:10px 14px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(47,125,255,.18);
       color:var(--text);
-      padding:8px 10px;border-radius:999px;
-      cursor:pointer;font-size:12px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.15s transform ease, .15s background ease;
       user-select:none;
     }
-    .tab.active{background:rgba(44,102,255,.30);border-color:rgba(44,102,255,.55)}
-    .section{margin-top:14px}
-    .cards{
-      display:grid;grid-template-columns:repeat(4,1fr);gap:10px
-    }
-    @media(max-width:980px){.cards{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){.cards{grid-template-columns:1fr}}
-    .card{
+    .btn:hover{transform:translateY(-1px);background:rgba(47,125,255,.25)}
+    .btn.secondary{background:rgba(255,255,255,.07)}
+    .btn.secondary:hover{background:rgba(255,255,255,.10)}
+    .statuspill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--line);
       background:rgba(0,0,0,.18);
+      font-size:12px;color:var(--muted);
+    }
+    .dot{width:9px;height:9px;border-radius:999px;background:var(--muted)}
+    .dot.ok{background:var(--good)}
+    .dot.warn{background:var(--warn)}
+    .dot.err{background:var(--bad)}
+
+    .toggle{
+      display:flex;align-items:center;gap:10px;
+      padding:8px 10px;border-radius:14px;
       border:1px solid var(--line);
-      border-radius:14px;
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      font-size:12px;
+    }
+    .toggle input{transform:scale(1.15)}
+    .chip{
+      background:rgba(16,51,95,.65);
+      border:1px solid rgba(255,255,255,.10);
+      padding:7px 10px;border-radius:999px;
+      font-size:12px;color:var(--muted);
+    }
+
+    .tabs{
+      display:flex;gap:10px;justify-content:center;
+      margin:18px 0 10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      padding:8px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.12);
+      color:var(--muted);
+      cursor:pointer;
+      font-weight:700;
+      font-size:12px;
+    }
+    .tab.active{
+      color:var(--text);
+      background:rgba(47,125,255,.22);
+      border-color:rgba(47,125,255,.35);
+    }
+
+    .panel{
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-top:14px;
+    }
+    .panel h2{
+      margin:0 0 8px;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .panel p{margin:0 0 12px;color:var(--muted);font-size:12px}
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width:1050px){
+      .topbar{grid-template-columns:1fr}
+      .cards{grid-template-columns: repeat(2, minmax(0,1fr))}
+    }
+    @media (max-width:560px){
+      .cards{grid-template-columns:1fr}
+    }
+    .card{
+      border-radius:var(--radius2);
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.16);
       padding:12px;
-      position:relative;
-      min-height:110px;
+      display:flex;flex-direction:column;gap:10px;
+      min-height:120px;
     }
-    .brand{font-weight:800;font-size:14px;letter-spacing:.4px}
-    .mini{color:var(--muted);font-size:11px;margin-top:4px}
-    .pill{
-      position:absolute;top:10px;right:10px;
-      font-size:11px;font-weight:800;
-      padding:6px 8px;border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
+    .cardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .brand{
+      font-weight:900;letter-spacing:.5px;font-size:15px;
     }
-    .pill.ok{color:var(--ok);border-color:rgba(52,211,153,.4)}
-    .pill.warn{color:var(--warn);border-color:rgba(251,191,36,.4)}
-    .pill.err{color:var(--err);border-color:rgba(251,113,133,.4)}
-    .kv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-    .box{
-      border:1px solid var(--line);
+    .mini{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .kpi{
       border-radius:12px;
-      padding:10px;background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      padding:10px;
     }
-    .k{font-size:11px;color:var(--muted)}
-    .v{font-weight:800;margin-top:4px}
-    .muted{color:var(--muted)}
-    .tableWrap{
-      overflow:auto;border-radius:14px;border:1px solid var(--line);
-      background:rgba(0,0,0,.16)
+    .kpi .label{color:var(--muted);font-size:11px;margin-bottom:4px}
+    .kpi .val{font-size:16px;font-weight:900}
+    .kpi .sub{color:var(--muted);font-size:11px;margin-top:4px}
+    .badge{
+      display:inline-flex;
+      padding:5px 10px;border-radius:999px;
+      font-size:11px;font-weight:800;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      align-items:center;gap:8px;
+      white-space:nowrap;
     }
-    table{border-collapse:collapse;width:1400px;min-width:100%}
-    th,td{
-      border-bottom:1px solid rgba(255,255,255,.08);
-      padding:10px 10px;
+    .badge.ok{border-color:rgba(46,204,113,.35);color:#a9ffd0}
+    .badge.warn{border-color:rgba(241,196,15,.35);color:#ffeaa7}
+    .badge.err{border-color:rgba(255,92,92,.35);color:#ffb0b0}
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.14);
+    }
+    thead th{
+      position:sticky;top:0;
+      background:rgba(6,27,51,.95);
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-size:11px;
+      text-transform:none;
+      letter-spacing:.2px;
+      padding:10px 8px;
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,.06);
       font-size:12px;
       white-space:nowrap;
     }
-    th{position:sticky;top:0;background:rgba(0,0,0,.35);z-index:2}
-    td:first-child, th:first-child{position:sticky;left:0;background:rgba(0,0,0,.28);z-index:1}
-    .statusCell{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-width:48px;font-weight:900;border-radius:999px;padding:6px 10px;
-      border:1px solid var(--line);background:rgba(255,255,255,.06);
+    tbody tr:hover td{background:rgba(47,125,255,.06)}
+    .scrollX{overflow:auto;border-radius:14px}
+    .num{font-variant-numeric:tabular-nums}
+    .mono{font-family:var(--mono)}
+    .right{text-align:right}
+    .left{text-align:left}
+    .center{text-align:center}
+    .muted{color:var(--muted)}
+    .neg{color:#ffb0b0}
+    .pos{color:#a9ffd0}
+    .warnText{color:#ffeaa7}
+    .foot{
+      margin-top:10px;color:var(--muted);font-size:11px;
     }
-    .statusCell.ok{color:var(--ok);border-color:rgba(52,211,153,.4)}
-    .statusCell.warn{color:var(--warn);border-color:rgba(251,191,36,.4)}
-    .statusCell.err{color:var(--err);border-color:rgba(251,113,133,.4)}
+    .errorBox{
+      margin-top:12px;
+      border:1px solid rgba(255,92,92,.25);
+      background:rgba(255,92,92,.08);
+      padding:10px 12px;border-radius:14px;
+      color:#ffb0b0;font-size:12px;
+      line-height:1.35;
+    }
     details{
       border:1px solid var(--line);
       border-radius:14px;
-      background:rgba(0,0,0,.16);
+      background:rgba(0,0,0,.14);
       padding:10px 12px;
-      margin-top:10px;
+      margin-bottom:10px;
     }
     summary{
       cursor:pointer;
-      color:var(--text);
+      color:var(--muted);
       font-weight:800;
+      font-size:12px;
       outline:none;
     }
     pre{
       margin:10px 0 0;
-      background:rgba(0,0,0,.32);
-      border:1px solid rgba(255,255,255,.10);
+      padding:10px 12px;
       border-radius:12px;
-      padding:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
       overflow:auto;
-      max-height:300px;
-      color:#dbe7ff;
+      max-height:320px;
       font-size:11px;
-      line-height:1.35;
+      color:var(--text);
+      font-family:var(--mono);
+      white-space:pre;
     }
-    .hint{margin-top:10px;color:var(--muted);font-size:12px;text-align:center}
-    .small{font-size:11px;color:var(--muted)}
   </style>
 </head>
-
 <body>
-<div class="wrap">
-  <h1>8 Brand Screenshot Dashboard</h1>
-  <p class="sub">
-    Upload 8 screenshots (M1, M2, B1, B2, B3, B4, K1, TK). OCR runs locally in your browser.
-    We compute <b>1D / 7D / 14D</b> rolling comparisons ending at End Date.
-  </p>
-
-  <div class="panel">
-    <div class="grid">
-      <div>
-        <label>End Date (YYYY-MM-DD)</label>
-        <input id="endDate" type="date" />
-      </div>
-
-      <div>
-        <label>Upload screenshots (8 files)</label>
-        <input id="fileInput" type="file" accept="image/*" multiple />
-        <div class="small" style="margin-top:6px">
-          Filename rule: <b>m1.png</b> / <b>M2.png</b> / <b>b4.png</b> (case-insensitive)
-          OR <b>M1_2026-02-02.png</b>.
-        </div>
-      </div>
-
-      <div class="toggle">
-        <input id="useLastCompleted" type="checkbox" checked />
-        <div>
-          <div style="font-weight:900">Use last completed day</div>
-          <div class="small">Avoid partial-day drops before 11:59pm (uses End Date - 1 day)</div>
-        </div>
-      </div>
+  <div class="wrap">
+    <div class="title">8 Brand JSON Dashboard</div>
+    <div class="subtitle">
+      Upload 8 JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). We compute <b>1D / 7D / 14D</b> rolling comparisons ending at End Date.
     </div>
 
-    <div class="row2">
-      <button class="btn" id="runBtn">Run OCR + Build Dashboard</button>
-      <button class="btn secondary" id="clearBtn">Clear</button>
+    <div class="topbar">
+      <div class="field">
+        <label>End Date (YYYY-MM-DD)</label>
+        <input id="endDate" type="date" />
+        <div class="hint">We compare metrics ending at this date (or last completed day if toggle ON).</div>
+      </div>
 
-      <span class="badge" id="statusBadge">Idle</span>
-      <span class="badge" id="compareBadge">Comparisons end at: —</span>
-      <span class="badge" id="cutoffBadge">Cutoff time: 23:59 (your local browser time)</span>
+      <div class="field">
+        <label>Upload JSON files (8 files)</label>
+        <input id="fileInput" type="file" accept=".json,application/json" multiple />
+        <div class="hint">Filename rule: <b>M1.json</b>, <b>m2.json</b> etc (case-insensitive). You can also keep brand-anything.json if it starts with the brand name.</div>
+      </div>
+
+      <div class="actions">
+        <div class="row">
+          <button id="runBtn" class="btn">Build Dashboard</button>
+          <button id="clearBtn" class="btn secondary">Clear</button>
+          <span id="runStatus" class="statuspill"><span class="dot"></span><span class="txt">Waiting…</span></span>
+        </div>
+
+        <div class="row">
+          <label class="toggle" title="Avoid partial-day drop before 11:59pm by comparing using End Date - 1 day">
+            <input id="useLastCompleted" type="checkbox" checked />
+            <span><b>Use last completed day</b> <span class="muted">(avoid partial-day drops before 11:59pm)</span></span>
+          </label>
+        </div>
+
+        <div class="row">
+          <span id="compareChip" class="chip">Comparisons end at: —</span>
+          <span class="chip">Cutoff: 23:59 (your local browser time)</span>
+        </div>
+      </div>
     </div>
 
     <div class="tabs">
       <div class="tab active" data-tab="summary">Summary</div>
       <div class="tab" data-tab="active">Active Focus</div>
       <div class="tab" data-tab="all">All Metrics</div>
-      <div class="tab" data-tab="raw">Raw OCR</div>
+      <div class="tab" data-tab="raw">Raw JSON</div>
+    </div>
+
+    <div id="panel-summary" class="panel">
+      <h2>Summary</h2>
+      <p>Quick business health check (Active is weighted most). Use <b>7D%</b> and <b>14D%</b> for real trend. <span class="muted">1D% can be noisy.</span></p>
+      <div id="cards" class="cards"></div>
+      <div class="foot">
+        Status logic: <b>OK</b>=normal, <b>WARN</b>=Active trend dropping (7D% or 14D% ≤ -10%), <b>ERR</b>=missing data or major drop (≤ -20%).
+      </div>
+      <div id="globalErrors" class="errorBox" style="display:none;"></div>
+    </div>
+
+    <div id="panel-active" class="panel" style="display:none;">
+      <h2>Active Players Focus (Most Important)</h2>
+      <p>Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14). This is the best signal for “business going down continuously”.</p>
+      <div class="scrollX">
+        <table id="activeTable"></table>
+      </div>
+    </div>
+
+    <div id="panel-all" class="panel" style="display:none;">
+      <h2>All Metrics (1D / 7D / 14D)</h2>
+      <p>Every brand with Active / Deposit / Reg / FTD / Turnover deltas and percentages.</p>
+      <div class="scrollX">
+        <table id="allTable"></table>
+      </div>
+    </div>
+
+    <div id="panel-raw" class="panel" style="display:none;">
+      <h2>Raw JSON (debug)</h2>
+      <p>If a brand shows ERR, open its JSON here to check structure + dates.</p>
+      <div id="rawList"></div>
     </div>
   </div>
-
-  <div class="section panel" id="summarySec"></div>
-  <div class="section panel" id="activeSec" style="display:none"></div>
-  <div class="section panel" id="allSec" style="display:none"></div>
-  <div class="section panel" id="rawSec" style="display:none"></div>
-
-  <div class="hint">
-    Tip: Best OCR results = zoom 90–110%, full table visible, sharp text (not blurred).
-  </div>
-</div>
 
 <script>
-/** -----------------------------
- *  CONFIG
- * ----------------------------- */
-const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
+(function(){
+  const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
 
-// We parse these columns from each date-row (by position after date token).
-// Based on your backoffice table order:
-// Date | Registered Users | First Depositors | Total Deposit Count | Total Deposit |
-// Total Withdrawal Count | Total Withdrawal | Active Players | Turnover | ...
-const COLS = {
-  registered: 0,
-  ftd: 1,
-  totalDeposit: 3,     // after date: [reg, ftd, depCount, totalDeposit, wdCount, totalWd, active, turnover]
-  active: 6,
-  turnover: 7
-};
+  const $ = (id)=>document.getElementById(id);
 
-const METRIC_LIST = [
-  { key:"active", label:"Active" },
-  { key:"totalDeposit", label:"Deposit" },
-  { key:"registered", label:"Reg" },
-  { key:"ftd", label:"FTD" },
-  { key:"turnover", label:"Turnover" },
-];
+  const endDateEl = $("endDate");
+  const fileInput = $("fileInput");
+  const runBtn = $("runBtn");
+  const clearBtn = $("clearBtn");
+  const useLastCompleted = $("useLastCompleted");
+  const compareChip = $("compareChip");
+  const runStatus = $("runStatus");
 
-// Status thresholds (tune if needed)
-function calcStatusFromActive(active7pct, active14pct, parsedRows){
-  if (!parsedRows || parsedRows < 10) return "ERR"; // not enough history
-  // heavy focus on active declines
-  if (active7pct <= -0.08 || active14pct <= -0.12) return "ERR";
-  if (active7pct <= -0.04 || active14pct <= -0.08) return "WARN";
-  return "OK";
-}
+  const cardsEl = $("cards");
+  const activeTable = $("activeTable");
+  const allTable = $("allTable");
+  const rawList = $("rawList");
+  const globalErrors = $("globalErrors");
 
-/** -----------------------------
- *  UI helpers
- * ----------------------------- */
-const $ = (id)=>document.getElementById(id);
+  const tabs = document.querySelectorAll(".tab");
+  const panels = {
+    summary: $("panel-summary"),
+    active: $("panel-active"),
+    all: $("panel-all"),
+    raw: $("panel-raw"),
+  };
 
-function setBadge(text, kind="idle"){
-  const el = $("statusBadge");
-  el.textContent = text;
-  el.style.borderColor = "rgba(255,255,255,.12)";
-  el.style.color = "var(--muted)";
-  if (kind==="ok"){ el.style.borderColor="rgba(52,211,153,.5)"; el.style.color="var(--ok)"; }
-  if (kind==="warn"){ el.style.borderColor="rgba(251,191,36,.5)"; el.style.color="var(--warn)"; }
-  if (kind==="err"){ el.style.borderColor="rgba(251,113,133,.5)"; el.style.color="var(--err)"; }
-}
-
-function formatInt(n){
-  if (n===null || n===undefined || Number.isNaN(n)) return "—";
-  return Math.round(n).toLocaleString("en-US");
-}
-function formatPct(p){
-  if (p===null || p===undefined || Number.isNaN(p)) return "—";
-  return (p*100).toFixed(2) + "%";
-}
-function safeDiv(a,b){ return (b===0 || b===null || b===undefined) ? null : a/b; }
-
-function daysAgo(dateStr, n){
-  const d = new Date(dateStr+"T00:00:00");
-  d.setDate(d.getDate()-n);
-  return d.toISOString().slice(0,10);
-}
-function isoToday(){
-  const d = new Date();
-  const tz = new Date(d.getTime() - d.getTimezoneOffset()*60000);
-  return tz.toISOString().slice(0,10);
-}
-
-/** -----------------------------
- *  Filename → brand/date
- * ----------------------------- */
-function parseBrandFromFilename(name){
-  const base = name.split("/").pop();
-  const lower = base.toLowerCase();
-
-  // allow: m1.png / m1_2026-02-02.png / M1 2026-02-02.png
-  const m = lower.match(/^(m1|m2|b1|b2|b3|b4|k1|tk)\b/);
-  if (!m) return null;
-  return m[1].toUpperCase();
-}
-function parseDateFromFilename(name){
-  const base = name.split("/").pop();
-  // accept 2026-02-02 or 2026_02_02 or 2026.02.02
-  const m = base.match(/(20\d{2})[-_.\/](\d{2})[-_.\/](\d{2})/);
-  if (!m) return null;
-  return `${m[1]}-${m[2]}-${m[3]}`;
-}
-
-/** -----------------------------
- *  IMAGE PREPROCESSING (big fix)
- * ----------------------------- */
-async function preprocessToCanvas(file){
-  const img = await fileToImage(file);
-
-  // scale up for OCR
-  const scale = 2.6;
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.floor(img.width * scale);
-  canvas.height = Math.floor(img.height * scale);
-  const ctx = canvas.getContext("2d", { willReadFrequently:true });
-
-  // draw scaled
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-  // convert to grayscale + adaptive-ish threshold (simple + strong)
-  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
-  const data = imgData.data;
-
-  // compute mean luminance
-  let sum = 0;
-  for (let i=0;i<data.length;i+=4){
-    const r=data[i], g=data[i+1], b=data[i+2];
-    const y = (0.299*r + 0.587*g + 0.114*b);
-    sum += y;
+  function setTab(name){
+    tabs.forEach(t=>t.classList.toggle("active", t.dataset.tab===name));
+    Object.keys(panels).forEach(k=>panels[k].style.display = (k===name ? "" : "none"));
   }
-  const mean = sum / (data.length/4);
+  tabs.forEach(t=>t.addEventListener("click", ()=>setTab(t.dataset.tab)));
 
-  // threshold around mean (slightly aggressive)
-  const thr = Math.max(120, Math.min(200, mean * 0.92));
-
-  for (let i=0;i<data.length;i+=4){
-    const r=data[i], g=data[i+1], b=data[i+2];
-    let y = (0.299*r + 0.587*g + 0.114*b);
-
-    // boost contrast
-    y = (y - 128) * 1.35 + 128;
-
-    const v = (y > thr) ? 255 : 0;
-    data[i]=data[i+1]=data[i+2]=v;
-    data[i+3]=255;
+  function setStatus(type, text){
+    const dot = runStatus.querySelector(".dot");
+    const txt = runStatus.querySelector(".txt");
+    dot.className = "dot " + (type || "");
+    txt.textContent = text || "";
   }
-  ctx.putImageData(imgData,0,0);
-  return canvas;
-}
 
-function fileToImage(file){
-  return new Promise((resolve,reject)=>{
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = ()=>{ URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = reject;
-    img.src = url;
-  });
-}
-
-/** -----------------------------
- *  OCR
- * ----------------------------- */
-async function ocrCanvas(canvas, onProgress){
-  const worker = await Tesseract.createWorker("eng", 1, {
-    logger: m => { if (m.status === "recognizing text" && onProgress) onProgress(m.progress); }
-  });
-
-  // tune for digits-heavy table
-  await worker.setParameters({
-    tessedit_pageseg_mode: "6", // assume a uniform block of text
-    tessedit_char_whitelist: "0123456789/.,:-",
-    preserve_interword_spaces: "1"
-  });
-
-  const { data } = await worker.recognize(canvas);
-  await worker.terminate();
-  return (data && data.text) ? data.text : "";
-}
-
-/** -----------------------------
- *  PARSING (big fix)
- *  - detects date rows even if OCR outputs YYYYMMDD
- *  - then pulls numeric columns after date
- * ----------------------------- */
-function normalizeOCRText(t){
-  return String(t||"")
-    .replace(/\u00A0/g, " ")
-    .replace(/[|]+/g," ")
-    .replace(/[^\S\r\n]+/g, " ")
-    .replace(/\r/g,"")
-    .trim();
-}
-
-function extractDateTokensFromLine(line){
-  // supports:
-  // 2026/02/03, 2026-02-03, 2026.02.03, 2026_02_03
-  // 20260203 (8 digits)
-  const out = [];
-
-  const m1 = line.match(/\b(20\d{2})[\/\-\._](\d{2})[\/\-\._](\d{2})\b/g);
-  if (m1) out.push(...m1);
-
-  const m2 = line.match(/\b(20\d{6})\b/g); // YYYYMMDD
-  if (m2) out.push(...m2);
-
-  return out;
-}
-
-function normalizeDateToken(tok){
-  const s = String(tok);
-  if (/^\d{8}$/.test(s)){
-    const y = s.slice(0,4), m = s.slice(4,6), d = s.slice(6,8);
-    if (!isValidYMD(y,m,d)) return null;
-    return `${y}-${m}-${d}`;
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function fmtDateYMD(d){
+    return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
   }
-  // separator format
-  const m = s.match(/(20\d{2})[\/\-\._](\d{2})[\/\-\._](\d{2})/);
-  if (!m) return null;
-  if (!isValidYMD(m[1],m[2],m[3])) return null;
-  return `${m[1]}-${m[2]}-${m[3]}`;
-}
+  function parseDateAny(s){
+    // accepts "2026/02/04" or "2026-02-04" or "2026/2/4"
+    if (!s) return null;
+    const str = String(s).trim();
+    const m = str.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+    if (!m) return null;
+    const y = +m[1], mo = +m[2], da = +m[3];
+    const d = new Date(y, mo-1, da);
+    if (d && d.getFullYear()===y && (d.getMonth()+1)===mo && d.getDate()===da) return d;
+    return null;
+  }
+  function addDays(d, days){
+    const x = new Date(d.getTime());
+    x.setDate(x.getDate() + days);
+    return x;
+  }
+  function num(x){
+    if (x===null || x===undefined) return null;
+    if (typeof x === "number" && isFinite(x)) return x;
+    const s = String(x).replace(/,/g,"").trim();
+    if (!s) return null;
+    const v = Number(s);
+    return isFinite(v) ? v : null;
+  }
+  function fmtInt(v){
+    if (v===null || v===undefined || !isFinite(v)) return "—";
+    return Math.round(v).toLocaleString("en-US");
+  }
+  function fmtMoney(v){
+    if (v===null || v===undefined || !isFinite(v)) return "—";
+    return Number(v).toLocaleString("en-US", {maximumFractionDigits: 2});
+  }
+  function fmtPct(v){
+    if (v===null || v===undefined || !isFinite(v)) return "—";
+    const s = (v>=0?"+":"") + v.toFixed(2) + "%";
+    return s;
+  }
+  function clsDelta(v){
+    if (v===null || v===undefined || !isFinite(v)) return "muted";
+    return v < 0 ? "neg" : "pos";
+  }
+  function safePct(delta, base){
+    if (delta===null || base===null || !isFinite(delta) || !isFinite(base) || base===0) return null;
+    return (delta/base)*100;
+  }
+  function avg(arr){
+    const a = arr.filter(v => typeof v==="number" && isFinite(v));
+    if (!a.length) return null;
+    return a.reduce((s,x)=>s+x,0)/a.length;
+  }
 
-function isValidYMD(y,m,d){
-  const yy = +y, mm=+m, dd=+d;
-  if (yy < 2000 || yy > 2099) return false;
-  if (mm < 1 || mm > 12) return false;
-  if (dd < 1 || dd > 31) return false;
-  return true;
-}
-
-function parseNumbersAfterDate(line, dateToken){
-  // Take substring after date occurrence, then extract number-like tokens.
-  const idx = line.indexOf(dateToken);
-  const after = (idx>=0) ? line.slice(idx + dateToken.length) : line;
-
-  // normalize: keep digits, commas, dots
-  const cleaned = after.replace(/[^0-9,.\s]+/g, " ").replace(/\s+/g," ").trim();
-
-  // number tokens: 123,456.78 OR 123456 OR 0.60
-  const nums = cleaned.match(/\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b|\b\d+(?:\.\d+)?\b/g) || [];
-
-  // convert to numbers (remove commas)
-  return nums.map(x => {
-    const v = x.replace(/,/g,"");
-    const n = Number(v);
-    return Number.isFinite(n) ? n : null;
-  }).filter(v => v!==null);
-}
-
-function parseBackofficeTableRows(ocrText){
-  const text = normalizeOCRText(ocrText);
-  const lines = text.split("\n").map(l=>l.trim()).filter(Boolean);
-
-  const rows = [];
-  for (const rawLine of lines){
-    // quick filter: must contain a 20xx date token
-    const toks = extractDateTokensFromLine(rawLine);
-    if (!toks.length) continue;
-
-    // choose best date token
-    let best = null;
-    let bestNorm = null;
-    for (const t of toks){
-      const nd = normalizeDateToken(t);
-      if (nd){ best=t; bestNorm=nd; break; }
+  function inferBrandFromFilename(name){
+    const base = (name || "").split("/").pop();
+    const noExt = base.replace(/\.[^.]+$/,"");
+    const up = noExt.toUpperCase();
+    // allow: M1.json or M1_anything.json or m1-2026.json etc, as long as it starts with brand token
+    for (const b of BRANDS){
+      if (up === b) return b;
+      if (up.startsWith(b + "_") || up.startsWith(b + "-") || up.startsWith(b + " ")) return b;
+      if (up.startsWith(b)) return b; // last fallback
     }
-    if (!bestNorm) continue;
-
-    const nums = parseNumbersAfterDate(rawLine, best);
-
-    // need at least up to turnover index (0..7 => 8 numbers)
-    if (nums.length < 8) continue;
-
-    const rec = {
-      date: bestNorm,
-      registered: nums[COLS.registered] ?? null,
-      ftd: nums[COLS.ftd] ?? null,
-      totalDeposit: nums[COLS.totalDeposit] ?? null,
-      active: nums[COLS.active] ?? null,
-      turnover: nums[COLS.turnover] ?? null,
-      rawLine
-    };
-
-    // sanity checks to reduce wrong mappings:
-    // - registered and ftd usually smaller than active
-    // - totalDeposit and turnover likely big (> 1000)
-    if (rec.registered < 0 || rec.ftd < 0 || rec.active < 0) continue;
-
-    rows.push(rec);
+    return null;
   }
 
-  // de-duplicate by date: keep the first occurrence
-  const byDate = new Map();
-  for (const r of rows){
-    if (!byDate.has(r.date)) byDate.set(r.date, r);
-  }
+  // Normalize the user JSON into array of daily rows with Date object + numeric metrics
+  function normalizeBrandJson(json){
+    // expected:
+    // { headers: [...], rows:[{date, registered, ftd, totalDeposit, active, turnover}]}
+    const rows = Array.isArray(json?.rows) ? json.rows : [];
+    const out = [];
 
-  // sort desc by date
-  const out = Array.from(byDate.values()).sort((a,b)=> a.date < b.date ? 1 : -1);
-  return out;
-}
+    for (const r of rows){
+      const d = parseDateAny(r.date);
+      if (!d) continue;
 
-/** -----------------------------
- *  ROLLING CALCS
- * ----------------------------- */
-function buildSeriesMap(rows){
-  // rows: [{date, metric...}] sorted desc
-  const map = new Map();
-  for (const r of rows) map.set(r.date, r);
-  return map;
-}
-
-function getNearestRow(map, dateStr){
-  // we require exact date. If missing, return null.
-  return map.get(dateStr) || null;
-}
-
-function avgLastN(map, endDate, n){
-  let sum = 0, count = 0;
-  for (let i=0;i<n;i++){
-    const d = daysAgo(endDate, i);
-    const row = getNearestRow(map, d);
-    if (!row) continue;
-    sum += row.value;
-    count++;
-  }
-  return count ? sum / count : null;
-}
-
-function computeWindows(rows, metricKey, endDate){
-  const m = buildSeriesMap(rows.map(r => ({ date:r.date, value: r[metricKey] })));
-
-  const endRow = getNearestRow(m, endDate);
-  const prevRow = getNearestRow(m, daysAgo(endDate,1));
-
-  const endVal = endRow ? endRow.value : null;
-  const prevVal = prevRow ? prevRow.value : null;
-
-  // 1D
-  const d1 = (endVal!=null && prevVal!=null) ? (endVal - prevVal) : null;
-  const d1pct = (endVal!=null && prevVal!=null) ? safeDiv(endVal - prevVal, prevVal) : null;
-
-  // 7D: avg(last7) vs avg(prev7)
-  const last7 = avgWindow(m, endDate, 0, 7);
-  const prev7 = avgWindow(m, endDate, 7, 7);
-  const d7 = (last7!=null && prev7!=null) ? (last7 - prev7) : null;
-  const d7pct = (last7!=null && prev7!=null) ? safeDiv(last7 - prev7, prev7) : null;
-
-  // 14D: avg(last14) vs avg(prev14)
-  const last14 = avgWindow(m, endDate, 0, 14);
-  const prev14 = avgWindow(m, endDate, 14, 14);
-  const d14 = (last14!=null && prev14!=null) ? (last14 - prev14) : null;
-  const d14pct = (last14!=null && prev14!=null) ? safeDiv(last14 - prev14, prev14) : null;
-
-  return { endVal, prevVal, last7, prev7, last14, prev14, d1, d1pct, d7, d7pct, d14, d14pct };
-}
-
-function avgWindow(map, endDate, offsetDays, len){
-  let sum=0,count=0;
-  for(let i=0;i<len;i++){
-    const d = daysAgo(endDate, offsetDays + i);
-    const row = getNearestRow(map, d);
-    if (!row || row.value==null) continue;
-    sum += row.value;
-    count++;
-  }
-  return count ? sum/count : null;
-}
-
-/** -----------------------------
- *  DASHBOARD RENDER
- * ----------------------------- */
-function renderSummary(resultsByBrand, endUsed){
-  const sec = $("summarySec");
-  sec.innerHTML = `
-    <h3 style="margin:0 0 4px">Summary</h3>
-    <div class="muted" style="font-size:12px;margin-bottom:10px">
-      Quick business health check (Active is weighted most). End used: <b>${endUsed}</b>.
-    </div>
-    <div class="cards" id="summaryCards"></div>
-    <div class="hint">If a brand shows ERR, open <b>Raw OCR</b> tab and check if date rows are readable.</div>
-  `;
-
-  const wrap = sec.querySelector("#summaryCards");
-  wrap.innerHTML = "";
-
-  for (const brand of BRANDS){
-    const r = resultsByBrand[brand];
-    const pillClass = r.status.toLowerCase();
-    const endTxt = r.parsedRows ? `${r.endUsed} • parsed: ${r.parsedRows}` : `${r.endUsed} • parsed: 0`;
-
-    const active7 = (r.metrics.active?.d7pct ?? null);
-    const active14 = (r.metrics.active?.d14pct ?? null);
-
-    const msg = r.message ? `<div class="mini" style="color:var(--err);margin-top:8px">${escapeHTML(r.message)}</div>` : "";
-
-    wrap.insertAdjacentHTML("beforeend", `
-      <div class="card">
-        <div class="pill ${pillClass}">${r.status}</div>
-        <div class="brand">${brand}</div>
-        <div class="mini">End used: <b>${endTxt}</b></div>
-
-        <div class="kv">
-          <div class="box">
-            <div class="k">Active 7D%</div>
-            <div class="v">${formatPct(active7)}</div>
-          </div>
-          <div class="box">
-            <div class="k">Active 14D%</div>
-            <div class="v">${formatPct(active14)}</div>
-          </div>
-        </div>
-        ${msg}
-      </div>
-    `);
-  }
-}
-
-function renderActiveFocus(resultsByBrand, endUsed){
-  const sec = $("activeSec");
-  sec.innerHTML = `
-    <h3 style="margin:0 0 4px">Active Players Focus (Most Important)</h3>
-    <div class="muted" style="font-size:12px;margin-bottom:10px">
-      Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14). End used: <b>${endUsed}</b>.
-    </div>
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Brand</th>
-            <th>End Day Active</th>
-            <th>Prev Day Active</th>
-            <th>Avg(last7)</th>
-            <th>Avg(prev7)</th>
-            <th>Avg(last14)</th>
-            <th>Avg(prev14)</th>
-            <th>1D Δ</th>
-            <th>1D %</th>
-            <th>7D Δ</th>
-            <th>7D %</th>
-            <th>14D Δ</th>
-            <th>14D %</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="activeBody"></tbody>
-      </table>
-    </div>
-  `;
-
-  const tbody = sec.querySelector("#activeBody");
-  tbody.innerHTML = "";
-
-  for (const brand of BRANDS){
-    const r = resultsByBrand[brand];
-    const m = r.metrics.active || {};
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td><b>${brand}</b></td>
-        <td>${formatInt(m.endVal)}</td>
-        <td>${formatInt(m.prevVal)}</td>
-        <td>${formatInt(m.last7)}</td>
-        <td>${formatInt(m.prev7)}</td>
-        <td>${formatInt(m.last14)}</td>
-        <td>${formatInt(m.prev14)}</td>
-        <td>${formatInt(m.d1)}</td>
-        <td>${formatPct(m.d1pct)}</td>
-        <td>${formatInt(m.d7)}</td>
-        <td>${formatPct(m.d7pct)}</td>
-        <td>${formatInt(m.d14)}</td>
-        <td>${formatPct(m.d14pct)}</td>
-        <td><span class="statusCell ${r.status.toLowerCase()}">${r.status}</span></td>
-      </tr>
-    `);
-  }
-}
-
-function renderAllMetrics(resultsByBrand, endUsed){
-  const sec = $("allSec");
-  sec.innerHTML = `
-    <h3 style="margin:0 0 4px">All Metrics (1D / 7D / 14D)</h3>
-    <div class="muted" style="font-size:12px;margin-bottom:10px">
-      1D = end vs prev day • 7D = avg(last7) vs avg(prev7) • 14D = avg(last14) vs avg(prev14). End used: <b>${endUsed}</b>.
-    </div>
-    <div class="tableWrap">
-      <table>
-        <thead id="allHead"></thead>
-        <tbody id="allBody"></tbody>
-      </table>
-    </div>
-  `;
-
-  const head = sec.querySelector("#allHead");
-  const body = sec.querySelector("#allBody");
-
-  // header
-  let h = `<tr><th>Brand</th>`;
-  for (const mt of METRIC_LIST){
-    h += `<th colspan="6">${mt.label}</th>`;
-  }
-  h += `<th>Status</th></tr>`;
-
-  let h2 = `<tr><th></th>`;
-  for (const mt of METRIC_LIST){
-    h2 += `<th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>`;
-  }
-  h2 += `<th></th></tr>`;
-  head.innerHTML = h + h2;
-
-  // rows
-  body.innerHTML = "";
-  for (const brand of BRANDS){
-    const r = resultsByBrand[brand];
-    let row = `<tr><td><b>${brand}</b></td>`;
-    for (const mt of METRIC_LIST){
-      const m = r.metrics[mt.key] || {};
-      row += `
-        <td>${formatInt(m.d1)}</td>
-        <td>${formatPct(m.d1pct)}</td>
-        <td>${formatInt(m.d7)}</td>
-        <td>${formatPct(m.d7pct)}</td>
-        <td>${formatInt(m.d14)}</td>
-        <td>${formatPct(m.d14pct)}</td>
-      `;
+      out.push({
+        d,
+        ymd: fmtDateYMD(d),
+        registered: num(r.registered),
+        ftd: num(r.ftd),
+        deposit: num(r.totalDeposit),    // NOTE: in your sample, totalDeposit is count not amount. Keep same naming for now.
+        active: num(r.active),
+        turnover: num(r.turnover),
+      });
     }
-    row += `<td><span class="statusCell ${r.status.toLowerCase()}">${r.status}</span></td></tr>`;
-    body.insertAdjacentHTML("beforeend", row);
-  }
-}
 
-function renderRaw(ocrByBrand, parsedByBrand, endUsed){
-  const sec = $("rawSec");
-  sec.innerHTML = `
-    <h3 style="margin:0 0 4px">Raw OCR (debug)</h3>
-    <div class="muted" style="font-size:12px;margin-bottom:10px">
-      If a brand shows wrong numbers, open the OCR text here. You should see clean date rows like
-      <b>${endUsed}</b> ... Active Players ... Turnover.
-    </div>
-    <div id="rawList"></div>
-  `;
-
-  const list = sec.querySelector("#rawList");
-  list.innerHTML = "";
-
-  for (const brand of BRANDS){
-    const parsed = parsedByBrand[brand] || [];
-    const ocr = ocrByBrand[brand] || "";
-    const parsedCount = parsed.length;
-
-    const title = `${brand} — parsed rows: ${parsedCount} • end used: ${endUsed}`;
-    const sample = parsed.slice(0,10).map(r => `${r.date} | reg=${r.registered} | ftd=${r.ftd} | dep=${r.totalDeposit} | act=${r.active} | to=${r.turnover}`).join("\n");
-
-    list.insertAdjacentHTML("beforeend", `
-      <details>
-        <summary>${escapeHTML(title)}</summary>
-        <div class="small" style="margin-top:8px">
-          Parsed sample (first rows):
-        </div>
-        <pre>${escapeHTML(sample || "No rows parsed.")}</pre>
-        <div class="small" style="margin-top:8px">Raw OCR text:</div>
-        <pre>${escapeHTML(ocr || "(empty)")}</pre>
-      </details>
-    `);
-  }
-}
-
-function escapeHTML(s){
-  return String(s||"").replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
-  }[m]));
-}
-
-/** -----------------------------
- *  MAIN RUN
- * ----------------------------- */
-function computeEndUsed(endDate, useLastCompleted){
-  if (!endDate) return null;
-  // If toggle ON, we always use endDate - 1
-  // (because your day is not complete before 23:59)
-  if (useLastCompleted){
-    return daysAgo(endDate, 1);
-  }
-  return endDate;
-}
-
-async function run(){
-  const endDate = $("endDate").value;
-  const useLastCompleted = $("useLastCompleted").checked;
-
-  if (!endDate){
-    setBadge("End date is required", "err");
-    return;
-  }
-  const endUsed = computeEndUsed(endDate, useLastCompleted);
-  $("compareBadge").textContent = `Comparisons end at: ${endUsed}`;
-
-  const files = Array.from($("fileInput").files || []);
-  if (!files.length){
-    setBadge("Please upload screenshots", "err");
-    return;
+    // sort ascending by date
+    out.sort((a,b)=>a.d - b.d);
+    return out;
   }
 
-  // map files by brand
-  const fileByBrand = {};
-  for (const f of files){
-    const b = parseBrandFromFilename(f.name);
-    if (!b) continue;
-    fileByBrand[b] = f;
+  function indexByDate(rows){
+    const map = new Map();
+    for (const r of rows){
+      map.set(r.ymd, r);
+    }
+    return map;
   }
 
-  setBadge("Running OCR…", "warn");
+  function sliceWindow(rows, endYMD, days){
+    // returns the last N days ending at endYMD (inclusive) where row exists
+    const map = indexByDate(rows);
+    const endD = parseDateAny(endYMD);
+    if (!endD) return [];
+    const out = [];
+    for (let i=0;i<days;i++){
+      const dd = addDays(endD, -i);
+      const key = fmtDateYMD(dd);
+      const r = map.get(key);
+      if (r) out.push(r);
+    }
+    // keep chronological order
+    out.reverse();
+    return out;
+  }
 
-  const ocrByBrand = {};
-  const parsedByBrand = {};
-  const resultsByBrand = {};
+  function getRow(rows, ymd){
+    const map = indexByDate(rows);
+    return map.get(ymd) || null;
+  }
 
-  for (const brand of BRANDS){
-    const f = fileByBrand[brand];
-    if (!f){
-      ocrByBrand[brand] = "";
-      parsedByBrand[brand] = [];
-      resultsByBrand[brand] = {
-        status:"ERR",
-        endUsed,
-        parsedRows:0,
-        message:"Missing screenshot file for this brand",
-        metrics: {}
+  function calcComparisons(rows, endYMD){
+    // needs 1D (end vs prev), 7D avg(last7) vs avg(prev7), 14D avg(last14) vs avg(prev14)
+    const endRow = getRow(rows, endYMD);
+    const prevRow = getRow(rows, fmtDateYMD(addDays(parseDateAny(endYMD), -1)));
+
+    const last7 = sliceWindow(rows, endYMD, 7);
+    const prev7 = sliceWindow(rows, fmtDateYMD(addDays(parseDateAny(endYMD), -7)), 7);
+
+    const last14 = sliceWindow(rows, endYMD, 14);
+    const prev14 = sliceWindow(rows, fmtDateYMD(addDays(parseDateAny(endYMD), -14)), 14);
+
+    function metricPack(key){
+      const endVal = endRow ? endRow[key] : null;
+      const prevVal = prevRow ? prevRow[key] : null;
+
+      const d1 = (endVal!==null && prevVal!==null) ? (endVal - prevVal) : null;
+      const p1 = safePct(d1, prevVal);
+
+      const aLast7 = avg(last7.map(r=>r[key]));
+      const aPrev7 = avg(prev7.map(r=>r[key]));
+      const d7 = (aLast7!==null && aPrev7!==null) ? (aLast7 - aPrev7) : null;
+      const p7 = safePct(d7, aPrev7);
+
+      const aLast14 = avg(last14.map(r=>r[key]));
+      const aPrev14 = avg(prev14.map(r=>r[key]));
+      const d14 = (aLast14!==null && aPrev14!==null) ? (aLast14 - aPrev14) : null;
+      const p14 = safePct(d14, aPrev14);
+
+      return {
+        endVal, prevVal,
+        avgLast7: aLast7, avgPrev7: aPrev7,
+        avgLast14: aLast14, avgPrev14: aPrev14,
+        d1, p1, d7, p7, d14, p14,
       };
-      continue;
     }
 
-    try{
-      setBadge(`OCR: ${brand}…`, "warn");
+    return {
+      endYMD,
+      okEnd: !!endRow,
+      okPrev: !!prevRow,
+      metrics: {
+        active: metricPack("active"),
+        deposit: metricPack("deposit"),
+        reg: metricPack("registered"),
+        ftd: metricPack("ftd"),
+        turnover: metricPack("turnover"),
+      },
+      // store raw end/prev for active focus
+      activeFocus: {
+        end: endRow ? endRow.active : null,
+        prev: prevRow ? prevRow.active : null,
+      }
+    };
+  }
 
-      const canvas = await preprocessToCanvas(f);
-      const text = await ocrCanvas(canvas);
+  function statusFrom(activeP7, activeP14, dataOk){
+    if (!dataOk) return {k:"ERR", cls:"err"};
+    const p7 = (typeof activeP7==="number" && isFinite(activeP7)) ? activeP7 : null;
+    const p14 = (typeof activeP14==="number" && isFinite(activeP14)) ? activeP14 : null;
 
-      ocrByBrand[brand] = text;
+    // If missing rolling %, warn instead of err
+    if (p7===null && p14===null) return {k:"WARN", cls:"warn"};
 
-      const rows = parseBackofficeTableRows(text);
-      parsedByBrand[brand] = rows;
+    const worst = Math.min(
+      p7!==null ? p7 : 999,
+      p14!==null ? p14 : 999
+    );
 
-      // compute metrics windows
-      const metrics = {};
-      for (const mt of METRIC_LIST){
-        metrics[mt.key] = computeWindows(rows, mt.key, endUsed);
+    if (worst <= -20) return {k:"ERR", cls:"err"};
+    if (worst <= -10) return {k:"WARN", cls:"warn"};
+    return {k:"OK", cls:"ok"};
+  }
+
+  function buildCard(brand, comp, errors){
+    const mA = comp?.metrics?.active;
+    const st = statusFrom(mA?.p7, mA?.p14, !!comp && comp.okEnd);
+
+    const endUsed = comp?.endYMD || "—";
+    const parsedCount = (brandData.get(brand)?.length || 0);
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const top = document.createElement("div");
+    top.className = "cardTop";
+
+    const left = document.createElement("div");
+    left.innerHTML = `
+      <div class="brand">${brand}</div>
+      <div class="muted" style="font-size:11px;margin-top:4px;">
+        End used: <span class="mono">${endUsed}</span> · rows: <span class="mono">${parsedCount}</span>
+      </div>
+    `;
+
+    const badge = document.createElement("div");
+    badge.className = "badge " + st.cls;
+    badge.innerHTML = `<span class="dot ${st.cls}"></span><span>${st.k}</span>`;
+
+    top.appendChild(left);
+    top.appendChild(badge);
+
+    const mini = document.createElement("div");
+    mini.className = "mini";
+
+    const v7 = (mA?.p7);
+    const v14 = (mA?.p14);
+
+    mini.appendChild(kpiBox("Active 7D%", fmtPct(v7), mA ? ("Δ " + fmtInt(mA.d7)) : "—", clsDelta(v7)));
+    mini.appendChild(kpiBox("Active 14D%", fmtPct(v14), mA ? ("Δ " + fmtInt(mA.d14)) : "—", clsDelta(v14)));
+
+    const msg = document.createElement("div");
+    msg.className = "muted";
+    msg.style.fontSize = "11px";
+    msg.style.lineHeight = "1.35";
+    msg.style.marginTop = "2px";
+
+    if (errors?.length){
+      msg.innerHTML = `<span style="color:#ffb0b0;font-weight:800;">${errors[0]}</span>`;
+    } else {
+      msg.textContent = "Tip: Focus on Active 7D% and 14D% for true trend.";
+    }
+
+    card.appendChild(top);
+    card.appendChild(mini);
+    card.appendChild(msg);
+
+    return card;
+  }
+
+  function kpiBox(label, val, sub, deltaClass){
+    const box = document.createElement("div");
+    box.className = "kpi";
+    box.innerHTML = `
+      <div class="label">${label}</div>
+      <div class="val ${deltaClass}">${val}</div>
+      <div class="sub">${sub}</div>
+    `;
+    return box;
+  }
+
+  function buildActiveTable(resultByBrand){
+    const cols = [
+      {k:"brand", t:"Brand"},
+      {k:"end", t:"End Day Active", fmt:fmtInt},
+      {k:"prev", t:"Prev Day Active", fmt:fmtInt},
+      {k:"avgLast7", t:"Avg(last7)", fmt:fmtInt},
+      {k:"avgPrev7", t:"Avg(prev7)", fmt:fmtInt},
+      {k:"avgLast14", t:"Avg(last14)", fmt:fmtInt},
+      {k:"avgPrev14", t:"Avg(prev14)", fmt:fmtInt},
+      {k:"d1", t:"1D Δ", fmt:fmtInt, cls:"delta"},
+      {k:"p1", t:"1D %", fmt:fmtPct, cls:"pct"},
+      {k:"d7", t:"7D Δ", fmt:fmtInt, cls:"delta"},
+      {k:"p7", t:"7D %", fmt:fmtPct, cls:"pct"},
+      {k:"d14", t:"14D Δ", fmt:fmtInt, cls:"delta"},
+      {k:"p14", t:"14D %", fmt:fmtPct, cls:"pct"},
+      {k:"status", t:"Status"},
+    ];
+
+    const thead = document.createElement("thead");
+    const trh = document.createElement("tr");
+    cols.forEach(c=>{
+      const th = document.createElement("th");
+      th.className = (c.k==="brand"?"left":"right");
+      th.textContent = c.t;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+
+    const tbody = document.createElement("tbody");
+    for (const brand of BRANDS){
+      const r = resultByBrand.get(brand);
+      const mA = r?.comp?.metrics?.active;
+      const st = statusFrom(mA?.p7, mA?.p14, !!r?.comp && r.comp.okEnd);
+
+      const tr = document.createElement("tr");
+
+      const rowObj = {
+        brand,
+        end: mA?.endVal ?? null,
+        prev: mA?.prevVal ?? null,
+        avgLast7: mA?.avgLast7 ?? null,
+        avgPrev7: mA?.avgPrev7 ?? null,
+        avgLast14: mA?.avgLast14 ?? null,
+        avgPrev14: mA?.avgPrev14 ?? null,
+        d1: mA?.d1 ?? null,
+        p1: mA?.p1 ?? null,
+        d7: mA?.d7 ?? null,
+        p7: mA?.p7 ?? null,
+        d14: mA?.d14 ?? null,
+        p14: mA?.p14 ?? null,
+        status: st.k,
+      };
+
+      cols.forEach(c=>{
+        const td = document.createElement("td");
+        if (c.k==="brand"){
+          td.className = "left";
+          td.innerHTML = `<span class="mono" style="font-weight:900">${brand}</span>`;
+        } else if (c.k==="status"){
+          td.className = "right";
+          td.innerHTML = `<span class="badge ${st.cls}"><span class="dot ${st.cls}"></span>${st.k}</span>`;
+        } else {
+          td.className = "right num";
+          const v = rowObj[c.k];
+          td.textContent = c.fmt ? c.fmt(v) : (v ?? "—");
+          if (c.cls === "pct" || c.cls === "delta"){
+            td.classList.add(clsDelta(v));
+          }
+        }
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    }
+
+    activeTable.innerHTML = "";
+    activeTable.appendChild(thead);
+    activeTable.appendChild(tbody);
+  }
+
+  function buildAllTable(resultByBrand){
+    // Build wide table but grouped by metric blocks
+    const metricOrder = [
+      {key:"active", label:"Active"},
+      {key:"deposit", label:"Deposit"},
+      {key:"reg", label:"Reg"},
+      {key:"ftd", label:"FTD"},
+      {key:"turnover", label:"Turnover"},
+    ];
+
+    const cols = [{key:"brand", label:"Brand"}];
+
+    function addMetricCols(mKey, label){
+      cols.push({key:`${mKey}.d1`, label:`${label} 1D Δ`, fmt: mKey==="turnover"?fmtMoney:fmtInt, cls:"delta"});
+      cols.push({key:`${mKey}.p1`, label:`${label} 1D %`, fmt:fmtPct, cls:"pct"});
+
+      cols.push({key:`${mKey}.d7`, label:`${label} 7D Δ`, fmt: mKey==="turnover"?fmtMoney:fmtInt, cls:"delta"});
+      cols.push({key:`${mKey}.p7`, label:`${label} 7D %`, fmt:fmtPct, cls:"pct"});
+
+      cols.push({key:`${mKey}.d14`, label:`${label} 14D Δ`, fmt: mKey==="turnover"?fmtMoney:fmtInt, cls:"delta"});
+      cols.push({key:`${mKey}.p14`, label:`${label} 14D %`, fmt:fmtPct, cls:"pct"});
+    }
+
+    metricOrder.forEach(m=>addMetricCols(m.key, m.label));
+    cols.push({key:"status", label:"Status"});
+
+    const thead = document.createElement("thead");
+    const trh = document.createElement("tr");
+    cols.forEach(c=>{
+      const th = document.createElement("th");
+      th.className = (c.key==="brand"?"left":"right");
+      th.textContent = c.label;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+
+    const tbody = document.createElement("tbody");
+    for (const brand of BRANDS){
+      const entry = resultByBrand.get(brand);
+      const comp = entry?.comp;
+      const mA = comp?.metrics?.active;
+      const st = statusFrom(mA?.p7, mA?.p14, !!comp && comp.okEnd);
+
+      const tr = document.createElement("tr");
+
+      for (const c of cols){
+        const td = document.createElement("td");
+        if (c.key==="brand"){
+          td.className = "left";
+          td.innerHTML = `<span class="mono" style="font-weight:900">${brand}</span>`;
+        } else if (c.key==="status"){
+          td.className = "right";
+          td.innerHTML = `<span class="badge ${st.cls}"><span class="dot ${st.cls}"></span>${st.k}</span>`;
+        } else {
+          td.className = "right num";
+          const [mKey, subKey] = c.key.split(".");
+          const v = comp?.metrics?.[mKey]?.[subKey] ?? null;
+          td.textContent = c.fmt ? c.fmt(v) : (v ?? "—");
+          if (c.cls === "pct" || c.cls === "delta"){
+            td.classList.add(clsDelta(v));
+          }
+        }
+        tr.appendChild(td);
       }
 
-      const active7 = metrics.active?.d7pct ?? null;
-      const active14 = metrics.active?.d14pct ?? null;
-      const status = calcStatusFromActive(active7 ?? 0, active14 ?? 0, rows.length);
+      tbody.appendChild(tr);
+    }
 
-      // important: ensure end-date row exists, else show ERR
-      const hasEnd = rows.some(r => r.date === endUsed);
-      const hasPrev = rows.some(r => r.date === daysAgo(endUsed,1));
+    allTable.innerHTML = "";
+    allTable.appendChild(thead);
+    allTable.appendChild(tbody);
+  }
 
-      let msg = "";
-      if (!rows.length) msg = "No rows parsed from OCR (dates not detected or OCR too broken).";
-      else if (!hasEnd) msg = `No end-date row found in OCR for ${endUsed}.`;
-      else if (!hasPrev) msg = `No prev-day row found in OCR for ${daysAgo(endUsed,1)}.`;
+  function buildRawPanel(rawByBrand, errorsByBrand){
+    rawList.innerHTML = "";
+    for (const brand of BRANDS){
+      const json = rawByBrand.get(brand);
+      const errs = errorsByBrand.get(brand) || [];
+      const d = document.createElement("details");
+      const sum = document.createElement("summary");
+      const rowsCount = (brandData.get(brand)?.length || 0);
+      sum.textContent = `${brand} — rows normalized: ${rowsCount}${errs.length ? " — ERROR: " + errs[0] : ""}`;
+      d.appendChild(sum);
 
-      resultsByBrand[brand] = {
-        status: msg ? "ERR" : status,
-        endUsed,
-        parsedRows: rows.length,
-        message: msg,
-        metrics
-      };
+      const pre = document.createElement("pre");
+      pre.textContent = json ? JSON.stringify(json, null, 2) : "(no file uploaded for this brand)";
+      d.appendChild(pre);
 
-    }catch(err){
-      ocrByBrand[brand] = "";
-      parsedByBrand[brand] = [];
-      resultsByBrand[brand] = {
-        status:"ERR",
-        endUsed,
-        parsedRows:0,
-        message: String(err && err.message ? err.message : err),
-        metrics:{}
-      };
+      rawList.appendChild(d);
     }
   }
 
-  // render
-  renderSummary(resultsByBrand, endUsed);
-  renderActiveFocus(resultsByBrand, endUsed);
-  renderAllMetrics(resultsByBrand, endUsed);
-  renderRaw(ocrByBrand, parsedByBrand, endUsed);
+  // ===== main state
+  let brandData = new Map();     // brand -> normalized rows
+  let rawByBrand = new Map();    // brand -> original json
+  let errorsByBrand = new Map(); // brand -> array errors
 
-  // final badge
-  const anyErr = Object.values(resultsByBrand).some(r => r.status === "ERR");
-  if (anyErr) setBadge("Done (with errors)", "err");
-  else setBadge("Done", "ok");
-}
+  function clearAll(){
+    brandData = new Map();
+    rawByBrand = new Map();
+    errorsByBrand = new Map();
 
-/** -----------------------------
- *  Tabs + Clear + Init
- * ----------------------------- */
-function setTab(name){
-  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
-  $("summarySec").style.display = (name==="summary") ? "" : "none";
-  $("activeSec").style.display  = (name==="active") ? "" : "none";
-  $("allSec").style.display     = (name==="all") ? "" : "none";
-  $("rawSec").style.display     = (name==="raw") ? "" : "none";
-}
+    cardsEl.innerHTML = "";
+    activeTable.innerHTML = "";
+    allTable.innerHTML = "";
+    rawList.innerHTML = "";
+    globalErrors.style.display = "none";
+    globalErrors.textContent = "";
 
-function clearAll(){
-  $("fileInput").value = "";
-  setBadge("Cleared", "ok");
-  $("compareBadge").textContent = "Comparisons end at: —";
-  $("summarySec").innerHTML = "";
-  $("activeSec").innerHTML = "";
-  $("allSec").innerHTML = "";
-  $("rawSec").innerHTML = "";
-}
+    fileInput.value = "";
+    setStatus("", "Waiting…");
+    compareChip.textContent = "Comparisons end at: —";
+  }
 
-document.querySelectorAll(".tab").forEach(el=>{
-  el.addEventListener("click", ()=> setTab(el.dataset.tab));
-});
-$("runBtn").addEventListener("click", run);
-$("clearBtn").addEventListener("click", clearAll);
+  function validateJsonShape(json){
+    if (!json || typeof json!=="object") return "JSON is not an object";
+    if (!Array.isArray(json.rows)) return "Missing rows[] in JSON";
+    // minimal row must contain date + required fields
+    const sample = json.rows.find(r=>r && r.date);
+    if (!sample) return "rows[] has no date field";
+    return null;
+  }
 
-// default end date = today
-$("endDate").value = isoToday();
-$("compareBadge").textContent = `Comparisons end at: ${computeEndUsed($("endDate").value, $("useLastCompleted").checked)}`;
-$("useLastCompleted").addEventListener("change", ()=>{
-  const ed = $("endDate").value;
-  $("compareBadge").textContent = ed ? `Comparisons end at: ${computeEndUsed(ed, $("useLastCompleted").checked)}` : "Comparisons end at: —";
-});
-$("endDate").addEventListener("change", ()=>{
-  const ed = $("endDate").value;
-  $("compareBadge").textContent = ed ? `Comparisons end at: ${computeEndUsed(ed, $("useLastCompleted").checked)}` : "Comparisons end at: —";
-});
+  async function readFiles(files){
+    const errs = [];
+    const byBrand = new Map();
+    const rawMap = new Map();
+
+    for (const f of files){
+      const brand = inferBrandFromFilename(f.name);
+      if (!brand){
+        errs.push(`Skipping unknown file: ${f.name} (filename must start with M1/M2/B1/B2/B3/B4/K1/TK)`);
+        continue;
+      }
+      try{
+        const txt = await f.text();
+        const json = JSON.parse(txt);
+        const shapeErr = validateJsonShape(json);
+        if (shapeErr){
+          errs.push(`${brand}: ${shapeErr}`);
+          continue;
+        }
+        rawMap.set(brand, json);
+        byBrand.set(brand, normalizeBrandJson(json));
+      }catch(e){
+        errs.push(`${brand}: cannot read/parse JSON (${e.message || e})`);
+      }
+    }
+
+    return {byBrand, rawMap, errs};
+  }
+
+  function computeEndDate(){
+    const v = endDateEl.value;
+    if (!v) return null;
+    const d = parseDateAny(v);
+    if (!d) return null;
+
+    // if toggle ON, use last completed day = endDate - 1 day
+    if (useLastCompleted.checked){
+      return addDays(d, -1);
+    }
+    return d;
+  }
+
+  function buildDashboard(){
+    const endD = computeEndDate();
+    if (!endD){
+      setStatus("err", "End Date is required");
+      globalErrors.style.display = "";
+      globalErrors.textContent = "Please choose End Date first.";
+      return;
+    }
+    const endYMD = fmtDateYMD(endD);
+    compareChip.textContent = "Comparisons end at: " + endYMD;
+
+    const resultByBrand = new Map();
+
+    for (const brand of BRANDS){
+      const rows = brandData.get(brand) || [];
+      const errs = errorsByBrand.get(brand) || [];
+
+      if (!rows.length){
+        errs.push("No data parsed for this brand (missing file or empty rows).");
+        errorsByBrand.set(brand, errs);
+        resultByBrand.set(brand, {comp:null});
+        continue;
+      }
+
+      const comp = calcComparisons(rows, endYMD);
+
+      // require enough data: for strong results need endRow + prevRow + at least 14 days coverage ideally
+      if (!comp.okEnd){
+        errs.push(`No row found for end date ${endYMD}. Make sure your JSON contains that date.`);
+      }
+      if (!comp.okPrev){
+        const prev = fmtDateYMD(addDays(endD, -1));
+        errs.push(`No row found for previous day ${prev}.`);
+      }
+
+      // soft check for rolling windows
+      const needAtLeast = 20; // enough for prev14 windows to exist (28 days ideal but depends)
+      if (rows.length < 14){
+        errs.push("Not enough history for 14D comparisons (need at least 14 days).");
+      } else if (rows.length < needAtLeast){
+        errs.push("Limited history: 14D% may be partial. For best accuracy, export more days (at least 28 days).");
+      }
+
+      errorsByBrand.set(brand, errs);
+      resultByBrand.set(brand, {comp});
+    }
+
+    // Build UI
+    cardsEl.innerHTML = "";
+    globalErrors.style.display = "none";
+    globalErrors.textContent = "";
+
+    let globalErrs = [];
+    for (const brand of BRANDS){
+      const comp = resultByBrand.get(brand)?.comp;
+      const errs = errorsByBrand.get(brand) || [];
+      cardsEl.appendChild(buildCard(brand, comp, errs));
+      if (errs.length) globalErrs.push(`${brand}: ${errs[0]}`);
+    }
+
+    if (globalErrs.length){
+      globalErrors.style.display = "";
+      globalErrors.innerHTML =
+        `<b>Some brands have issues:</b><br>` + globalErrs.slice(0,8).map(x=>"• "+x).join("<br>") +
+        (globalErrs.length>8 ? `<br>• (+${globalErrs.length-8} more…)` : "");
+      setStatus("warn", "Done (with warnings/errors)");
+    } else {
+      setStatus("ok", "Done ✅");
+    }
+
+    buildActiveTable(resultByBrand);
+    buildAllTable(resultByBrand);
+    buildRawPanel(rawByBrand, errorsByBrand);
+  }
+
+  // ===== Events
+  runBtn.addEventListener("click", async ()=>{
+    setStatus("", "Reading files…");
+    globalErrors.style.display = "none";
+    globalErrors.textContent = "";
+
+    const files = Array.from(fileInput.files || []);
+    if (!files.length){
+      setStatus("err", "Upload JSON files first");
+      globalErrors.style.display = "";
+      globalErrors.textContent = "Please upload your 8 JSON files (M1.json…TK.json) first.";
+      return;
+    }
+
+    const {byBrand, rawMap, errs} = await readFiles(files);
+
+    // reset per-run
+    brandData = new Map();
+    rawByBrand = new Map();
+    errorsByBrand = new Map();
+    BRANDS.forEach(b=>errorsByBrand.set(b, []));
+
+    // store
+    byBrand.forEach((rows, brand)=>brandData.set(brand, rows));
+    rawMap.forEach((json, brand)=>rawByBrand.set(brand, json));
+
+    // record file-reading errors
+    if (errs.length){
+      // attach to global
+      globalErrors.style.display = "";
+      globalErrors.innerHTML = `<b>File import notes:</b><br>` + errs.map(x=>"• "+x).join("<br>");
+      setStatus("warn", "Imported (some files skipped)");
+    } else {
+      setStatus("", "Imported. Building…");
+    }
+
+    // if any brand missing file, keep error but still build
+    for (const b of BRANDS){
+      if (!rawByBrand.get(b)){
+        const arr = errorsByBrand.get(b) || [];
+        arr.push("No JSON file uploaded for this brand.");
+        errorsByBrand.set(b, arr);
+      }
+    }
+
+    buildDashboard();
+    setTab("summary");
+  });
+
+  clearBtn.addEventListener("click", clearAll);
+
+  useLastCompleted.addEventListener("change", ()=>{
+    // rebuild if already has data
+    if (brandData.size){
+      buildDashboard();
+    }
+  });
+
+  endDateEl.addEventListener("change", ()=>{
+    if (brandData.size){
+      buildDashboard();
+    }
+  });
+
+  // default end date = today
+  const today = new Date();
+  endDateEl.value = fmtDateYMD(today);
+  compareChip.textContent = "Comparisons end at: " + fmtDateYMD(addDays(today, -1));
+  setStatus("", "Waiting…");
+})();
 </script>
 </body>
 </html>
