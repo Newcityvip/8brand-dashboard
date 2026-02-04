@@ -6,365 +6,421 @@
   <title>8 Brand JSON Dashboard</title>
   <style>
     :root{
-      --bg1:#071a2d;
-      --bg2:#0a2441;
+      --bg1:#061a2e;
+      --bg2:#0a2b4a;
       --card: rgba(255,255,255,.06);
       --card2: rgba(255,255,255,.08);
-      --border: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.12);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --muted2: rgba(255,255,255,.55);
-      --ok:#19c37d;
-      --warn:#f5c542;
-      --alert:#ff4d4d;
-      --err:#ff3b7a;
-      --btn:#2f6feb;
-      --btn2:#1c4fbe;
-      --shadow: 0 24px 80px rgba(0,0,0,.45);
-      --radius: 18px;
-      --radius2: 14px;
+      --accent:#3aa0ff;
+      --ok:#27d39f;
+      --warn:#f4c24f;
+      --alert:#ff5a6b;
+      --err:#ff4d4d;
+      --shadow: 0 12px 34px rgba(0,0,0,.35);
+      --r:16px;
+      --r2:12px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
-    html,body{height:100%; margin:0; font-family:var(--sans); color:var(--text); background:
-      radial-gradient(1200px 600px at 50% 0%, #0f3765 0%, transparent 60%),
-      radial-gradient(900px 500px at 20% 10%, #0f2f54 0%, transparent 55%),
-      linear-gradient(180deg, var(--bg1), var(--bg2));
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(58,160,255,.30), transparent 60%),
+        radial-gradient(900px 600px at 70% 20%, rgba(39,211,159,.16), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
     }
-    .wrap{max-width:1200px; margin:0 auto; padding:30px 18px 80px;}
-    .title{ text-align:center; margin: 8px 0 18px;}
-    .title h1{margin:0; font-weight:800; letter-spacing:.4px;}
-    .title p{margin:8px 0 0; color:var(--muted); font-size:14px;}
-
+    .wrap{max-width:1200px;margin:0 auto;padding:28px 18px 70px}
+    h1{margin:0 0 6px;font-size:30px;letter-spacing:.2px}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+    .topbar{
+      display:grid;
+      grid-template-columns: 1.1fr 1.4fr 1fr;
+      gap:14px;
+      align-items:stretch;
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--r);
+      padding:14px;
+      box-shadow:var(--shadow);
+    }
     .panel{
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.05));
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
+      background:rgba(0,0,0,.10);
+      border:1px solid var(--stroke);
+      border-radius:var(--r2);
+      padding:12px;
     }
-    .grid3{display:grid; grid-template-columns: 1.2fr 1.4fr 1.1fr; gap:12px;}
-    .box{
-      background: rgba(0,0,0,.18);
-      border:1px solid var(--border);
-      border-radius: var(--radius2);
-      padding: 12px;
-    }
-    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px;}
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
     input[type="date"], input[type="text"]{
-      width:100%; box-sizing:border-box;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      color: var(--text);
-      border-radius: 10px;
+      width:100%;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      color:var(--text);
+      border-radius:10px;
       padding:10px 10px;
       outline:none;
     }
-    input[type="file"]{width:100%; color:var(--muted);}
-
-    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+    input[type="file"]{width:100%;color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, var(--btn), var(--btn2));
-      color:white; padding:10px 14px; border-radius: 12px;
-      cursor:pointer; font-weight:700;
-      box-shadow: 0 10px 26px rgba(47,111,235,.28);
-      user-select:none;
+      background: linear-gradient(180deg, rgba(58,160,255,.95), rgba(58,160,255,.75));
+      color:#061a2e;
+      font-weight:700;
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
     }
     .btn.secondary{
-      background: rgba(255,255,255,.06);
-      box-shadow:none;
+      background: rgba(255,255,255,.08);
       color:var(--text);
+      border:1px solid var(--stroke);
+      box-shadow:none;
+      font-weight:600;
     }
-    .btn:active{transform:translateY(1px);}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      color: var(--muted);
-      font-size: 12px;
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
     }
-    .chip b{color:var(--text);}
     .toggle{
-      display:flex; align-items:flex-start; gap:10px;
+      display:flex;gap:10px;align-items:flex-start;
+      padding:10px;border-radius:12px;background:rgba(0,0,0,.10);
+      border:1px solid var(--stroke);
     }
-    .toggle input{transform: translateY(2px);}
-    .toggle .ttext{line-height:1.2}
-    .toggle .ttext .t1{font-weight:800; color:var(--text);}
-    .toggle .ttext .t2{font-size:12px; color:var(--muted2); margin-top:2px;}
+    .toggle input{margin-top:2px}
+    .toggle .t1{font-weight:700;color:var(--text);font-size:13px;line-height:1.2}
+    .toggle .t2{color:var(--muted);font-size:12px;line-height:1.2;margin-top:2px}
     .tabs{
-      display:flex; justify-content:center; gap:10px;
-      margin:16px 0 10px;
-      flex-wrap:wrap;
+      margin-top:16px;
+      display:flex;gap:10px;flex-wrap:wrap;
+      justify-content:center;
     }
     .tab{
-      padding:8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      color: var(--muted);
+      padding:8px 12px;border-radius:999px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.06);
+      color:var(--muted);
       cursor:pointer;
-      user-select:none;
+      font-size:12px;
       font-weight:700;
-      font-size: 12px;
     }
-    .tab.active{ background: rgba(47,111,235,.22); color:var(--text); border-color: rgba(47,111,235,.35);}
-
+    .tab.active{
+      background:rgba(58,160,255,.18);
+      border-color:rgba(58,160,255,.40);
+      color:var(--text);
+    }
     .section{
-      margin-top: 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
+      margin-top:16px;
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--r);
+      padding:16px;
+      box-shadow:var(--shadow);
     }
-    .section h2{margin:0 0 6px; font-size:16px;}
-    .section p{margin:0 0 10px; color:var(--muted); font-size:12px;}
-
-    .cards{
+    .section h2{margin:0 0 6px;font-size:16px}
+    .section .hint{margin:0 0 14px;color:var(--muted);font-size:12px}
+    .grid{
       display:grid;
       grid-template-columns: repeat(4, minmax(220px, 1fr));
       gap:12px;
     }
-    @media (max-width: 1060px){ .grid3{grid-template-columns:1fr; } .cards{grid-template-columns: repeat(2, minmax(220px, 1fr));} }
-    @media (max-width: 560px){ .cards{grid-template-columns:1fr;} }
-
+    @media (max-width: 1100px){ .grid{grid-template-columns: repeat(2, minmax(220px,1fr));} }
+    @media (max-width: 560px){ .grid{grid-template-columns: 1fr;} .topbar{grid-template-columns:1fr;} }
     .card{
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: var(--radius2);
-      padding: 12px;
+      background:rgba(0,0,0,.10);
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      padding:12px;
       position:relative;
       overflow:hidden;
     }
-    .card .head{display:flex; align-items:center; justify-content:space-between;}
-    .brand{font-weight:900; letter-spacing:.3px;}
-    .badge{
-      font-size:11px; font-weight:900;
-      padding:6px 10px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
+    .brandline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .meta{color:var(--muted2);font-size:11px}
+    .status{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-weight:800;font-size:11px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,.06);
     }
-    .badge.ok{color:var(--ok); border-color: rgba(25,195,125,.35); background: rgba(25,195,125,.10);}
-    .badge.warn{color:var(--warn); border-color: rgba(245,197,66,.35); background: rgba(245,197,66,.10);}
-    .badge.alert{color:var(--alert); border-color: rgba(255,77,77,.35); background: rgba(255,77,77,.10);}
-    .badge.err{color:var(--err); border-color: rgba(255,59,122,.35); background: rgba(255,59,122,.10);}
-
-    .meta{margin-top:6px; color:var(--muted2); font-size:11px;}
-    .kpis{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
-    .kpi{
+    .dot{width:8px;height:8px;border-radius:50%}
+    .status.ok .dot{background:var(--ok)} .status.ok{color:rgba(39,211,159,.95); border-color:rgba(39,211,159,.35)}
+    .status.warn .dot{background:var(--warn)} .status.warn{color:rgba(244,194,79,.95); border-color:rgba(244,194,79,.35)}
+    .status.alert .dot{background:var(--alert)} .status.alert{color:rgba(255,90,107,.95); border-color:rgba(255,90,107,.35)}
+    .status.err .dot{background:var(--err)} .status.err{color:rgba(255,77,77,.95); border-color:rgba(255,77,77,.35)}
+    .two{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .mini{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      border-radius:12px;
       padding:10px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
     }
-    .kpi .lab{font-size:11px; color:var(--muted); font-weight:800;}
-    .kpi .val{font-size:20px; font-weight:900; margin-top:4px;}
-    .kpi .sub{font-size:11px; color:var(--muted2); margin-top:4px;}
-
-    .note{
+    .mini .k{font-size:11px;color:var(--muted)}
+    .mini .v{font-size:18px;font-weight:900;margin-top:4px}
+    .mini .s{font-size:11px;color:var(--muted2);margin-top:3px}
+    .mini .v.neg{color:#ff8a96}
+    .mini .v.pos{color:#7ff3cc}
+    .noteBox{
       margin-top:12px;
+      background:rgba(255,90,107,.08);
+      border:1px solid rgba(255,90,107,.22);
+      border-radius:14px;
       padding:12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
+      color:rgba(255,255,255,.86);
+      font-size:12px;
     }
-    .note b{color:var(--text)}
-    .note .bad{color: var(--err); font-weight:800;}
-    .note .good{color: var(--ok); font-weight:800;}
-    .note .warn{color: var(--warn); font-weight:800;}
-    .tableWrap{
-      overflow:auto;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-    }
-    table{width:100%; border-collapse:collapse; font-size:12px; min-width: 860px;}
-    th,td{padding:10px 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align:right; white-space:nowrap;}
-    th:first-child, td:first-child{text-align:left;}
-    th{position:sticky; top:0; background: rgba(10,36,65,.95); z-index:1; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;}
-    tr:hover td{background: rgba(255,255,255,.03);}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;text-align:left;white-space:nowrap}
+    th{color:rgba(255,255,255,.80);font-weight:800}
+    .tableWrap{overflow:auto;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(0,0,0,.10)}
+    .mono{font-family:var(--mono)}
+    .hidden{display:none !important}
 
-    .mono{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(255,255,255,.82);
-    }
-    details{border:1px solid rgba(255,255,255,.12); border-radius:14px; background: rgba(0,0,0,.16); margin:10px 0; overflow:hidden;}
-    summary{cursor:pointer; padding:12px; font-weight:800; color:var(--text); display:flex; justify-content:space-between; align-items:center;}
-    summary span{color:var(--muted); font-weight:700; font-size:12px;}
-    pre{margin:0; padding:12px; overflow:auto; max-height: 360px; background: rgba(0,0,0,.20); border-top: 1px solid rgba(255,255,255,.10);}
-
-    /* Boss modal */
-    .modalBack{
-      position:fixed; inset:0; background: rgba(0,0,0,.62);
-      display:none; align-items:center; justify-content:center;
-      padding: 18px;
+    /* Modal */
+    .modalBackdrop{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
       z-index:9999;
     }
     .modal{
-      max-width: 980px; width:100%;
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
+      width:min(760px, 100%);
+      background:linear-gradient(180deg, rgba(8,28,48,.95), rgba(6,20,34,.95));
       border:1px solid rgba(255,255,255,.14);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      padding: 16px;
+      border-radius:20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.60);
+      overflow:hidden;
     }
-    .modal .mhead{display:flex; align-items:center; justify-content:space-between; gap:12px;}
-    .modal h3{margin:0; font-size:16px;}
-    .close{cursor:pointer; padding:8px 10px; border-radius: 12px; border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06); font-weight:900;}
-    .mgrid{display:grid; grid-template-columns: 1fr; gap:12px; margin-top:12px;}
-    .mblock{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      background: rgba(0,0,0,.18);
-      padding: 12px;
+    .modalHeader{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
     }
-    .mblock .top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
-    textarea{
-      width:100%; min-height: 150px; resize: vertical;
-      border-radius: 12px;
+    .modalTitle{font-weight:900}
+    .modalActions{display:flex;gap:10px;align-items:center}
+    .iconBtn{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--text);
+      padding:8px 10px;border-radius:12px;
+      cursor:pointer;font-weight:800;font-size:12px;
+    }
+    .modalBody{padding:14px 16px}
+    .reportTabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .rTab{
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      cursor:pointer;font-weight:900;font-size:12px;color:var(--muted)
+    }
+    .rTab.active{background:rgba(58,160,255,.18);border-color:rgba(58,160,255,.35);color:var(--text)}
+    .reportBox{
+      background:rgba(0,0,0,.12);
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 10px;
+      border-radius:14px;
+      padding:12px;
+    }
+    .textarea{
+      width:100%;
+      min-height:190px;
+      resize:vertical;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.45;
+      padding:10px;
       outline:none;
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.35;
-      box-sizing: border-box;
+      white-space:pre;
     }
-    .small{font-size:11px; color:var(--muted2);}
+    .copyLine{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px
+    }
+    .smallHint{color:var(--muted2);font-size:11px}
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="title">
-      <h1>8 Brand JSON Dashboard</h1>
-      <p>Upload 8 JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). We compute 1D / 7D / 14D rolling comparisons ending at End Date.</p>
+    <h1>8 Brand JSON Dashboard</h1>
+    <div class="sub">
+      Upload 8 JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). We compute 1D / 7D / 14D rolling comparisons ending at End Date.
     </div>
 
-    <div class="panel">
-      <div class="grid3">
-        <div class="box">
-          <label>End Date (YYYY-MM-DD)</label>
-          <input id="endDate" type="date" />
-          <div class="small" style="margin-top:8px;">
-            If toggle ON, comparisons use <b>End Date - 1 day</b> to avoid partial-day drops.
-          </div>
-        </div>
+    <div class="topbar">
+      <div class="panel">
+        <label>End Date (YYYY-MM-DD)</label>
+        <input id="endDate" type="date" />
+        <div style="margin-top:10px" class="pill" id="endUsedPill">Comparisons end at: —</div>
+      </div>
 
-        <div class="box">
-          <label>Upload JSON files (8 files)</label>
-          <input id="files" type="file" accept="application/json,.json" multiple />
-          <div class="small" style="margin-top:8px;">
-            Filename rule: <b>M1.json, m2.json, B1_2026-02-03.json, TK.json</b> (case-insensitive).
-          </div>
-          <div class="row" style="margin-top:10px;">
-            <div class="btn" id="buildBtn">Build Dashboard</div>
-            <div class="btn secondary" id="clearBtn">Clear</div>
-            <div class="btn secondary" id="bossBtn">Boss Report</div>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="row" style="justify-content:space-between;">
-            <div class="chip"><b id="stateText">Waiting</b></div>
-            <div class="chip">Cutoff time: <b>23:59</b> (local browser time)</div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="toggle">
-            <input id="useLastCompleted" type="checkbox" checked />
-            <div class="ttext">
-              <div class="t1">Use last completed day</div>
-              <div class="t2">Avoid partial-day drops before 11:59pm</div>
-            </div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="chip">Comparisons end at: <b id="endUsedChip">—</b></div>
-          <div class="small" style="margin-top:10px;">
-            Parsing is based on uploaded JSON rows (no OCR). Uses Active/Deposit/Turnover rolling trend.
-          </div>
+      <div class="panel">
+        <label>Upload JSON files (8 files)</label>
+        <input id="files" type="file" accept=".json,application/json" multiple />
+        <div class="sub" style="margin:8px 0 0; font-size:12px">
+          Filename: <b>M1.json</b>, <b>M2.json</b> ... (case-insensitive). It also works if it starts with the brand name (e.g., <span class="mono">M1_2026-02-04.json</span>).
         </div>
       </div>
 
-      <div class="tabs">
-        <div class="tab active" data-tab="summary">Summary</div>
-        <div class="tab" data-tab="active">Active Focus</div>
-        <div class="tab" data-tab="all">All Metrics</div>
-        <div class="tab" data-tab="raw">Raw JSON</div>
-      </div>
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <button class="btn" id="buildBtn">Build Dashboard</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+          <button class="btn secondary" id="bossBtn">Boss Report</button>
+        </div>
 
-      <div id="tab-summary" class="section">
-        <h2>At a glance</h2>
-        <p>For first-look clarity: Summary shows only <b>Active 7D%</b> and <b>Active 14D%</b> (most important).</p>
-        <div id="summaryCards" class="cards"></div>
-        <div id="globalNotes" class="note"></div>
-      </div>
+        <div style="height:10px"></div>
 
-      <div id="tab-active" class="section" style="display:none;">
-        <h2>Active Players Focus (Most Important)</h2>
-        <p>Shows end-day + rolling averages (last7 vs prev7, last14 vs prev14).</p>
-        <div class="tableWrap">
-          <table id="activeTable"></table>
+        <div class="toggle">
+          <input id="useLastCompleted" type="checkbox" checked />
+          <div>
+            <div class="t1">Use last completed day</div>
+            <div class="t2">Avoid partial-day drops before 11:59pm (uses End Date - 1 day for comparisons).</div>
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="row">
+          <span class="pill" id="statusPill">Done: —</span>
+          <span class="pill">Cutoff: 23:59 (local time)</span>
         </div>
       </div>
+    </div>
 
-      <div id="tab-all" class="section" style="display:none;">
-        <h2>All Metrics (1D / 7D / 14D)</h2>
-        <p>Use 7D% and 14D% for real trend. 1D% can be noisy (even with the last-completed toggle).</p>
-        <div class="tableWrap">
-          <table id="allTable"></table>
-        </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="summary">Summary</div>
+      <div class="tab" data-tab="active">Active Focus</div>
+      <div class="tab" data-tab="all">All Metrics</div>
+      <div class="tab" data-tab="raw">Raw JSON</div>
+    </div>
+
+    <!-- Summary -->
+    <div id="tab-summary" class="section">
+      <h2>At a glance</h2>
+      <p class="hint">Summary shows only the most important trend: <b>Active 7D%</b> and <b>Active 14D%</b>.</p>
+
+      <div id="cards" class="grid"></div>
+      <div id="notes" class="noteBox hidden"></div>
+    </div>
+
+    <!-- Active Focus -->
+    <div id="tab-active" class="section hidden">
+      <h2>Active Players Focus</h2>
+      <p class="hint">Shows end day values + rolling averages (last7 vs prev7, last14 vs prev14).</p>
+      <div class="tableWrap">
+        <table id="activeTable">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th>End Day Active</th>
+              <th>Prev Day Active</th>
+              <th>Avg(last7)</th>
+              <th>Avg(prev7)</th>
+              <th>7D Δ</th>
+              <th>7D %</th>
+              <th>Avg(last14)</th>
+              <th>Avg(prev14)</th>
+              <th>14D Δ</th>
+              <th>14D %</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
+    </div>
 
-      <div id="tab-raw" class="section" style="display:none;">
-        <h2>Raw JSON (debug)</h2>
-        <p>If a brand shows wrong numbers, open its JSON preview here.</p>
-        <div id="rawBlocks"></div>
+    <!-- All Metrics -->
+    <div id="tab-all" class="section hidden">
+      <h2>All Metrics (1D / 7D / 14D)</h2>
+      <p class="hint">This table is wider. Scroll horizontally if needed.</p>
+      <div class="tableWrap">
+        <table id="allTable">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th colspan="4">Active</th>
+              <th colspan="4">Deposit</th>
+              <th colspan="4">Turnover</th>
+              <th colspan="4">Reg</th>
+              <th colspan="4">FTD</th>
+              <th>Status</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
+              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
+              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
+              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
+              <th>1D%</th><th>7D%</th><th>14D%</th><th>Worst</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
+    </div>
 
+    <!-- Raw JSON -->
+    <div id="tab-raw" class="section hidden">
+      <h2>Raw JSON (debug)</h2>
+      <p class="hint">If a brand looks wrong, open its parsed rows here.</p>
+      <div id="rawBox"></div>
     </div>
   </div>
 
   <!-- Boss Report Modal -->
-  <div class="modalBack" id="modalBack">
+  <div id="modalBackdrop" class="modalBackdrop">
     <div class="modal">
-      <div class="mhead">
-        <h3>Boss Report (English) — 3 messages</h3>
-        <div class="close" id="closeModal">Close</div>
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle">Boss Report (English)</div>
+          <div class="smallHint" id="bossMeta">—</div>
+        </div>
+        <div class="modalActions">
+          <button class="iconBtn" id="copyBtn">Copy</button>
+          <button class="iconBtn" id="closeBtn">Close</button>
+        </div>
       </div>
-      <div class="small" style="margin-top:6px;">
-        Tip: Each message is ready to copy/paste. It uses the same end date rules as the dashboard.
-      </div>
-
-      <div class="mgrid">
-        <div class="mblock">
-          <div class="top">
-            <b>Message 1 — Active Players</b>
-            <div class="btn secondary" data-copy="activeMsg">Copy</div>
-          </div>
-          <textarea id="activeMsg" readonly></textarea>
+      <div class="modalBody">
+        <div class="reportTabs">
+          <div class="rTab active" data-r="active">Active Players</div>
+          <div class="rTab" data-r="deposit">Deposit</div>
+          <div class="rTab" data-r="turnover">Turnover</div>
         </div>
 
-        <div class="mblock">
-          <div class="top">
-            <b>Message 2 — Deposit</b>
-            <div class="btn secondary" data-copy="depositMsg">Copy</div>
-          </div>
-          <textarea id="depositMsg" readonly></textarea>
+        <div class="copyLine">
+          <div class="smallHint">Short + boss-ready. No advice. Just what changed and where issues are.</div>
+          <div class="smallHint mono" id="activeChars">—</div>
         </div>
 
-        <div class="mblock">
-          <div class="top">
-            <b>Message 3 — Turnover</b>
-            <div class="btn secondary" data-copy="turnoverMsg">Copy</div>
-          </div>
-          <textarea id="turnoverMsg" readonly></textarea>
+        <div class="reportBox">
+          <textarea id="reportText" class="textarea" readonly></textarea>
         </div>
       </div>
     </div>
@@ -373,663 +429,699 @@
 <script>
 (() => {
   const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
-  const METRICS = [
-    { key:"active",   label:"Active",   pretty:"Active Players",  format:"int"   },
-    { key:"totalDeposit", label:"Deposit", pretty:"Total Deposit", format:"int" },
-    { key:"turnover", label:"Turnover", pretty:"Turnover", format:"money" }
-  ];
 
-  // ---------- helpers ----------
-  const $ = (id) => document.getElementById(id);
-
-  function setState(text, kind="") {
-    const el = $("stateText");
-    el.textContent = text;
-    el.style.color = kind==="ok" ? "var(--ok)" : kind==="warn" ? "var(--warn)" : kind==="err" ? "var(--err)" : "var(--text)";
-  }
-
+  // ---------- utils ----------
   function pad2(n){ return String(n).padStart(2,"0"); }
   function toISODate(d){
-    return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
+    return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate());
   }
-  function parseDateAny(s){
-    if(!s) return null;
-    // supports YYYY/MM/DD or YYYY-MM-DD
-    const m = String(s).trim().match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
-    if(!m) return null;
-    const y = +m[1], mo = +m[2]-1, da = +m[3];
-    const d = new Date(y, mo, da);
-    if(d && d.getFullYear()===y && d.getMonth()===mo && d.getDate()===da) return d;
-    return null;
+  function parseISO(s){
+    // s = YYYY-MM-DD
+    const [y,m,d] = s.split("-").map(Number);
+    return new Date(y, m-1, d);
   }
-  function addDays(date, days){
-    const d = new Date(date);
+  function addDays(iso, days){
+    const d = parseISO(iso);
     d.setDate(d.getDate()+days);
-    return d;
+    return toISODate(d);
   }
+  function normDateAny(s){
+    // supports: YYYY/MM/DD, YYYY-MM-DD
+    if(!s) return null;
+    const t = String(s).trim();
+    const m = t.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})$/);
+    if(!m) return null;
+    return `${m[1]}-${m[2]}-${m[3]}`;
+  }
+  function fmtNum(n){
+    if(n === null || n === undefined || Number.isNaN(n)) return "—";
+    const x = Number(n);
+    if(!Number.isFinite(x)) return "—";
+    return x.toLocaleString(undefined, {maximumFractionDigits:0});
+  }
+  function fmtMoney(n){
+    if(n === null || n === undefined || Number.isNaN(n)) return "—";
+    const x = Number(n);
+    if(!Number.isFinite(x)) return "—";
+    return x.toLocaleString(undefined, {maximumFractionDigits:2});
+  }
+  function pct(delta, base){
+    if(base === 0 || base === null || base === undefined) return null;
+    return (delta / base) * 100;
+  }
+  function fmtPct(x){
+    if(x === null || x === undefined || Number.isNaN(x)) return "—";
+    const v = Number(x);
+    if(!Number.isFinite(v)) return "—";
+    return (v>=0?"+":"") + v.toFixed(2) + "%";
+  }
+  function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
 
-  function nfInt(x){
-    if(x===null || x===undefined || Number.isNaN(x)) return "—";
-    return new Intl.NumberFormat("en-US", {maximumFractionDigits:0}).format(x);
-  }
-  function nfMoney(x){
-    if(x===null || x===undefined || Number.isNaN(x)) return "—";
-    return new Intl.NumberFormat("en-US", {maximumFractionDigits:2, minimumFractionDigits:2}).format(x);
-  }
-  function fmt(x, type){
-    if(type==="money") return nfMoney(x);
-    return nfInt(x);
-  }
-  function pct(x){
-    if(x===null || x===undefined || Number.isNaN(x)) return "—";
-    const sign = x>0 ? "+" : "";
-    return sign + x.toFixed(2) + "%";
-  }
-
-  function statusFromWorstDrop(worstPct){
-    // ERR handled outside (missing data)
+  function statusFromWorst(worstPct, has14){
+    // worstPct is the worst among available windows (1D/7D/14D)
+    if(worstPct === null || worstPct === undefined || Number.isNaN(worstPct)) return "ERR";
+    // If no 14D, we still can show WARN if 7D exists, but do not ERR.
+    // Only ERR if missing data entirely handled earlier.
     if(worstPct <= -20) return "ALERT";
     if(worstPct <= -10) return "WARN";
     return "OK";
   }
-  function badgeClass(status){
-    if(status==="OK") return "ok";
-    if(status==="WARN") return "warn";
-    if(status==="ALERT") return "alert";
-    return "err";
+
+  function statusBadge(status){
+    const cls = status.toLowerCase();
+    const label = status;
+    return `<span class="status ${cls}"><span class="dot"></span>${label}</span>`;
   }
 
-  function safeNum(v){
-    if(v===null || v===undefined) return null;
-    const n = Number(v);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function avg(arr){
-    const xs = arr.filter(v => typeof v==="number" && Number.isFinite(v));
-    if(xs.length===0) return null;
-    const s = xs.reduce((a,b)=>a+b,0);
-    return s / xs.length;
-  }
-
-  function pctChange(now, prev){
-    if(now===null || prev===null) return null;
-    if(prev===0) return null;
-    return ((now - prev) / prev) * 100;
-  }
-
-  // Returns slice of rows for [endUsed - (n-1) .. endUsed] inclusive
-  function windowRows(rowsAsc, endUsedDate, n){
-    const endISO = toISODate(endUsedDate);
-    const idx = rowsAsc.findIndex(r => r._iso === endISO);
-    if(idx === -1) return [];
-    const start = Math.max(0, idx - (n-1));
-    return rowsAsc.slice(start, idx+1);
-  }
-
-  function computeTrends(rowsAsc, endUsedDate, metricKey){
-    // rowsAsc: ascending by date
-    const endISO = toISODate(endUsedDate);
-    const endRow = rowsAsc.find(r => r._iso === endISO) || null;
-    const prevDayISO = toISODate(addDays(endUsedDate, -1));
-    const prevRow = rowsAsc.find(r => r._iso === prevDayISO) || null;
-
-    const endVal = endRow ? safeNum(endRow[metricKey]) : null;
-    const prevVal = prevRow ? safeNum(prevRow[metricKey]) : null;
-
-    // 1D: end vs prev day
-    const d1 = (endVal!==null && prevVal!==null) ? (endVal - prevVal) : null;
-    const p1 = pctChange(endVal, prevVal);
-
-    // 7D: avg(last7) vs avg(prev7)
-    const last7 = windowRows(rowsAsc, endUsedDate, 7);
-    const prev7end = addDays(endUsedDate, -7);
-    const prev7 = windowRows(rowsAsc, prev7end, 7);
-
-    const avg7 = avg(last7.map(r => safeNum(r[metricKey])));
-    const avgPrev7 = avg(prev7.map(r => safeNum(r[metricKey])));
-    const d7 = (avg7!==null && avgPrev7!==null) ? (avg7 - avgPrev7) : null;
-    const p7 = pctChange(avg7, avgPrev7);
-
-    // 14D: avg(last14) vs avg(prev14)
-    const last14 = windowRows(rowsAsc, endUsedDate, 14);
-    const prev14end = addDays(endUsedDate, -14);
-    const prev14 = windowRows(rowsAsc, prev14end, 14);
-
-    const avg14 = avg(last14.map(r => safeNum(r[metricKey])));
-    const avgPrev14 = avg(prev14.map(r => safeNum(r[metricKey])));
-    const d14 = (avg14!==null && avgPrev14!==null) ? (avg14 - avgPrev14) : null;
-    const p14 = pctChange(avg14, avgPrev14);
-
-    return {
-      endVal, prevVal,
-      avg7, avgPrev7,
-      avg14, avgPrev14,
-      d1, p1, d7, p7, d14, p14,
-      has1D: (endVal!==null && prevVal!==null),
-      has7D: (avg7!==null && avgPrev7!==null),
-      has14D: (avg14!==null && avgPrev14!==null)
-    };
-  }
-
-  function parseBrandFromFilename(name){
-    const base = String(name || "").trim().toUpperCase();
-    // allow: M1.json, M1_2026-02-03.json, m1bob.json (startsWith)
+  function pickBrandFromFilename(name){
+    const upper = name.toUpperCase();
     for(const b of BRANDS){
-      if(base.startsWith(b)) return b;
+      if(upper.startsWith(b)) return b;
     }
-    // also allow: "M1 2026-02-03.json" or "M1-...."
-    const m = base.match(/^(M1|M2|B1|B2|B3|B4|K1|TK)\b/);
-    return m ? m[1] : null;
+    // also allow like m1_... or m1-...
+    for(const b of BRANDS){
+      if(upper.includes(b)) return b;
+    }
+    return null;
   }
 
-  // ---------- app state ----------
-  const state = {
+  // ---------- data store ----------
+  let store = {
     endDate: null,
     endUsed: null,
     useLastCompleted: true,
-    dataByBrand: {},     // brand -> {raw,jsonRowsAsc, metrics:{active:{...}, deposit...}}
-    summaryByBrand: {},  // brand -> computed summary
-    errors: [],          // global notes
+    brands: {}, // brand -> { rows: [{date, active, deposit, turnover, reg, ftd}], meta }
+    computed: {}, // brand -> computed comparisons
+    notes: []
   };
 
-  function resetUI(){
-    $("summaryCards").innerHTML = "";
-    $("globalNotes").innerHTML = "";
-    $("activeTable").innerHTML = "";
-    $("allTable").innerHTML = "";
-    $("rawBlocks").innerHTML = "";
-    setState("Waiting");
-    $("endUsedChip").textContent = "—";
-    state.dataByBrand = {};
-    state.summaryByBrand = {};
-    state.errors = [];
+  function resetStore(){
+    store = {
+      endDate: null,
+      endUsed: null,
+      useLastCompleted: document.getElementById("useLastCompleted").checked,
+      brands: {},
+      computed: {},
+      notes: []
+    };
+    BRANDS.forEach(b => store.brands[b] = { rows: [], meta: {loaded:false, file:null, error:null} });
   }
 
-  function setTab(tab){
-    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab===tab));
-    $("tab-summary").style.display = tab==="summary" ? "" : "none";
-    $("tab-active").style.display = tab==="active" ? "" : "none";
-    $("tab-all").style.display = tab==="all" ? "" : "none";
-    $("tab-raw").style.display = tab==="raw" ? "" : "none";
+  // ---------- computations ----------
+  function getValueOnDate(rows, isoDate, key){
+    const hit = rows.find(r => r.date === isoDate);
+    if(!hit) return null;
+    const v = hit[key];
+    return (v === null || v === undefined) ? null : Number(v);
+  }
+
+  function avgInWindow(rows, endIso, days, key){
+    // average over last `days` days including endIso, only if full window exists
+    const end = parseISO(endIso);
+    const start = new Date(end); start.setDate(start.getDate() - (days-1));
+    const startIso = toISODate(start);
+
+    const window = rows.filter(r => r.date >= startIso && r.date <= endIso);
+    if(window.length < days) return null;
+
+    let sum = 0;
+    for(const r of window){
+      const v = Number(r[key]);
+      if(!Number.isFinite(v)) return null;
+      sum += v;
+    }
+    return sum / days;
+  }
+
+  function computeWindows(rows, endIso, key){
+    const prevIso = addDays(endIso, -1);
+
+    const endVal = getValueOnDate(rows, endIso, key);
+    const prevVal = getValueOnDate(rows, prevIso, key);
+
+    const oneDDelta = (endVal !== null && prevVal !== null) ? (endVal - prevVal) : null;
+    const oneDPct = (oneDDelta !== null && prevVal !== null) ? pct(oneDDelta, prevVal) : null;
+
+    const a7 = avgInWindow(rows, endIso, 7, key);
+    const a7p = avgInWindow(rows, addDays(endIso,-7), 7, key); // prev7 ends at end-7
+    const d7 = (a7 !== null && a7p !== null) ? (a7 - a7p) : null;
+    const p7 = (d7 !== null && a7p !== null) ? pct(d7, a7p) : null;
+
+    const a14 = avgInWindow(rows, endIso, 14, key);
+    const a14p = avgInWindow(rows, addDays(endIso,-14), 14, key); // prev14 ends at end-14
+    const d14 = (a14 !== null && a14p !== null) ? (a14 - a14p) : null;
+    const p14 = (d14 !== null && a14p !== null) ? pct(d14, a14p) : null;
+
+    // worst among available (prefer 14D + 7D + 1D)
+    const list = [oneDPct, p7, p14].filter(v => v !== null && Number.isFinite(v));
+    const worst = list.length ? Math.min(...list) : null;
+
+    return {
+      endVal, prevVal,
+      oneDPct, p7, p14,
+      a7, a7p, d7,
+      a14, a14p, d14,
+      worst
+    };
+  }
+
+  function computeBrand(brand){
+    const b = store.brands[brand];
+    const rows = b.rows.slice().sort((x,y)=> x.date.localeCompare(y.date));
+    if(!rows.length) return { status:"ERR", reason:"No data rows" };
+
+    const endIso = store.endUsed;
+    const endRow = rows.find(r => r.date === endIso);
+    if(!endRow){
+      return { status:"ERR", reason:`No end-date row for ${endIso}` };
+    }
+
+    const active = computeWindows(rows, endIso, "active");
+    const deposit = computeWindows(rows, endIso, "totalDeposit");
+    const turnover = computeWindows(rows, endIso, "turnover");
+    const reg = computeWindows(rows, endIso, "registered");
+    const ftd = computeWindows(rows, endIso, "ftd");
+
+    // overall status: based on Active (most important) using its worst.
+    const has14 = active.p14 !== null;
+    const status = statusFromWorst(active.worst, has14);
+
+    // If 14D missing but 7D exists -> WARN (not ERR), and add note.
+    if(active.p14 === null && active.p7 !== null){
+      store.notes.push(`${brand}: Not enough history for 14D comparisons (need at least 14 days).`);
+    }
+
+    return {
+      status,
+      reason: null,
+      endIso,
+      rowCount: rows.length,
+      active, deposit, turnover, reg, ftd
+    };
+  }
+
+  function buildAllComputations(){
+    store.computed = {};
+    store.notes = [];
+
+    for(const brand of BRANDS){
+      const meta = store.brands[brand].meta;
+      if(!meta.loaded){
+        store.computed[brand] = { status:"ERR", reason:"File missing", endIso: store.endUsed, rowCount:0 };
+        store.notes.push(`${brand}: missing JSON file.`);
+        continue;
+      }
+      const out = computeBrand(brand);
+      store.computed[brand] = out;
+      if(out.status === "ERR" && out.reason) store.notes.push(`${brand}: ${out.reason}.`);
+    }
+  }
+
+  // ---------- boss report generation ----------
+  function summarizeCounts(metricKey){
+    // metricKey: "active" | "totalDeposit" | "turnover"
+    const results = [];
+
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      if(!c || c.status === "ERR" || !c[mapMetric(metricKey)]) continue;
+
+      const obj = c[mapMetric(metricKey)];
+      const worst = obj.worst;
+      const p7 = obj.p7;
+      const p14 = obj.p14;
+
+      results.push({
+        brand,
+        status: statusFromWorst(worst, p14 !== null),
+        worst,
+        p7,
+        p14
+      });
+    }
+    return results;
+  }
+
+  function mapMetric(k){
+    // in computed: active/deposit/turnover/reg/ftd
+    if(k === "active") return "active";
+    if(k === "totalDeposit") return "deposit";
+    if(k === "turnover") return "turnover";
+    if(k === "registered") return "reg";
+    if(k === "ftd") return "ftd";
+    return k;
+  }
+
+  function overallTotals(metricKey){
+    // sum across brands for end date and prev day, plus 7D avg sums vs prev7 avg sums, 14D same.
+    let endSum = 0, prevSum = 0;
+    let a7Sum = 0, a7pSum = 0;
+    let a14Sum = 0, a14pSum = 0;
+
+    let endOk=0, prevOk=0, a7Ok=0, a7pOk=0, a14Ok=0, a14pOk=0;
+
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      if(!c || c.status === "ERR") continue;
+
+      const obj = c[mapMetric(metricKey)];
+      if(!obj) continue;
+
+      if(Number.isFinite(obj.endVal)){ endSum += obj.endVal; endOk++; }
+      if(Number.isFinite(obj.prevVal)){ prevSum += obj.prevVal; prevOk++; }
+
+      if(Number.isFinite(obj.a7)){ a7Sum += obj.a7; a7Ok++; }
+      if(Number.isFinite(obj.a7p)){ a7pSum += obj.a7p; a7pOk++; }
+
+      if(Number.isFinite(obj.a14)){ a14Sum += obj.a14; a14Ok++; }
+      if(Number.isFinite(obj.a14p)){ a14pSum += obj.a14p; a14pOk++; }
+    }
+
+    const oneDDelta = (endOk && prevOk) ? (endSum - prevSum) : null;
+    const oneDPct = (oneDDelta !== null && prevSum !== 0) ? pct(oneDDelta, prevSum) : null;
+
+    const d7 = (a7Ok && a7pOk) ? (a7Sum - a7pSum) : null;
+    const p7 = (d7 !== null && a7pSum !== 0) ? pct(d7, a7pSum) : null;
+
+    const d14 = (a14Ok && a14pOk) ? (a14Sum - a14pSum) : null;
+    const p14 = (d14 !== null && a14pSum !== 0) ? pct(d14, a14pSum) : null;
+
+    return { endSum, prevSum, oneDPct, p7, p14 };
+  }
+
+  function buildBossMessage(metricKey){
+    const endIso = store.endUsed;
+    const title =
+      metricKey === "active" ? "Daily Business Trend — Active Players" :
+      metricKey === "totalDeposit" ? "Daily Business Trend — Total Deposit" :
+      "Daily Business Trend — Turnover";
+
+    const totals = overallTotals(metricKey);
+
+    // status breakdown by brands
+    const list = summarizeCounts(metricKey);
+    const counts = { OK:0, WARN:0, ALERT:0, ERR:0 };
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      if(!c || c.status === "ERR"){ counts.ERR++; continue; }
+      const st = (metricKey === "active") ? c.status : statusFromWorst(c[mapMetric(metricKey)].worst, c[mapMetric(metricKey)].p14 !== null);
+      counts[st] = (counts[st]||0) + 1;
+    }
+
+    // pick top drops (ALERT + WARN first)
+    const sorted = list
+      .filter(x => x.worst !== null && Number.isFinite(x.worst))
+      .sort((a,b)=> a.worst - b.worst);
+
+    const worst3 = sorted.slice(0,3);
+    const warnAlert = sorted.filter(x => x.status === "ALERT" || x.status === "WARN").slice(0,4);
+
+    const lines = [];
+    lines.push(`${title}`);
+    lines.push(`Comparison end date: ${endIso}`);
+    lines.push("");
+    lines.push(`Overall status: OK ${counts.OK} | WARN ${counts.WARN} | ALERT ${counts.ALERT} | ERR ${counts.ERR}`);
+    lines.push("");
+
+    // totals line (short)
+    const t1 =
+      metricKey === "turnover" ? fmtMoney(totals.endSum) :
+      fmtNum(totals.endSum);
+
+    lines.push(`All brands total (end day): ${t1}`);
+    lines.push(`Trend: 7D ${fmtPct(totals.p7)} | 14D ${fmtPct(totals.p14)} | 1D ${fmtPct(totals.oneDPct)}`);
+    lines.push("");
+
+    if(warnAlert.length){
+      lines.push(`Issues (WARN/ALERT): ${warnAlert.map(x => `${x.brand} ${fmtPct(x.p14 ?? x.p7 ?? x.worst)}`).join(", ")}`);
+      lines.push("");
+    }
+
+    if(worst3.length){
+      lines.push(`Biggest drops:`);
+      for(const x of worst3){
+        const keyPct = (x.p14 !== null) ? x.p14 : (x.p7 !== null) ? x.p7 : x.worst;
+        lines.push(`- ${x.brand}: 7D ${fmtPct(x.p7)} | 14D ${fmtPct(x.p14)} (worst ${fmtPct(keyPct)})`);
+      }
+    }
+
+    // keep very short — no suggestions
+    return lines.join("\n");
   }
 
   // ---------- rendering ----------
   function renderSummary(){
-    const wrap = $("summaryCards");
-    wrap.innerHTML = "";
+    const cards = document.getElementById("cards");
+    cards.innerHTML = "";
 
-    const notes = [];
-    const ok = [], warn = [], alert = [], err = [];
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      const meta = store.brands[brand].meta;
 
-    for(const b of BRANDS){
-      const s = state.summaryByBrand[b];
-      const meta = state.dataByBrand[b]?.meta;
-      let status = "ERR";
-      let endUsedIso = state.endUsed ? toISODate(state.endUsed) : "—";
-      let rowsCount = meta?.rowsCount ?? 0;
+      const status = c?.status || "ERR";
+      const statusClass = status.toLowerCase();
 
-      let a7 = null, a14 = null, a7d = null, a14d = null;
-      if(s && s.ok){
-        status = s.statusActive;
-        a7 = s.active.p7; a14 = s.active.p14;
-        a7d = s.active.d7; a14d = s.active.d14;
-      } else {
-        status = "ERR";
-        notes.push(`${b}: ${s?.error || "Missing/invalid JSON data"}`);
-      }
+      const endIso = store.endUsed || "—";
+      const rows = meta.loaded ? (c?.rowCount ?? 0) : 0;
 
-      if(status==="OK") ok.push(b);
-      else if(status==="WARN") warn.push(b);
-      else if(status==="ALERT") alert.push(b);
-      else err.push(b);
+      const a7 = c?.active?.p7 ?? null;
+      const a14 = c?.active?.p14 ?? null;
 
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <div class="head">
-          <div class="brand">${b}</div>
-          <div class="badge ${badgeClass(status)}">${status}</div>
-        </div>
-        <div class="meta">End used: ${endUsedIso} • rows: ${rowsCount}</div>
-        <div class="kpis">
-          <div class="kpi">
-            <div class="lab">Active 7D%</div>
-            <div class="val" style="color:${(a7!==null && a7<=-10) ? "var(--warn)" : (a7!==null && a7>0) ? "var(--ok)" : "var(--text)"}">${pct(a7)}</div>
-            <div class="sub">Δ ${fmt(a7d, "int")} (avg vs prev window)</div>
+        <div class="brandline">
+          <div>
+            <div class="brand">${brand}</div>
+            <div class="meta">End used: ${endIso} • rows: ${rows}</div>
           </div>
-          <div class="kpi">
-            <div class="lab">Active 14D%</div>
-            <div class="val" style="color:${(a14!==null && a14<=-20) ? "var(--alert)" : (a14!==null && a14<=-10) ? "var(--warn)" : (a14!==null && a14>0) ? "var(--ok)" : "var(--text)"}">${pct(a14)}</div>
-            <div class="sub">Δ ${fmt(a14d, "int")} (avg vs prev window)</div>
+          <div>${statusBadge(status)}</div>
+        </div>
+
+        <div class="two">
+          <div class="mini">
+            <div class="k">Active 7D%</div>
+            <div class="v ${a7!==null && a7<0 ? "neg" : "pos"}">${fmtPct(a7)}</div>
+            <div class="s">Rolling avg vs previous window</div>
+          </div>
+          <div class="mini">
+            <div class="k">Active 14D%</div>
+            <div class="v ${a14!==null && a14<0 ? "neg" : "pos"}">${fmtPct(a14)}</div>
+            <div class="s">Rolling avg vs previous window</div>
           </div>
         </div>
-        ${s && s.ok && s.note ? `<div class="meta" style="margin-top:10px;color:var(--muted);">${s.note}</div>` : ""}
+
+        <div class="meta" style="margin-top:10px;color:${status==="ERR" ? "rgba(255,77,77,.9)" : "rgba(255,255,255,.55)"}">
+          ${meta.loaded ? (c?.reason ? c.reason : "") : "No file loaded"}
+        </div>
       `;
-      wrap.appendChild(card);
+      cards.appendChild(card);
     }
 
-    const global = $("globalNotes");
-    const endUsedIso = state.endUsed ? toISODate(state.endUsed) : "—";
-    const headline = `Status meaning: <b class="good">OK</b>=stable, <b class="warn">WARN</b>=dropping (≤ -10%), <b class="bad">ALERT</b>=big drop (≤ -20%), <b class="bad">ERR</b>=missing data/file/date.`;
-    const dist = `Distribution: OK=${ok.length}, WARN=${warn.length}, ALERT=${alert.length}, ERR=${err.length}. End used: <b>${endUsedIso}</b>.`;
-    const more = notes.length ? `<div style="margin-top:8px"><b>Notes:</b><br>${notes.map(x=>`• ${x}`).join("<br>")}</div>` : `<div style="margin-top:8px">All brands loaded. Use <b>Active Focus</b> tab for a clean table view.</div>`;
-    global.innerHTML = `${headline}<div style="margin-top:6px">${dist}</div>${more}`;
+    const notes = document.getElementById("notes");
+    if(store.notes.length){
+      notes.classList.remove("hidden");
+      notes.innerHTML = `<b>Notes:</b><br>` + store.notes.map(x => `• ${escapeHtml(x)}`).join("<br>");
+    }else{
+      notes.classList.add("hidden");
+      notes.innerHTML = "";
+    }
+
+    document.getElementById("statusPill").textContent = "Done: OK/WARN/ALERT/ERR computed";
   }
 
   function renderActiveTable(){
-    const tbl = $("activeTable");
-    const head = `
-      <tr>
-        <th>Brand</th>
-        <th>End Day Active</th>
-        <th>Prev Day Active</th>
-        <th>Avg(last7)</th>
-        <th>Avg(prev7)</th>
-        <th>Avg(last14)</th>
-        <th>Avg(prev14)</th>
-        <th>1D Δ</th>
-        <th>1D %</th>
-        <th>7D Δ</th>
-        <th>7D %</th>
-        <th>14D Δ</th>
-        <th>14D %</th>
-        <th>Status</th>
-      </tr>
-    `;
-    const rows = BRANDS.map(b => {
-      const s = state.summaryByBrand[b];
-      if(!s || !s.ok){
-        return `<tr>
-          <td>${b}</td>
-          <td colspan="12" style="text-align:left;color:var(--muted)">—</td>
-          <td><span class="badge err">ERR</span></td>
-        </tr>`;
+    const tbody = document.querySelector("#activeTable tbody");
+    tbody.innerHTML = "";
+
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      if(!c){
+        tbody.insertAdjacentHTML("beforeend", `<tr><td>${brand}</td><td colspan="11">—</td></tr>`);
+        continue;
       }
-      const a = s.active;
-      const worst = Math.min(
-        (a.p7===null ? 999 : a.p7),
-        (a.p14===null ? 999 : a.p14)
-      );
-      const st = s.statusActive;
-      return `<tr>
-        <td><b>${b}</b></td>
-        <td>${fmt(a.endVal, "int")}</td>
-        <td>${fmt(a.prevVal, "int")}</td>
-        <td>${fmt(a.avg7, "int")}</td>
-        <td>${fmt(a.avgPrev7, "int")}</td>
-        <td>${fmt(a.avg14, "int")}</td>
-        <td>${fmt(a.avgPrev14, "int")}</td>
-        <td>${fmt(a.d1, "int")}</td>
-        <td>${pct(a.p1)}</td>
-        <td>${fmt(a.d7, "int")}</td>
-        <td>${pct(a.p7)}</td>
-        <td>${fmt(a.d14, "int")}</td>
-        <td>${pct(a.p14)}</td>
-        <td><span class="badge ${badgeClass(st)}">${st}</span></td>
-      </tr>`;
-    }).join("");
-    tbl.innerHTML = head + rows;
+      const a = c.active || {};
+      const st = c.status || "ERR";
+
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td><b>${brand}</b></td>
+          <td class="mono">${fmtNum(a.endVal)}</td>
+          <td class="mono">${fmtNum(a.prevVal)}</td>
+          <td class="mono">${fmtNum(a.a7)}</td>
+          <td class="mono">${fmtNum(a.a7p)}</td>
+          <td class="mono">${fmtNum(a.d7)}</td>
+          <td class="mono">${fmtPct(a.p7)}</td>
+          <td class="mono">${fmtNum(a.a14)}</td>
+          <td class="mono">${fmtNum(a.a14p)}</td>
+          <td class="mono">${fmtNum(a.d14)}</td>
+          <td class="mono">${fmtPct(a.p14)}</td>
+          <td>${statusBadge(st)}</td>
+        </tr>
+      `);
+    }
   }
 
-  function renderAllTable(){
-    const tbl = $("allTable");
-    const head = `
-      <tr>
-        <th>Brand</th>
-        ${METRICS.map(m => `<th colspan="6" style="text-align:center">${m.pretty}</th>`).join("")}
-        <th>Status (Active)</th>
-      </tr>
-      <tr>
-        <th></th>
-        ${METRICS.map(() => `
-          <th>1D Δ</th><th>1D %</th><th>7D Δ</th><th>7D %</th><th>14D Δ</th><th>14D %</th>
-        `).join("")}
-        <th></th>
-      </tr>
-    `;
+  function renderAllMetrics(){
+    const tbody = document.querySelector("#allTable tbody");
+    tbody.innerHTML = "";
 
-    const rows = BRANDS.map(b => {
-      const s = state.summaryByBrand[b];
-      if(!s || !s.ok){
-        return `<tr>
-          <td>${b}</td>
-          <td colspan="${METRICS.length*6}" style="text-align:left;color:var(--muted)">—</td>
-          <td><span class="badge err">ERR</span></td>
-        </tr>`;
-      }
+    function rowFor(obj){
+      const one = obj?.oneDPct ?? null;
+      const p7 = obj?.p7 ?? null;
+      const p14 = obj?.p14 ?? null;
+      const worst = obj?.worst ?? null;
+      return `<td class="mono">${fmtPct(one)}</td><td class="mono">${fmtPct(p7)}</td><td class="mono">${fmtPct(p14)}</td><td class="mono">${fmtPct(worst)}</td>`;
+    }
 
-      const cells = METRICS.map(m => {
-        const t = s[m.key];
-        const type = m.format;
-        return `
-          <td>${fmt(t.d1, type)}</td>
-          <td>${pct(t.p1)}</td>
-          <td>${fmt(t.d7, type)}</td>
-          <td>${pct(t.p7)}</td>
-          <td>${fmt(t.d14, type)}</td>
-          <td>${pct(t.p14)}</td>
-        `;
-      }).join("");
+    for(const brand of BRANDS){
+      const c = store.computed[brand];
+      const st = c?.status || "ERR";
+      const a = c?.active, d=c?.deposit, t=c?.turnover, r=c?.reg, f=c?.ftd;
 
-      return `<tr>
-        <td><b>${b}</b></td>
-        ${cells}
-        <td><span class="badge ${badgeClass(s.statusActive)}">${s.statusActive}</span></td>
-      </tr>`;
-    }).join("");
-
-    tbl.innerHTML = head + rows;
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td><b>${brand}</b></td>
+          ${rowFor(a)}
+          ${rowFor(d)}
+          ${rowFor(t)}
+          ${rowFor(r)}
+          ${rowFor(f)}
+          <td>${statusBadge(st)}</td>
+        </tr>
+      `);
+    }
   }
 
   function renderRaw(){
-    const wrap = $("rawBlocks");
-    wrap.innerHTML = "";
-    for(const b of BRANDS){
-      const meta = state.dataByBrand[b]?.meta;
-      const raw = state.dataByBrand[b]?.raw;
-      const rowsCount = meta?.rowsCount ?? 0;
-      const endUsedIso = state.endUsed ? toISODate(state.endUsed) : "—";
-      const status = state.summaryByBrand[b]?.ok ? "OK" : "ERR";
-      const err = state.summaryByBrand[b]?.error || "";
-      const summaryLine = `${b} — rows: ${rowsCount} — end used: ${endUsedIso} — ${status}${err ? " — " + err : ""}`;
-      const d = document.createElement("details");
-      const s = document.createElement("summary");
-      s.innerHTML = `${summaryLine} <span>click to expand</span>`;
-      const pre = document.createElement("pre");
-      pre.className = "mono";
-      pre.textContent = raw ? JSON.stringify(raw, null, 2) : "(no JSON loaded)";
-      d.appendChild(s);
-      d.appendChild(pre);
-      wrap.appendChild(d);
+    const box = document.getElementById("rawBox");
+    box.innerHTML = "";
+
+    for(const brand of BRANDS){
+      const meta = store.brands[brand].meta;
+      const rows = store.brands[brand].rows || [];
+      const c = store.computed[brand];
+
+      const head = document.createElement("div");
+      head.className = "card";
+      head.style.marginBottom = "10px";
+
+      const preview = rows.slice(0, 8).map(r =>
+        `${r.date}  reg:${r.registered}  ftd:${r.ftd}  dep:${r.totalDeposit}  active:${r.active}  to:${r.turnover}`
+      ).join("\n");
+
+      head.innerHTML = `
+        <div class="brandline">
+          <div>
+            <div class="brand">${brand}</div>
+            <div class="meta">${meta.loaded ? "loaded" : "missing"} • rows: ${rows.length} • end used: ${store.endUsed || "—"} • status: ${c?.status || "—"}</div>
+          </div>
+          <div class="meta mono">${meta.file ? escapeHtml(meta.file) : ""}</div>
+        </div>
+        <div style="height:10px"></div>
+        <textarea class="textarea" readonly>${preview || (meta.error || "No rows")}</textarea>
+      `;
+      box.appendChild(head);
     }
   }
 
-  // ---------- boss report ----------
-  function buildBossMessage(metricKey){
-    const metric = METRICS.find(m=>m.key===metricKey);
-    const endUsedIso = state.endUsed ? toISODate(state.endUsed) : "—";
+  // ---------- file loading ----------
+  async function readFileAsJSON(file){
+    const text = await file.text();
+    return JSON.parse(text);
+  }
 
-    const items = [];
-    for(const b of BRANDS){
-      const s = state.summaryByBrand[b];
-      if(!s || !s.ok) {
-        items.push({brand:b, status:"ERR", p7:null, p14:null, note:(s?.error||"missing/invalid JSON")});
-        continue;
+  function normalizeRowsFromJSON(json){
+    // expects structure like:
+    // { headers: [...], rows:[{date, registered, ftd, totalDeposit, active, turnover}] }
+    const out = [];
+    const rows = Array.isArray(json?.rows) ? json.rows : [];
+    for(const r of rows){
+      const iso = normDateAny(r.date);
+      if(!iso) continue;
+
+      out.push({
+        date: iso,
+        registered: Number(r.registered ?? r.reg ?? 0),
+        ftd: Number(r.ftd ?? 0),
+        totalDeposit: Number(r.totalDeposit ?? 0),
+        active: Number(r.active ?? 0),
+        turnover: Number(r.turnover ?? 0)
+      });
+    }
+    // sort unique by date (keep last if duplicates)
+    const map = new Map();
+    for(const rr of out){ map.set(rr.date, rr); }
+    return Array.from(map.values()).sort((a,b)=> a.date.localeCompare(b.date));
+  }
+
+  async function loadFiles(files){
+    resetStore();
+
+    const list = Array.from(files || []);
+    for(const f of list){
+      const brand = pickBrandFromFilename(f.name);
+      if(!brand) continue;
+      try{
+        const json = await readFileAsJSON(f);
+        const norm = normalizeRowsFromJSON(json);
+
+        store.brands[brand].rows = norm;
+        store.brands[brand].meta.loaded = true;
+        store.brands[brand].meta.file = f.name;
+        store.brands[brand].meta.error = null;
+
+      }catch(err){
+        store.brands[brand].meta.loaded = false;
+        store.brands[brand].meta.file = f.name;
+        store.brands[brand].meta.error = "JSON parse failed: " + (err?.message || String(err));
       }
-      const t = s[metricKey];
-      const worst = Math.min(
-        (t.p7===null ? 999 : t.p7),
-        (t.p14===null ? 999 : t.p14)
-      );
-      const st = statusFromWorstDrop(worst===999 ? 0 : worst);
-      // treat missing 14D as WARN note (like your TK)
-      let finalStatus = st;
-      let note = "";
-      if(t.p7===null && t.p14===null){
-        finalStatus = "ERR";
-        note = "not enough data for trend";
-      } else if(t.p14===null){
-        // only 7D is available
-        finalStatus = (t.p7!==null && t.p7<=-10) ? "WARN" : "OK";
-        note = "14D not available (need 14+ days)";
-      }
-      items.push({brand:b, status:finalStatus, p7:t.p7, p14:t.p14, note});
     }
-
-    const counts = {OK:0,WARN:0,ALERT:0,ERR:0};
-    for(const it of items){
-      counts[it.status] = (counts[it.status]||0)+1;
-    }
-
-    // Biggest drops: sort by worst negative available
-    const sortable = items
-      .filter(x => x.status!=="ERR" && (x.p7!==null || x.p14!==null))
-      .map(x => {
-        const worst = Math.min(
-          (x.p7===null ? 999 : x.p7),
-          (x.p14===null ? 999 : x.p14)
-        );
-        return {...x, worst};
-      })
-      .sort((a,b) => a.worst - b.worst);
-
-    const worst3 = sortable.slice(0,3);
-    const best3 = sortable.slice().reverse().slice(0,3);
-
-    function lineFor(it){
-      const p7s = it.p7===null ? "—" : it.p7.toFixed(2)+"%";
-      const p14s = it.p14===null ? "—" : it.p14.toFixed(2)+"%";
-      const extra = it.note ? ` (${it.note})` : "";
-      return `- ${it.brand} (${it.status}): 7D ${p7s}, 14D ${p14s}${extra}`;
-    }
-
-    const title = `Daily Business Trend — ${metric.pretty} (8 Brands)`;
-    const hdr =
-`${title}
-Comparison end date: ${endUsedIso} (last completed day logic applied)
-
-Overall status:
-- OK: ${counts.OK}
-- WARN: ${counts.WARN}
-- ALERT: ${counts.ALERT}
-- ERR: ${counts.ERR}
-`;
-
-    const keyNotes =
-`Key movers (largest drops):
-${worst3.length ? worst3.map(x=>`- ${x.brand}: worst=${x.worst.toFixed(2)}% (7D ${x.p7===null?"—":x.p7.toFixed(2)+"%"} / 14D ${x.p14===null?"—":x.p14.toFixed(2)+"%"})`).join("\n") : "- (none)"}
-
-Positive movers (largest gains):
-${best3.length ? best3.map(x=>{
-  const w = Math.min((x.p7===null?999:x.p7),(x.p14===null?999:x.p14));
-  const best = Math.max((x.p7===null?-999:x.p7),(x.p14===null?-999:x.p14));
-  return `- ${x.brand}: best=${best.toFixed(2)}% (7D ${x.p7===null?"—":x.p7.toFixed(2)+"%"} / 14D ${x.p14===null?"—":x.p14.toFixed(2)+"%"})`;
-}).join("\n") : "- (none)"}
-`;
-
-    const perBrand =
-`Brand-by-brand summary (${metric.label} trend):
-${items.map(lineFor).join("\n")}
-`;
-
-    const suggestion =
-`Suggested focus:
-1) Any ALERT brands → investigate root causes immediately.
-2) WARN brands → monitor daily; check traffic/retention/payment frictions.
-3) Use 14D% as “true trend”, 7D% as early warning.
-`;
-
-    return `${hdr}\n${keyNotes}\n${perBrand}\n${suggestion}`.trim();
   }
 
-  function openBossModal(){
-    if(!state.endUsed){
-      alert("Please set End Date and build dashboard first.");
-      return;
-    }
-    $("activeMsg").value = buildBossMessage("active");
-    $("depositMsg").value = buildBossMessage("totalDeposit");
-    $("turnoverMsg").value = buildBossMessage("turnover");
-    $("modalBack").style.display = "flex";
+  // ---------- tabs ----------
+  function setTab(key){
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === key));
+    document.getElementById("tab-summary").classList.toggle("hidden", key !== "summary");
+    document.getElementById("tab-active").classList.toggle("hidden", key !== "active");
+    document.getElementById("tab-all").classList.toggle("hidden", key !== "all");
+    document.getElementById("tab-raw").classList.toggle("hidden", key !== "raw");
   }
 
-  function closeBossModal(){
-    $("modalBack").style.display = "none";
+  // ---------- modal ----------
+  let currentReportKey = "active";
+
+  function openBossReport(){
+    const back = document.getElementById("modalBackdrop");
+    back.style.display = "flex";
+
+    const meta = document.getElementById("bossMeta");
+    meta.textContent = `Comparison end date: ${store.endUsed || "—"} • Files loaded: ${countLoaded()}/8`;
+
+    currentReportKey = "active";
+    document.querySelectorAll(".rTab").forEach(t => t.classList.toggle("active", t.dataset.r === currentReportKey));
+    updateBossText();
   }
 
-  async function copyText(id){
-    const el = $(id);
-    el.select();
-    el.setSelectionRange(0, el.value.length);
+  function closeBossReport(){
+    document.getElementById("modalBackdrop").style.display = "none";
+  }
+
+  function updateBossText(){
+    let key = currentReportKey;
+
+    let metric = "active";
+    if(key === "deposit") metric = "totalDeposit";
+    if(key === "turnover") metric = "turnover";
+
+    const text = buildBossMessage(metric);
+    const ta = document.getElementById("reportText");
+    ta.value = text;
+
+    document.getElementById("activeChars").textContent = `${text.length} chars`;
+  }
+
+  async function copyBossText(){
+    const ta = document.getElementById("reportText");
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
     try{
-      await navigator.clipboard.writeText(el.value);
-      alert("Copied ✅");
-    }catch(e){
+      await navigator.clipboard.writeText(ta.value);
+      const btn = document.getElementById("copyBtn");
+      const old = btn.textContent;
+      btn.textContent = "Copied ✓";
+      setTimeout(()=> btn.textContent = old, 900);
+    }catch{
       // fallback
       document.execCommand("copy");
-      alert("Copied ✅");
     }
   }
 
-  // ---------- build pipeline ----------
+  function countLoaded(){
+    let n=0;
+    for(const b of BRANDS){ if(store.brands[b].meta.loaded) n++; }
+    return n;
+  }
+
+  // ---------- build ----------
   async function build(){
-    try{
-      setState("Loading files…");
-      state.errors = [];
-      state.dataByBrand = {};
-      state.summaryByBrand = {};
-
-      const endStr = $("endDate").value;
-      const end = parseDateAny(endStr);
-      if(!end){
-        setState("End date is required", "err");
-        alert("Please pick End Date.");
-        return;
-      }
-      state.endDate = end;
-
-      const useLast = $("useLastCompleted").checked;
-      state.useLastCompleted = useLast;
-      state.endUsed = useLast ? addDays(end, -1) : end;
-      $("endUsedChip").textContent = toISODate(state.endUsed);
-
-      const files = Array.from($("files").files || []);
-      if(files.length === 0){
-        setState("Upload JSON files first", "err");
-        alert("Please upload your 8 JSON files (M1..TK).");
-        return;
-      }
-
-      // read files
-      const byBrand = {};
-      for(const f of files){
-        const brand = parseBrandFromFilename(f.name);
-        if(!brand) continue;
-        const text = await f.text();
-        let json;
-        try{ json = JSON.parse(text); }
-        catch(e){ continue; }
-        byBrand[brand] = json;
-      }
-
-      // ensure all brands exist (can still render missing as ERR)
-      for(const b of BRANDS){
-        const raw = byBrand[b] || null;
-        if(!raw){
-          state.dataByBrand[b] = { raw:null, rowsAsc:[], meta:{rowsCount:0} };
-          state.summaryByBrand[b] = { ok:false, error:"missing file" };
-          continue;
-        }
-
-        // Validate structure: rows array with date + active/turnover/totalDeposit
-        const rows = Array.isArray(raw.rows) ? raw.rows : [];
-        const clean = [];
-        for(const r of rows){
-          const d = parseDateAny(r.date);
-          if(!d) continue;
-          clean.push({
-            _iso: toISODate(d),
-            date: r.date,
-            registered: safeNum(r.registered),
-            ftd: safeNum(r.ftd),
-            totalDeposit: safeNum(r.totalDeposit),
-            active: safeNum(r.active),
-            turnover: safeNum(r.turnover),
-          });
-        }
-        clean.sort((a,b)=> (a._iso < b._iso ? -1 : a._iso > b._iso ? 1 : 0)); // asc
-
-        state.dataByBrand[b] = { raw, rowsAsc: clean, meta:{ rowsCount: clean.length } };
-
-        // Compute trends for all 3 metrics
-        const activeT = computeTrends(clean, state.endUsed, "active");
-        const depT = computeTrends(clean, state.endUsed, "totalDeposit");
-        const turnT = computeTrends(clean, state.endUsed, "turnover");
-
-        // status based on active worst drop
-        let statusActive = "ERR";
-        let note = "";
-        if(activeT.p7===null && activeT.p14===null){
-          statusActive = "ERR";
-          note = "No trend data for end date (missing date row).";
-        } else {
-          const worst = Math.min(
-            (activeT.p7===null ? 999 : activeT.p7),
-            (activeT.p14===null ? 999 : activeT.p14)
-          );
-          if(activeT.p14===null){
-            note = "Not enough history for 14D comparisons (need 14+ days).";
-            statusActive = (activeT.p7!==null && activeT.p7<=-10) ? "WARN" : "OK";
-          } else {
-            statusActive = statusFromWorstDrop(worst);
-          }
-        }
-
-        state.summaryByBrand[b] = {
-          ok: true,
-          active: activeT,
-          totalDeposit: depT,
-          turnover: turnT,
-          statusActive,
-          note
-        };
-      }
-
-      // Render
-      renderSummary();
-      renderActiveTable();
-      renderAllTable();
-      renderRaw();
-
-      // Global state
-      const anyErr = BRANDS.some(b => !state.summaryByBrand[b]?.ok || state.summaryByBrand[b]?.statusActive==="ERR");
-      setState(anyErr ? "Done (with notes/errors)" : "Done", anyErr ? "warn" : "ok");
-      setTab("summary");
-    } catch (e){
-      console.error(e);
-      setState("Error", "err");
-      alert("Build error: " + (e?.message || e));
+    const endDate = document.getElementById("endDate").value;
+    if(!endDate){
+      alert("End Date is required.");
+      return;
     }
+
+    store.endDate = endDate;
+    store.useLastCompleted = document.getElementById("useLastCompleted").checked;
+
+    store.endUsed = store.useLastCompleted ? addDays(endDate, -1) : endDate;
+    document.getElementById("endUsedPill").textContent = `Comparisons end at: ${store.endUsed}`;
+
+    const files = document.getElementById("files").files;
+    await loadFiles(files);
+
+    buildAllComputations();
+    renderSummary();
+    renderActiveTable();
+    renderAllMetrics();
+    renderRaw();
+
+    const loaded = countLoaded();
+    document.getElementById("statusPill").textContent = `Done: loaded ${loaded}/8`;
   }
 
-  // ---------- events ----------
-  document.querySelectorAll(".tab").forEach(t => {
-    t.addEventListener("click", () => setTab(t.dataset.tab));
-  });
+  function clearAll(){
+    document.getElementById("files").value = "";
+    document.getElementById("cards").innerHTML = "";
+    document.getElementById("rawBox").innerHTML = "";
+    document.querySelector("#activeTable tbody").innerHTML = "";
+    document.querySelector("#allTable tbody").innerHTML = "";
+    document.getElementById("notes").classList.add("hidden");
+    document.getElementById("notes").innerHTML = "";
+    document.getElementById("statusPill").textContent = "Done: —";
+    document.getElementById("endUsedPill").textContent = "Comparisons end at: —";
+    resetStore();
+  }
 
-  $("buildBtn").addEventListener("click", build);
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
 
-  $("clearBtn").addEventListener("click", () => {
-    $("files").value = "";
-    resetUI();
-  });
+  // ---------- wire ----------
+  resetStore();
 
-  $("useLastCompleted").addEventListener("change", () => {
-    // If already built, rebuild quickly using same files
-    if(($("files").files || []).length) build();
-  });
-
-  $("bossBtn").addEventListener("click", () => {
-    // Ensure built
-    openBossModal();
-  });
-
-  $("closeModal").addEventListener("click", closeBossModal);
-  $("modalBack").addEventListener("click", (e) => {
-    if(e.target === $("modalBack")) closeBossModal();
-  });
-
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-copy]");
-    if(!btn) return;
-    copyText(btn.getAttribute("data-copy"));
-  });
-
-  // Init: set date to today
+  // default end date today
   const now = new Date();
-  $("endDate").value = toISODate(now);
-  resetUI();
+  document.getElementById("endDate").value = toISODate(now);
+
+  document.getElementById("buildBtn").addEventListener("click", build);
+  document.getElementById("clearBtn").addEventListener("click", clearAll);
+
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setTab(t.dataset.tab)));
+
+  document.getElementById("bossBtn").addEventListener("click", () => {
+    if(!store.endUsed){
+      alert("Build Dashboard first.");
+      return;
+    }
+    openBossReport();
+  });
+
+  document.getElementById("closeBtn").addEventListener("click", closeBossReport);
+  document.getElementById("modalBackdrop").addEventListener("click", (e) => {
+    if(e.target.id === "modalBackdrop") closeBossReport();
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", copyBossText);
+
+  document.querySelectorAll(".rTab").forEach(t => t.addEventListener("click", () => {
+    currentReportKey = t.dataset.r;
+    document.querySelectorAll(".rTab").forEach(x => x.classList.toggle("active", x.dataset.r === currentReportKey));
+    updateBossText();
+  }));
+
 })();
 </script>
 </body>
