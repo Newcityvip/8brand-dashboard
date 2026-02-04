@@ -605,51 +605,73 @@
   }
 
   function buildBossMessage(metricKey){
-    const endIso=store.endUsed;
-    const title =
-      metricKey==="active" ? "Daily Business Trend — Active Players" :
-      metricKey==="totalDeposit" ? "Daily Business Trend — Total Deposit" :
-      "Daily Business Trend — Turnover";
+  const endIso = store.endUsed;
 
-    const totals=overallTotals(metricKey);
-    const list=summarizeCounts(metricKey).filter(x=>x.worst!==null && Number.isFinite(x.worst)).sort((a,b)=>a.worst-b.worst);
+  const title =
+    metricKey==="active" ? "Daily Trend — Active Players" :
+    metricKey==="totalDeposit" ? "Daily Trend — Total Deposit" :
+    "Daily Trend — Turnover";
 
-    const counts={OK:0,WARN:0,ALERT:0,ERR:0};
-    for(const brand of BRANDS){
-      const c=store.computed[brand];
-      if(!c || c.status==="ERR"){ counts.ERR++; continue; }
-      const obj=c[mapMetric(metricKey)];
-      const st=obj ? statusFromWorst(obj.worst) : "ERR";
-      counts[st] = (counts[st]||0)+1;
+  const key = mapMetric(metricKey);
+
+  // collect brand rows
+  const rows = [];
+  for (const brand of BRANDS){
+    const c = store.computed[brand];
+    if (!c || c.status==="ERR"){
+      rows.push({ brand, p7:null, p14:null, err:true });
+      continue;
     }
-
-    const issues=list.filter(x=>x.status==="WARN" || x.status==="ALERT").slice(0,5);
-    const worst3=list.slice(0,3);
-
-    const lines=[];
-    lines.push(`${title}`);
-    lines.push(`Comparison end date: ${endIso}`);
-    lines.push("");
-    lines.push(`Overall status: OK ${counts.OK} | WARN ${counts.WARN} | ALERT ${counts.ALERT} | ERR ${counts.ERR}`);
-    lines.push("");
-
-    const endTotal = (metricKey==="turnover") ? fmtMoney(totals.endSum) : fmtNum(totals.endSum);
-    lines.push(`All brands total (end day): ${endTotal}`);
-    lines.push(`Trend: 7D ${fmtPct(totals.p7)} | 14D ${fmtPct(totals.p14)} | 1D ${fmtPct(totals.oneDPct)}`);
-    lines.push("");
-
-    if(issues.length){
-      lines.push(`Issues (WARN/ALERT): ${issues.map(x => `${x.brand} ${fmtPct(x.p14 ?? x.p7 ?? x.worst)}`).join(", ")}`);
-      lines.push("");
-    }
-    if(worst3.length){
-      lines.push(`Biggest drops:`);
-      for(const x of worst3){
-        lines.push(`- ${x.brand}: 7D ${fmtPct(x.p7)} | 14D ${fmtPct(x.p14)} (worst ${fmtPct(x.p14 ?? x.p7 ?? x.worst)})`);
-      }
-    }
-    return lines.join("\n");
+    const obj = c[key];
+    rows.push({
+      brand,
+      p7: (obj && Number.isFinite(obj.p7)) ? obj.p7 : null,
+      p14: (obj && Number.isFinite(obj.p14)) ? obj.p14 : null,
+      err: false
+    });
   }
+
+  function dirLabel(p){
+    if (p === null) return "n/a";
+    if (p > 0) return "up";
+    if (p < 0) return "drop";
+    return "flat";
+  }
+
+  const lines = [];
+  lines.push(`${title}`);
+  lines.push(`Comparison end date: ${endIso}`);
+  lines.push("");
+
+  // brand-by-brand lines
+  for (const r of rows){
+    if (r.err){
+      lines.push(`${r.brand}: n/a | n/a (missing/invalid data)`);
+      continue;
+    }
+    const p7txt = r.p7===null ? "7D n/a" : `7D ${fmtPct(r.p7)} (${dirLabel(r.p7)})`;
+    const p14txt = r.p14===null ? "14D n/a" : `14D ${fmtPct(r.p14)} (${dirLabel(r.p14)})`;
+    lines.push(`${r.brand}: ${p7txt} | ${p14txt}`);
+  }
+
+  // NOTE: biggest drops (prefer 14D; fallback 7D)
+  const movers = rows
+    .filter(r => !r.err && (r.p14!==null || r.p7!==null))
+    .map(r => ({
+      brand: r.brand,
+      score: (r.p14!==null ? r.p14 : r.p7),
+      which: (r.p14!==null ? "14D" : "7D")
+    }))
+    .sort((a,b)=> a.score - b.score);
+
+  const worst3 = movers.slice(0,3);
+  if (worst3.length){
+    lines.push("");
+    lines.push(`Note: Biggest drops: ${worst3.map(x=>`${x.brand} (${x.which} ${fmtPct(x.score)})`).join(", ")}.`);
+  }
+
+  return lines.join("\n");
+}
 
   function renderSummary(){
     const cards=document.getElementById("cards");
@@ -863,15 +885,18 @@
     updateBossText();
   }
   function closeBossReport(){ document.getElementById("modalBackdrop").style.display="none"; }
-  function updateBossText(){
-    let metric="active";
-    if(currentReportKey==="deposit") metric="totalDeposit";
-    if(currentReportKey==="turnover") metric="turnover";
-    const text=buildBossMessage(metric);
-    const ta=document.getElementById("reportText");
-    ta.value=text;
-    document.getElementById("activeChars").textContent = `${text.length} chars`;
-  }
+ function updateBossText(){
+  let metric="active";
+  if(currentReportKey==="deposit") metric="totalDeposit";
+  if(currentReportKey==="turnover") metric="turnover";
+
+  const text = buildBossMessage(metric);
+  const ta = document.getElementById("reportText");
+  ta.value = text;
+
+  document.getElementById("activeChars").textContent = `${text.length} chars`;
+}
+
   async function copyBossText(){
     const ta=document.getElementById("reportText");
     try{
