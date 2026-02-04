@@ -368,9 +368,11 @@
           <div class="smallHint" id="bossMeta">—</div>
         </div>
         <div class="modalActions">
-          <button class="iconBtn" id="copyBtn">Copy</button>
-          <button class="iconBtn" id="closeBtn">Close</button>
-        </div>
+  <button class="iconBtn" id="copyBtn">Copy</button>
+  <button class="iconBtn" id="csvBtn">CSV</button>
+  <button class="iconBtn" id="pdfBtn">PDF</button>
+  <button class="iconBtn" id="closeBtn">Close</button>
+</div>
       </div>
       <div class="modalBody">
         <div class="reportTabs">
@@ -385,7 +387,7 @@
         </div>
 
         <div class="reportBox">
-          <textarea id="reportText" class="textarea" readonly></textarea>
+          <textarea id="bossReportText" class="textarea" readonly></textarea>
         </div>
       </div>
     </div>
@@ -980,6 +982,68 @@
     updateBossText();
   }));
 
+/* ================================
+   Boss Report Export (CSV + PDF)
+================================ */
+
+function getBossReportText_() {
+  const el = document.getElementById("bossReportText");
+  return (el?.value || el?.innerText || "").trim();
+}
+
+function downloadBlob_(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+/* CSV */
+function exportBossCSV() {
+  const text = getBossReportText_();
+  if (!text) return alert("Boss report is empty.");
+
+  const csv = text
+    .split("\n")
+    .map(l => `"${l.replace(/"/g, '""')}"`)
+    .join("\n");
+
+  downloadBlob_("Boss_Report.csv", csv, "text/csv;charset=utf-8");
+}
+
+/* PDF */
+function exportBossPDF() {
+  const text = getBossReportText_();
+  if (!text) return alert("Boss report is empty.");
+
+  const w = window.open("", "_blank", "width=900,height=700");
+
+  w.document.write(`
+    <html>
+      <head>
+        <title>Boss Report</title>
+      </head>
+      <body style="font-family: Arial; padding: 24px;">
+        <pre style="white-space: pre-wrap; font-size:13px;">${text}</pre>
+      </body>
+    </html>
+  `);
+
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+/* Hook buttons */
+document.getElementById("csvBtn").onclick = exportBossCSV;
+document.getElementById("pdfBtn").onclick = exportBossPDF;
 })();
 </script>
 </body>
