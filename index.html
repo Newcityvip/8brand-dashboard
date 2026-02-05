@@ -19,39 +19,47 @@
       background: radial-gradient(1100px 620px at 50% 0%, #133a66 0%, var(--bg0) 45%, #030a14 100%);
       min-height:100vh;
     }
-    .wrap{max-width:1280px; margin:0 auto; padding:28px 18px 40px}
-    h1{margin:4px 0 4px; font-size:30px; letter-spacing:.2px; text-align:center}
-    .sub{margin:0 0 18px; text-align:center; color:var(--muted); font-size:13px}
 
+    /* ✅ More space for tables: reduce outer padding */
+    .wrap{max-width:1280px; margin:0 auto; padding:16px 14px 26px}
+
+    h1{margin:0 0 2px; font-size:28px; letter-spacing:.2px; text-align:center}
+    .sub{margin:0 0 10px; text-align:center; color:var(--muted); font-size:12px; line-height:1.35}
+
+    /* ✅ panel tighter */
     .panel{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius:16px;
-      padding:14px;
+      padding:10px;  /* was 14px */
       box-shadow: 0 18px 48px rgba(0,0,0,.35);
     }
+
+    /* ✅ top grid thinner + less gap */
     .topGrid{
-      display:grid; gap:12px;
+      display:grid; gap:10px; /* was 12 */
       grid-template-columns: 1.2fr 1.4fr 1fr;
       align-items:stretch;
     }
     @media (max-width: 980px){ .topGrid{grid-template-columns:1fr} }
 
+    /* ✅ field thinner */
     .field{
       background: rgba(0,0,0,.18);
       border:1px solid var(--line);
       border-radius:14px;
-      padding:12px;
+      padding:10px; /* was 12 */
     }
-    .label{font-size:12px; color:var(--muted); margin-bottom:8px}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .label{font-size:11px; color:var(--muted); margin-bottom:6px} /* tighter */
+    .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+
     input[type="date"]{
-      width:220px; max-width:100%;
+      width:210px; max-width:100%;
       background: rgba(255,255,255,.06);
       border:1px solid var(--line);
       color:var(--text);
       border-radius:10px;
-      padding:10px 12px;
+      padding:8px 10px; /* smaller */
       outline:none;
     }
     input[type="file"]{
@@ -60,64 +68,73 @@
       border:1px dashed rgba(255,255,255,.25);
       color:var(--muted);
       border-radius:10px;
-      padding:10px 12px;
+      padding:8px 10px; /* smaller */
       outline:none;
     }
-    .hint{font-size:12px; color:var(--muted); margin-top:8px; line-height:1.4}
+
+    /* ✅ hints smaller and compact */
+    .hint{font-size:11px; color:var(--muted); margin-top:6px; line-height:1.35}
+
     .chip{
       display:inline-flex; align-items:center; gap:6px;
-      padding:6px 10px; border-radius:999px;
+      padding:5px 9px; border-radius:999px; /* smaller */
       border:1px solid var(--line);
       background: var(--chip);
       color:var(--muted);
-      font-size:12px;
+      font-size:11px; /* smaller */
     }
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap}
+
+    .btnRow{display:flex; gap:8px; flex-wrap:wrap}
     .btn{
       border:1px solid var(--line);
       background: rgba(255,255,255,.06);
       color:var(--text);
-      padding:10px 12px;
+      padding:8px 10px; /* smaller */
       border-radius:12px;
       cursor:pointer;
-      font-weight:600;
+      font-weight:700;
       transition:.15s;
+      font-size:12px;
     }
     .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.09)}
     .btn.primary{background: rgba(59,130,246,.25); border-color: rgba(59,130,246,.45)}
     .btn.ghost{background: rgba(255,255,255,.04)}
     .btn.small{padding:8px 10px; border-radius:10px; font-size:12px}
+
+    /* ✅ toggles compact */
     .toggle{
       display:flex; gap:10px; align-items:flex-start;
       user-select:none;
     }
-    .toggle input{margin-top:4px}
-    .toggle .tTitle{font-weight:700; font-size:13px}
-    .toggle .tSub{font-size:12px; color:var(--muted); line-height:1.35}
+    .toggle input{margin-top:3px}
+    .toggle .tTitle{font-weight:800; font-size:12px}
+    .toggle .tSub{font-size:11px; color:var(--muted); line-height:1.25}
 
-    .tabs{display:flex; gap:8px; justify-content:center; margin:14px 0 10px; flex-wrap:wrap}
+    /* ✅ tabs closer to top to free space */
+    .tabs{display:flex; gap:8px; justify-content:center; margin:10px 0 8px; flex-wrap:wrap}
     .tab{
       border:1px solid var(--line);
       background: rgba(255,255,255,.05);
       color:var(--muted);
-      padding:8px 12px;
+      padding:7px 11px; /* smaller */
       border-radius:999px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:12px;
     }
     .tab.active{background: rgba(59,130,246,.18); color:var(--text); border-color: rgba(59,130,246,.40)}
     .section{display:none}
     .section.active{display:block}
 
-    .sectionTitle{display:flex; align-items:end; justify-content:space-between; gap:10px; margin:0 0 10px}
-    .sectionTitle h2{margin:0; font-size:16px}
-    .sectionTitle .meta{font-size:12px; color:var(--muted)}
+    /* ✅ section title compact */
+    .sectionTitle{display:flex; align-items:end; justify-content:space-between; gap:10px; margin:0 0 8px}
+    .sectionTitle h2{margin:0; font-size:15px}
+    .sectionTitle .meta{font-size:11px; color:var(--muted)}
 
     .cards{
       display:grid;
       grid-template-columns: repeat(4, minmax(220px, 1fr));
-      gap:12px;
+      gap:10px;
     }
     @media (max-width: 1100px){ .cards{grid-template-columns:repeat(2, minmax(220px,1fr));} }
     @media (max-width: 520px){ .cards{grid-template-columns:1fr;} }
@@ -126,8 +143,8 @@
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius:16px;
-      padding:12px;
-      min-height:140px;
+      padding:10px;
+      min-height:132px; /* slightly smaller */
     }
     .cardHead{display:flex; justify-content:space-between; align-items:center; gap:10px}
     .brand{font-weight:900; letter-spacing:.3px}
@@ -142,7 +159,7 @@
     .badge.warn{border-color:rgba(245,158,11,.55); background:rgba(245,158,11,.18)}
     .badge.alert{border-color:rgba(239,68,68,.55); background:rgba(239,68,68,.18)}
     .badge.err{border-color:rgba(220,38,38,.65); background:rgba(220,38,38,.18)}
-    .mini{color:var(--muted); font-size:12px; margin-top:6px}
+    .mini{color:var(--muted); font-size:11px; margin-top:6px}
     .metricRow{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap}
     .metricBox{
       flex:1;
@@ -150,10 +167,10 @@
       background: rgba(0,0,0,.18);
       border:1px solid var(--line);
       border-radius:12px;
-      padding:10px;
+      padding:9px;
     }
     .mName{font-size:11px; color:var(--muted); font-weight:700}
-    .mVal{font-size:22px; font-weight:900; margin-top:3px}
+    .mVal{font-size:20px; font-weight:900; margin-top:3px}
     .mSub{font-size:11px; color:var(--muted); margin-top:2px}
     .neg{color:#fca5a5}
     .pos{color:#86efac}
@@ -174,7 +191,7 @@
     .right{text-align:right}
     .muted{color:var(--muted)}
     .noteBox{
-      margin-top:12px;
+      margin-top:10px;
       border:1px solid rgba(239,68,68,.35);
       background: rgba(239,68,68,.08);
       border-radius:14px;
@@ -186,10 +203,10 @@
     }
 
     /* ================================
-       ✅ PROFESSIONAL ALL METRICS TABLE (clean + no horizontal scroll)
+       ✅ PROFESSIONAL ALL METRICS TABLE (clean + more space for rows)
     ================================ */
     #allMetricsTable{
-      table-layout:fixed; /* stable column widths */
+      table-layout:fixed;
     }
     #allMetricsTable thead th{
       position: sticky;
@@ -206,7 +223,6 @@
       padding:10px 10px;
       vertical-align:middle;
     }
-    /* column widths */
     #allMetricsTable th.col-brand{width:64px}
     #allMetricsTable th.col-metric{width:150px}
     #allMetricsTable th.col-end{width:170px}
@@ -259,10 +275,19 @@
       font-size:11.5px;
       font-weight:900;
     }
-
-    /* brand group separator (every 3 rows per brand) */
     .brandSep td{
       border-bottom:1px solid rgba(255,255,255,.18) !important;
+    }
+
+    /* ✅ BIGGER TABLE VIEWPORT (more rows visible) */
+    .bigTableViewport{
+      overflow:auto;
+      border-radius:14px;
+      height: calc(100vh - 320px); /* key: more height for table area */
+      min-height: 420px;
+    }
+    @media (max-width: 980px){
+      .bigTableViewport{ height: calc(100vh - 360px); }
     }
 
     /* Modal */
@@ -331,9 +356,7 @@
           <input id="endDate" type="date" />
           <span class="chip" id="compChip">Comparisons end at: —</span>
         </div>
-        <div class="hint">
-          Tip: If End Date is today, enable “Use last completed day” to avoid partial-day drops before 23:59.
-        </div>
+        <div class="hint">Tip: If End Date is today, enable “Use last completed day” to avoid partial-day drops before 23:59.</div>
       </div>
 
       <div class="field">
@@ -356,7 +379,7 @@
           <button class="btn" id="fullPdfBtn">Full PDF</button>
         </div>
 
-        <div style="height:10px"></div>
+        <div style="height:8px"></div>
 
         <label class="toggle">
           <input id="useLastCompleted" type="checkbox" checked />
@@ -366,7 +389,7 @@
           </div>
         </label>
 
-        <label class="toggle" style="margin-top:10px">
+        <label class="toggle" style="margin-top:8px">
           <input id="use30D" type="checkbox" />
           <div>
             <div class="tTitle">Include 30D comparison (optional)</div>
@@ -374,7 +397,7 @@
           </div>
         </label>
 
-        <div style="height:10px"></div>
+        <div style="height:8px"></div>
         <div class="row">
           <span class="chip" id="doneChip">Done: loaded 0/8</span>
           <span class="chip" id="cutoffChip">Cutoff: 23:59 (local time)</span>
@@ -406,7 +429,7 @@
           <h2>Active Players Focus (Most Important)</h2>
           <div class="meta">End day + rolling averages (last7 vs prev7, last14 vs prev14, optional last30 vs prev30).</div>
         </div>
-        <div style="overflow:auto; border-radius:14px">
+        <div class="bigTableViewport">
           <table id="activeTable">
             <thead>
             <tr>
@@ -431,13 +454,13 @@
         </div>
       </div>
 
-      <!-- ALL METRICS (professional) -->
+      <!-- ALL METRICS -->
       <div class="section" id="tab-all">
         <div class="sectionTitle">
           <h2>All Metrics</h2>
           <div class="meta">Active / Deposit / Turnover. Clean layout + sticky header. Optional 30D. No left-right scroll.</div>
         </div>
-        <div style="overflow:auto; border-radius:14px; max-height:72vh">
+        <div class="bigTableViewport">
           <table id="allMetricsTable">
             <thead>
             <tr>
@@ -497,16 +520,10 @@
 
 <script>
 (() => {
-  /* ================================
-     CONFIG
-  ================================ */
   const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
   const WARN_AT = -10;
   const ALERT_AT = -20;
 
-  /* ================================
-     STATE
-  ================================ */
   const state = {
     filesLoaded: new Map(),
     endDateISO: "",
@@ -517,9 +534,6 @@
     boss: { activeText:"", depositText:"", turnoverText:"" }
   };
 
-  /* ================================
-     DOM
-  ================================ */
   const $ = (id)=>document.getElementById(id);
   const endDateEl = $("endDate");
   const filesEl = $("files");
@@ -554,9 +568,6 @@
   const bossCloseBtn = $("bossCloseBtn");
   const pillTabs = document.querySelectorAll(".pill");
 
-  /* ================================
-     HELPERS
-  ================================ */
   function pad2(n){ return String(n).padStart(2,"0"); }
   function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
   function parseISODate(iso){
@@ -621,9 +632,6 @@
     return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
   }
 
-  /* ================================
-     PARSE JSON FILES (MULTI FILE MERGE)
-  ================================ */
   function detectBrandFromFilename(name){
     const upper = (name||"").toUpperCase();
     for(const b of BRANDS){
@@ -693,9 +701,6 @@
     doneChip.textContent = `Done: loaded ${state.filesLoaded.size}/8`;
   }
 
-  /* ================================
-     COMPUTE ROLLING WINDOWS
-  ================================ */
   function pickRowByDate(rows, dateISO){
     return rows.find(r => r.dateISO === dateISO) || null;
   }
@@ -831,9 +836,6 @@
     return true;
   }
 
-  /* ================================
-     RENDER
-  ================================ */
   function renderNotes(){
     if(!state.notes.length){
       notesBox.classList.add("hidden");
@@ -973,7 +975,6 @@
     }
   }
 
-  /* ✅ CLEAN PROFESSIONAL ALL METRICS RENDER (same data, better layout) */
   function renderAllMetrics(){
     allMetricsBody.innerHTML = "";
     const show30 = set30DVisibility();
@@ -1027,8 +1028,6 @@
       `;
 
       const tr = document.createElement("tr");
-
-      /* add stronger separator after each brand block (3 metrics per brand) */
       const isBrandEnd = ((i+1) % 3 === 0);
       if(isBrandEnd) tr.classList.add("brandSep");
 
@@ -1072,9 +1071,6 @@
     }
   }
 
-  /* ================================
-     BOSS REPORT (unchanged)
-  ================================ */
   function dirWord(p){
     if(p===null||p===undefined||Number.isNaN(p)) return "";
     if(p>0) return "increase";
@@ -1163,9 +1159,6 @@
     bossReportTextEl.value = reportTextEl.value;
   }
 
-  /* ================================
-     EXPORTS (unchanged)
-  ================================ */
   function downloadBlob(filename, content, mime){
     const blob = new Blob([content], {type:mime});
     const url = URL.createObjectURL(blob);
@@ -1270,12 +1263,10 @@
       </body>
       </html>
     `);
+
     w.document.close(); w.focus(); w.print();
   }
 
-  /* ================================
-     EVENTS
-  ================================ */
   tabs.forEach(t => t.addEventListener("click", () => {
     tabs.forEach(x => x.classList.remove("active"));
     t.classList.add("active");
@@ -1387,9 +1378,6 @@
   fullCsvBtn.addEventListener("click", exportFullCSV);
   fullPdfBtn.addEventListener("click", exportFullPDF);
 
-  /* ================================
-     INIT
-  ================================ */
   const now = new Date();
   endDateEl.value = toISODate(now);
   state.endDateISO = endDateEl.value;
