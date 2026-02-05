@@ -299,7 +299,7 @@
       <div class="section active" id="tab-summary">
         <div class="sectionTitle">
           <h2>At a glance</h2>
-          <div class="meta" id="summaryMeta">Summary shows Active 7D% and 14D% only.</div>
+          <div class="meta" id="summaryMeta">Summary shows Active 7D% and 14D% (Now + Previous day end).</div>
         </div>
         <div class="cards" id="summaryCards"></div>
         <div class="noteBox hidden" id="notesBox"></div>
@@ -309,27 +309,31 @@
       <div class="section" id="tab-active">
         <div class="sectionTitle">
           <h2>Active Players Focus (Most Important)</h2>
-          <div class="meta">End day + rolling averages (last7 vs prev7, last14 vs prev14).</div>
+          <div class="meta">Shows BOTH end-days: D and (D-1) with 1D/7D/14D.</div>
         </div>
         <div style="overflow:auto; border-radius:14px">
           <table id="activeTable">
             <thead>
             <tr>
               <th>Brand</th>
-              <th class="right">End Day Active</th>
-              <th class="right">Prev Day Active</th>
-              <th class="right">Avg(last7)</th>
-              <th class="right">Avg(prev7)</th>
-              <th class="right">Avg(last14)</th>
-              <th class="right">Avg(prev14)</th>
+              <th class="right">End Day (D)</th>
               <th class="right">1D%</th>
               <th class="right">7D%</th>
               <th class="right">14D%</th>
+
+              <th class="right">End Day (D-1)</th>
+              <th class="right">1D% (D-1)</th>
+              <th class="right">7D% (D-1)</th>
+              <th class="right">14D% (D-1)</th>
+
               <th>Status</th>
             </tr>
             </thead>
             <tbody></tbody>
           </table>
+        </div>
+        <div class="hint" style="margin-top:8px">
+          D = comparisons end at selected day (or last completed day if toggle ON). D-1 = previous completed day. This is your “last two complete days” view.
         </div>
       </div>
 
@@ -337,7 +341,7 @@
       <div class="section" id="tab-all">
         <div class="sectionTitle">
           <h2>All Metrics</h2>
-          <div class="meta">Active / Deposit / Turnover (same rolling logic).</div>
+          <div class="meta">Active / Deposit / Turnover — both end-days (D and D-1).</div>
         </div>
         <div style="overflow:auto; border-radius:14px">
           <table id="allMetricsTable">
@@ -345,15 +349,16 @@
             <tr>
               <th>Brand</th>
               <th>Metric</th>
-              <th class="right">End Day</th>
-              <th class="right">Prev Day</th>
-              <th class="right">Avg(last7)</th>
-              <th class="right">Avg(prev7)</th>
-              <th class="right">Avg(last14)</th>
-              <th class="right">Avg(prev14)</th>
+
+              <th class="right">End Day (D)</th>
               <th class="right">1D%</th>
               <th class="right">7D%</th>
               <th class="right">14D%</th>
+
+              <th class="right">End Day (D-1)</th>
+              <th class="right">1D% (D-1)</th>
+              <th class="right">7D% (D-1)</th>
+              <th class="right">14D% (D-1)</th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -412,12 +417,11 @@
     { key:"active",   label:"Active Players", format:"int" },
     { key:"totalDeposit", label:"Total Deposit", format:"int" },
     { key:"turnover", label:"Turnover", format:"money2" },
-    { key:"ftd", label:"FTD", format:"int" }, // kept for parsing sanity, not shown in summary
-    { key:"registered", label:"Registered", format:"int" } // kept for parsing sanity, not shown in summary
+    { key:"ftd", label:"FTD", format:"int" }, // kept for parsing sanity
+    { key:"registered", label:"Registered", format:"int" } // kept for parsing sanity
   ];
 
   // thresholds for status by worst(7D%,14D%) drop:
-  // OK: > -10%, WARN: <= -10% and > -20%, ALERT: <= -20%, ERR: missing end date row.
   const WARN_AT = -10;
   const ALERT_AT = -20;
 
@@ -428,10 +432,11 @@
     filesLoaded: new Map(), // brand -> { source, exportedAt, rows: [{dateISO, ...metrics}] }
     endDateISO: "",
     compareEndISO: "",
+    compareEndISO_prev: "", // ✅ previous completed day (D-1)
     notes: [],
     computed: {
-      perBrand: new Map(), // brand -> { active:calc, totalDeposit:calc, turnover:calc }
-      allRows: [] // rows for allMetricsTable export
+      perBrand: new Map(), // brand -> { active, totalDeposit, turnover, active_prev, totalDeposit_prev, turnover_prev }
+      allRows: [] // for full CSV export (kept)
     },
     boss: {
       activeText: "",
@@ -503,7 +508,6 @@
     if(/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
     if(/^\d{4}\/\d{2}\/\d{2}$/.test(t)) return t.replaceAll("/","-");
     if(/^\d{8}$/.test(t)) return `${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;
-    // try generic
     const m = t.match(/(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
     if(m){
       return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
@@ -537,7 +541,6 @@
   }
 
   function statusFromWorstDrop(worst){
-    // worst is negative when dropping
     if(worst===null) return "ERR";
     if(worst <= ALERT_AT) return "ALERT";
     if(worst <= WARN_AT) return "WARN";
@@ -568,7 +571,6 @@
   }
 
   function normalizeRows(raw){
-    // Expected: raw.rows: [{ date, registered, ftd, totalDeposit, active, turnover }]
     const rows = Array.isArray(raw?.rows) ? raw.rows : [];
     const out = [];
     for(const r of rows){
@@ -583,7 +585,6 @@
         turnover: safeNum(r.turnover)
       });
     }
-    // sort ascending by date
     out.sort((a,b)=> a.dateISO.localeCompare(b.dateISO));
     return out;
   }
@@ -622,7 +623,6 @@
   }
 
   function avgForRange(rows, startISO, endISO, metricKey){
-    // inclusive range, requires exact date presence; compute avg over available days in range
     const inRange = rows.filter(r => r.dateISO >= startISO && r.dateISO <= endISO);
     const vals = inRange.map(r => safeNum(r[metricKey])).filter(v => v!==null);
     if(!vals.length) return { avg:null, count:0 };
@@ -631,7 +631,6 @@
   }
 
   function pctChange(a, b){
-    // compare a vs b: (a-b)/b * 100
     if(a===null || b===null) return null;
     if(Math.abs(b) < 1e-9) return null;
     return ((a - b) / b) * 100;
@@ -646,7 +645,6 @@
       return { ok:false, reason:`No end-date row for ${compareEndISO}`, end:null, prev:null };
     }
 
-    // 7D windows
     const last7Start = addDaysISO(compareEndISO, -6);
     const prev7Start = addDaysISO(compareEndISO, -13);
     const prev7End   = addDaysISO(compareEndISO, -7);
@@ -667,11 +665,6 @@
     const p1d = pctChange(endVal, prevVal);
     const p7d = pctChange(last7.avg, prev7.avg);
     const p14d = pctChange(last14.avg, prev14.avg);
-
-    const worst = Math.min(
-      (p7d===null ? 0 : p7d),
-      (p14d===null ? 0 : p14d)
-    );
 
     return {
       ok:true,
@@ -697,9 +690,13 @@
 
     const useLast = !!useLastCompletedEl.checked;
     state.compareEndISO = useLast ? addDaysISO(endISO, -1) : endISO;
-    compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
 
-    // compute per brand
+    // ✅ last two complete days: D and D-1
+    state.compareEndISO_prev = addDaysISO(state.compareEndISO, -1);
+
+    compChip.textContent =
+      `Comparisons end at: ${state.compareEndISO || "—"} | prev: ${state.compareEndISO_prev || "—"}`;
+
     state.computed.perBrand = new Map();
     state.computed.allRows = [];
 
@@ -711,18 +708,29 @@
       }
       const rows = pack.rows;
 
+      // ✅ D calculations
       const activeCalc = computeMetric(rows, "active", state.compareEndISO);
       const depCalc = computeMetric(rows, "totalDeposit", state.compareEndISO);
       const turnCalc = computeMetric(rows, "turnover", state.compareEndISO);
+
+      // ✅ D-1 calculations
+      const activeCalcPrev = computeMetric(rows, "active", state.compareEndISO_prev);
+      const depCalcPrev = computeMetric(rows, "totalDeposit", state.compareEndISO_prev);
+      const turnCalcPrev = computeMetric(rows, "turnover", state.compareEndISO_prev);
 
       state.computed.perBrand.set(brand, {
         active: activeCalc,
         totalDeposit: depCalc,
         turnover: turnCalc,
+
+        active_prev: activeCalcPrev,
+        totalDeposit_prev: depCalcPrev,
+        turnover_prev: turnCalcPrev,
+
         rowsCount: rows.length
       });
 
-      // build all-metrics export rows
+      // keep existing allRows for exports
       for(const mk of ["active","totalDeposit","turnover"]){
         const c = (mk==="active") ? activeCalc : (mk==="totalDeposit" ? depCalc : turnCalc);
         state.computed.allRows.push({
@@ -736,12 +744,11 @@
         });
       }
 
-      // notes about missing window coverage (optional)
       if(activeCalc.ok){
-        if(activeCalc.c1 < 7) state.notes.push(`${brand}: Active last7 has only ${activeCalc.c1}/7 days.`);
-        if(activeCalc.c2 < 7) state.notes.push(`${brand}: Active prev7 has only ${activeCalc.c2}/7 days.`);
-        if(activeCalc.c3 < 14) state.notes.push(`${brand}: Active last14 has only ${activeCalc.c3}/14 days.`);
-        if(activeCalc.c4 < 14) state.notes.push(`${brand}: Active prev14 has only ${activeCalc.c4}/14 days.`);
+        if(activeCalc.c1 < 7) state.notes.push(`${brand}: Active last7 has only ${activeCalc.c1}/7 days (D).`);
+        if(activeCalc.c2 < 7) state.notes.push(`${brand}: Active prev7 has only ${activeCalc.c2}/7 days (D).`);
+        if(activeCalc.c3 < 14) state.notes.push(`${brand}: Active last14 has only ${activeCalc.c3}/14 days (D).`);
+        if(activeCalc.c4 < 14) state.notes.push(`${brand}: Active prev14 has only ${activeCalc.c4}/14 days (D).`);
       }else{
         state.notes.push(`${brand}: ${activeCalc.reason}`);
       }
@@ -763,6 +770,13 @@
     notesBox.textContent = "Notes:\n- " + state.notes.join("\n- ");
   }
 
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
+  }
+
   function renderSummary(){
     summaryCards.innerHTML = "";
 
@@ -773,6 +787,7 @@
       let status = "ERR";
       let reason = "";
       let p7 = null, p14 = null;
+      let p7p = null, p14p = null;
 
       if(!pack){
         reason = "Missing JSON";
@@ -783,11 +798,19 @@
       }else{
         p7 = data.active.p7d;
         p14 = data.active.p14d;
+
+        // ✅ previous completed day window
+        if(data.active_prev?.ok){
+          p7p = data.active_prev.p7d;
+          p14p = data.active_prev.p14d;
+        }
+
         const worst = data.active.worstDrop;
         status = statusFromWorstDrop(worst);
       }
 
       const endUsed = state.compareEndISO || "—";
+      const prevEndUsed = state.compareEndISO_prev || "—";
       const rowsCount = data?.rowsCount ?? (pack?.rows?.length ?? 0);
 
       const card = document.createElement("div");
@@ -796,7 +819,7 @@
         <div class="cardHead">
           <div>
             <div class="brand">${brand}</div>
-            <div class="mini">End used: <b>${endUsed}</b> • rows: ${rowsCount}</div>
+            <div class="mini">End used: <b>${endUsed}</b> • Prev end: <b>${prevEndUsed}</b> • rows: ${rowsCount}</div>
           </div>
           <div class="badge ${badgeClass(status)}">${status}</div>
         </div>
@@ -805,12 +828,12 @@
           <div class="metricBox">
             <div class="mName">Active 7D%</div>
             <div class="mVal ${pctClass(p7)}">${p7===null ? "—" : (p7.toFixed(2) + "%")}</div>
-            <div class="mSub">Rolling avg vs prev window</div>
+            <div class="mSub">Prev end: ${p7p===null ? "—" : (p7p.toFixed(2) + "%")}</div>
           </div>
           <div class="metricBox">
             <div class="mName">Active 14D%</div>
             <div class="mVal ${pctClass(p14)}">${p14===null ? "—" : (p14.toFixed(2) + "%")}</div>
-            <div class="mSub">Rolling avg vs prev window</div>
+            <div class="mSub">Prev end: ${p14p===null ? "—" : (p14p.toFixed(2) + "%")}</div>
           </div>
         </div>
 
@@ -822,18 +845,12 @@
     }
   }
 
-  function escapeHtml(s){
-    return String(s||"")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;");
-  }
-
   function renderActiveTable(){
     activeTableBody.innerHTML = "";
     for(const brand of BRANDS){
       const d = state.computed.perBrand.get(brand);
       const c = d?.active;
+      const cp = d?.active_prev;
 
       let status = "ERR";
       if(c?.ok){
@@ -843,15 +860,17 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><b>${brand}</b></td>
+
         <td class="right">${fmtInt(c?.endVal)}</td>
-        <td class="right">${fmtInt(c?.prevVal)}</td>
-        <td class="right">${fmtInt(c?.last7Avg)}</td>
-        <td class="right">${fmtInt(c?.prev7Avg)}</td>
-        <td class="right">${fmtInt(c?.last14Avg)}</td>
-        <td class="right">${fmtInt(c?.prev14Avg)}</td>
         <td class="right ${pctClass(c?.p1d)}">${fmtPct(c?.p1d)}</td>
         <td class="right ${pctClass(c?.p7d)}">${fmtPct(c?.p7d)}</td>
         <td class="right ${pctClass(c?.p14d)}">${fmtPct(c?.p14d)}</td>
+
+        <td class="right">${fmtInt(cp?.endVal)}</td>
+        <td class="right ${pctClass(cp?.p1d)}">${fmtPct(cp?.p1d)}</td>
+        <td class="right ${pctClass(cp?.p7d)}">${fmtPct(cp?.p7d)}</td>
+        <td class="right ${pctClass(cp?.p14d)}">${fmtPct(cp?.p14d)}</td>
+
         <td><span class="badge ${badgeClass(status)}">${status}</span></td>
       `;
       activeTableBody.appendChild(tr);
@@ -872,22 +891,31 @@
       return fmtInt(v);
     };
 
-    for(const r of state.computed.allRows){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><b>${r.brand}</b></td>
-        <td>${metricPretty(r.metric)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.end)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.last7)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev7)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.last14)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev14)}</td>
-        <td class="right ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</td>
-        <td class="right ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</td>
-        <td class="right ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</td>
-      `;
-      allMetricsBody.appendChild(tr);
+    for(const brand of BRANDS){
+      const d = state.computed.perBrand.get(brand);
+      if(!d) continue;
+
+      for(const mk of ["active","totalDeposit","turnover"]){
+        const nowC = d[mk];
+        const prevC = d[mk + "_prev"];
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><b>${brand}</b></td>
+          <td>${metricPretty(mk)}</td>
+
+          <td class="right">${fmtByMetric(mk, nowC?.endVal)}</td>
+          <td class="right ${pctClass(nowC?.p1d)}">${fmtPct(nowC?.p1d)}</td>
+          <td class="right ${pctClass(nowC?.p7d)}">${fmtPct(nowC?.p7d)}</td>
+          <td class="right ${pctClass(nowC?.p14d)}">${fmtPct(nowC?.p14d)}</td>
+
+          <td class="right">${fmtByMetric(mk, prevC?.endVal)}</td>
+          <td class="right ${pctClass(prevC?.p1d)}">${fmtPct(prevC?.p1d)}</td>
+          <td class="right ${pctClass(prevC?.p7d)}">${fmtPct(prevC?.p7d)}</td>
+          <td class="right ${pctClass(prevC?.p14d)}">${fmtPct(prevC?.p14d)}</td>
+        `;
+        allMetricsBody.appendChild(tr);
+      }
     }
   }
 
@@ -919,9 +947,7 @@
   }
 
   /* ================================
-     BOSS REPORT TEXT (your requested format)
-     - per brand line: "M1 — 7D: -8.08% (drop) | 14D: -6.84% (drop)"
-     - short note about biggest drops only
+     BOSS REPORT (unchanged format)
   ================================ */
   function dirWord(p){
     if(p===null||p===undefined||Number.isNaN(p)) return "";
@@ -941,8 +967,7 @@
     lines.push(`Comparison end date: ${state.compareEndISO || "—"}`);
     lines.push("");
 
-    // per-brand summary lines
-    const movers = []; // collect worst 14D or 7D
+    const movers = [];
     for(const brand of BRANDS){
       const data = state.computed.perBrand.get(brand);
       const c = data ? data[metricKey] : null;
@@ -962,7 +987,6 @@
       movers.push({ brand, worst });
     }
 
-    // short note: top 3 drops (most negative)
     const worstDrops = movers
       .filter(x => Number.isFinite(x.worst))
       .sort((a,b)=> a.worst - b.worst)
@@ -987,7 +1011,6 @@
   function openBossModal(){
     bossMeta.textContent = `Comparison end date: ${state.compareEndISO || "—"} • Files loaded: ${state.filesLoaded.size}/8`;
     modalBackdrop.style.display = "flex";
-    // default to active tab
     setBossTab("active");
   }
 
@@ -1003,15 +1026,11 @@
       state.boss.turnoverText;
 
     reportTextEl.value = text || "";
-    // keep alias synced
     bossReportTextEl.value = reportTextEl.value;
   }
 
   /* ================================
      EXPORTS
-     - Boss CSV/PDF: exports current modal text
-     - Full CSV: exports All Metrics table
-     - Full PDF: prints full report area
   ================================ */
   function downloadBlob(filename, content, mime){
     const blob = new Blob([content], {type:mime});
@@ -1026,8 +1045,7 @@
   }
 
   function getBossReportText(){
-    const text = (reportTextEl.value || reportTextEl.innerText || "").trim();
-    return text;
+    return (reportTextEl.value || reportTextEl.innerText || "").trim();
   }
 
   function exportBossCSV(){
@@ -1052,7 +1070,7 @@
   }
 
   function exportFullCSV(){
-    // export All Metrics table content as CSV
+    // export All Metrics table content as CSV (existing "allRows" kept as before)
     const rows = [];
     const header = ["Brand","Metric","End Day","Prev Day","Avg(last7)","Avg(prev7)","Avg(last14)","Avg(prev14)","1D%","7D%","14D%"];
     rows.push(header);
@@ -1062,9 +1080,6 @@
         r.metric==="active" ? "Active Players" :
         r.metric==="totalDeposit" ? "Total Deposit" :
         "Turnover";
-
-      const end = r.metric==="turnover" ? (r.end ?? "") : (r.end ?? "");
-      const prev = r.metric==="turnover" ? (r.prev ?? "") : (r.prev ?? "");
 
       rows.push([
         r.brand,
@@ -1092,13 +1107,8 @@
     const root = document.getElementById("reportArea");
     const w = window.open("", "_blank", "width=1200,height=800");
 
-    // clone report area only (clean)
     const clone = root.cloneNode(true);
-
-    // hide raw json textareas (optional) in pdf
-    clone.querySelectorAll("textarea").forEach(t => {
-      t.style.display = "none";
-    });
+    clone.querySelectorAll("textarea").forEach(t => { t.style.display = "none"; });
 
     w.document.write(`
       <html>
@@ -1115,7 +1125,7 @@
       </head>
       <body>
         <h2>8 Brand JSON Dashboard — Full Report</h2>
-        <div class="muted">Comparison end date: ${state.compareEndISO || "—"}</div>
+        <div class="muted">Comparison end date: ${state.compareEndISO || "—"} | prev: ${state.compareEndISO_prev || "—"}</div>
         ${clone.innerHTML}
       </body>
       </html>
@@ -1137,7 +1147,9 @@
   useLastCompletedEl.addEventListener("change", () => {
     if(state.endDateISO){
       state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(state.endDateISO, -1) : state.endDateISO;
-      compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
+      state.compareEndISO_prev = addDaysISO(state.compareEndISO, -1);
+      compChip.textContent =
+        `Comparisons end at: ${state.compareEndISO || "—"} | prev: ${state.compareEndISO_prev || "—"}`;
     }
   });
 
@@ -1145,7 +1157,9 @@
     const endISO = endDateEl.value || "";
     state.endDateISO = endISO;
     state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(endISO, -1) : endISO;
-    compChip.textContent = `Comparisons end at: ${state.compareEndISO || "—"}`;
+    state.compareEndISO_prev = addDaysISO(state.compareEndISO, -1);
+    compChip.textContent =
+      `Comparisons end at: ${state.compareEndISO || "—"} | prev: ${state.compareEndISO_prev || "—"}`;
   });
 
   filesEl.addEventListener("change", async (e) => {
@@ -1153,14 +1167,12 @@
   });
 
   buildBtn.addEventListener("click", async () => {
-    // If user selected files but we haven't read them (rare), read now.
     if(filesEl.files?.length){
       await handleFiles([...filesEl.files]);
     }
 
     const ok = computeAll();
     renderNotes();
-
     if(!ok) return;
 
     renderSummary();
@@ -1187,7 +1199,6 @@
   });
 
   bossBtn.addEventListener("click", () => {
-    // ensure boss report uses latest calculations
     if(!state.compareEndISO || !state.computed.perBrand.size){
       alert("Build Dashboard first.");
       return;
@@ -1211,7 +1222,6 @@
       bossCopyBtn.textContent = "Copied";
       setTimeout(()=>bossCopyBtn.textContent="Copy", 900);
     }catch(_){
-      // fallback
       reportTextEl.select();
       document.execCommand("copy");
       bossCopyBtn.textContent = "Copied";
@@ -1234,24 +1244,14 @@
   /* ================================
      INIT
   ================================ */
-  // default endDate to today (local)
   const now = new Date();
   endDateEl.value = toISODate(now);
   state.endDateISO = endDateEl.value;
   state.compareEndISO = useLastCompletedEl.checked ? addDaysISO(state.endDateISO, -1) : state.endDateISO;
-  compChip.textContent = `Comparisons end at: ${state.compareEndISO}`;
+  state.compareEndISO_prev = addDaysISO(state.compareEndISO, -1);
+  compChip.textContent =
+    `Comparisons end at: ${state.compareEndISO} | prev: ${state.compareEndISO_prev}`;
 
-  // modal default text
-  function setBossTab(which){
-    pillTabs.forEach(p => p.classList.toggle("active", p.dataset.r===which));
-    const text =
-      which==="active" ? state.boss.activeText :
-      which==="deposit" ? state.boss.depositText :
-      state.boss.turnoverText;
-
-    reportTextEl.value = text || "";
-    bossReportTextEl.value = reportTextEl.value;
-  }
 })();
 </script>
 </body>
