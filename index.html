@@ -185,6 +185,23 @@
       white-space:pre-wrap;
     }
 
+    /* ✅ ALL METRICS (NO HORIZONTAL SCROLL): compact stacked cells */
+    #allMetricsTable th, #allMetricsTable td{
+      padding:8px 10px;
+      vertical-align:top;
+    }
+    #allMetricsTable .stack{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      line-height:1.15;
+      white-space:nowrap;
+    }
+    #allMetricsTable .stack .subline{
+      font-size:11px;
+      color:var(--muted);
+    }
+
     /* Modal */
     .backdrop{
       position:fixed; inset:0; background: rgba(0,0,0,.55);
@@ -351,11 +368,11 @@
         </div>
       </div>
 
-      <!-- ALL METRICS -->
+      <!-- ALL METRICS (✅ changed to compact so 30D fits without horizontal scroll) -->
       <div class="section" id="tab-all">
         <div class="sectionTitle">
           <h2>All Metrics</h2>
-          <div class="meta">Active / Deposit / Turnover (same rolling logic). Optional 30D toggle.</div>
+          <div class="meta">Active / Deposit / Turnover (same rolling logic). Optional 30D toggle. (No left-right scroll)</div>
         </div>
         <div style="overflow:auto; border-radius:14px">
           <table id="allMetricsTable">
@@ -363,18 +380,11 @@
             <tr>
               <th>Brand</th>
               <th>Metric</th>
-              <th class="right">End Day</th>
-              <th class="right">Prev Day</th>
-              <th class="right">Avg(last7)</th>
-              <th class="right">Avg(prev7)</th>
-              <th class="right">Avg(last14)</th>
-              <th class="right">Avg(prev14)</th>
-              <th class="right th30" style="display:none">Avg(last30)</th>
-              <th class="right th30" style="display:none">Avg(prev30)</th>
-              <th class="right">1D%</th>
-              <th class="right">7D%</th>
-              <th class="right">14D%</th>
-              <th class="right th30" style="display:none">30D%</th>
+              <th class="right">End / Prev</th>
+              <th class="right">Avg 7D<br><span class="muted">last / prev</span></th>
+              <th class="right">Avg 14D<br><span class="muted">last / prev</span></th>
+              <th class="right th30" style="display:none">Avg 30D<br><span class="muted">last / prev</span></th>
+              <th class="right">% Change<br><span class="muted">1D / 7D / 14D / 30D</span></th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -685,7 +695,7 @@
     const prev14Start = addDaysISO(compareEndISO, -27);
     const prev14End   = addDaysISO(compareEndISO, -14);
 
-    // 30D windows (optional use30D toggle will decide display; compute anyway if possible)
+    // 30D windows
     const last30Start = addDaysISO(compareEndISO, -29);
     const prev30Start = addDaysISO(compareEndISO, -59);
     const prev30End   = addDaysISO(compareEndISO, -30);
@@ -744,12 +754,10 @@
       }
       const rows = pack.rows;
 
-      // current end computations
       const activeCur = computeMetric(rows, "active", state.compareEndISO);
       const depCur = computeMetric(rows, "totalDeposit", state.compareEndISO);
       const turnCur = computeMetric(rows, "turnover", state.compareEndISO);
 
-      // previous end computations (for summary "prev end" display)
       const activePrev = computeMetric(rows, "active", state.prevCompareEndISO);
 
       state.computed.perBrand.set(brand, {
@@ -759,7 +767,6 @@
         rowsCount: rows.length
       });
 
-      // build all-metrics export rows (current end)
       for(const mk of ["active","totalDeposit","turnover"]){
         const c = mk==="active" ? activeCur : (mk==="totalDeposit" ? depCur : turnCur);
         state.computed.allRows.push({
@@ -774,12 +781,10 @@
         });
       }
 
-      // notes
       if(activeCur.ok){
         if(activeCur.c1 < 7) state.notes.push(`${brand}: Active prev7 has only ${activeCur.c2}/7 days.`);
         if(activeCur.c3 < 14) state.notes.push(`${brand}: Active last14 has only ${activeCur.c3}/14 days.`);
         if(activeCur.c4 < 14) state.notes.push(`${brand}: Active prev14 has only ${activeCur.c4}/14 days.`);
-        // 30D notes only if toggle is ON (to avoid noise)
         if(use30DEl.checked){
           if(activeCur.c5 < 30) state.notes.push(`${brand}: Active last30 has only ${activeCur.c5}/30 days.`);
           if(activeCur.c6 < 30) state.notes.push(`${brand}: Active prev30 has only ${activeCur.c6}/30 days.`);
@@ -934,6 +939,7 @@
     }
   }
 
+  /* ✅ UPDATED: ALL METRICS render to compact stacked columns (so 30D fits on screen) */
   function renderAllMetrics(){
     allMetricsBody.innerHTML = "";
     const show30 = set30DVisibility();
@@ -951,21 +957,52 @@
 
     for(const r of state.computed.allRows){
       const tr = document.createElement("tr");
+
+      const endPrev = `
+        <div class="stack" style="align-items:flex-end">
+          <div>${fmtByMetric(r.metric, r.end)}</div>
+          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev)}</div>
+        </div>
+      `;
+
+      const avg7 = `
+        <div class="stack" style="align-items:flex-end">
+          <div>${fmtByMetric(r.metric, r.last7)}</div>
+          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev7)}</div>
+        </div>
+      `;
+
+      const avg14 = `
+        <div class="stack" style="align-items:flex-end">
+          <div>${fmtByMetric(r.metric, r.last14)}</div>
+          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev14)}</div>
+        </div>
+      `;
+
+      const avg30 = `
+        <div class="stack" style="align-items:flex-end">
+          <div>${fmtByMetric(r.metric, r.last30)}</div>
+          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev30)}</div>
+        </div>
+      `;
+
+      const pctBox = `
+        <div class="stack" style="align-items:flex-end">
+          <div class="${pctClass(r.p1d)}">1D: ${fmtPct(r.p1d)}</div>
+          <div class="${pctClass(r.p7d)}">7D: ${fmtPct(r.p7d)}</div>
+          <div class="${pctClass(r.p14d)}">14D: ${fmtPct(r.p14d)}</div>
+          ${show30 ? `<div class="${pctClass(r.p30d)}">30D: ${fmtPct(r.p30d)}</div>` : ``}
+        </div>
+      `;
+
       tr.innerHTML = `
         <td><b>${r.brand}</b></td>
         <td>${metricPretty(r.metric)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.end)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.last7)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev7)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.last14)}</td>
-        <td class="right">${fmtByMetric(r.metric, r.prev14)}</td>
-        <td class="right th30" style="${show30 ? "" : "display:none"}">${fmtByMetric(r.metric, r.last30)}</td>
-        <td class="right th30" style="${show30 ? "" : "display:none"}">${fmtByMetric(r.metric, r.prev30)}</td>
-        <td class="right ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</td>
-        <td class="right ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</td>
-        <td class="right ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</td>
-        <td class="right th30 ${pctClass(r.p30d)}" style="${show30 ? "" : "display:none"}">${fmtPct(r.p30d)}</td>
+        <td class="right">${endPrev}</td>
+        <td class="right">${avg7}</td>
+        <td class="right">${avg14}</td>
+        <td class="right th30" style="${show30 ? "" : "display:none"}">${avg30}</td>
+        <td class="right">${pctBox}</td>
       `;
       allMetricsBody.appendChild(tr);
     }
@@ -1230,7 +1267,6 @@
   useLastCompletedEl.addEventListener("change", () => {
     syncCompareChips();
     if(state.computed.allRows.length){
-      // rebuild views without changing data files
       computeAll();
       renderNotes();
       renderSummary();
@@ -1242,7 +1278,6 @@
   });
 
   use30DEl.addEventListener("change", () => {
-    // just re-render, no logic break
     if(state.computed.allRows.length){
       renderNotes();
       renderSummary();
