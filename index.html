@@ -185,21 +185,84 @@
       white-space:pre-wrap;
     }
 
-    /* ✅ ALL METRICS (NO HORIZONTAL SCROLL): compact stacked cells */
-    #allMetricsTable th, #allMetricsTable td{
-      padding:8px 10px;
-      vertical-align:top;
+    /* ================================
+       ✅ PROFESSIONAL ALL METRICS TABLE (clean + no horizontal scroll)
+    ================================ */
+    #allMetricsTable{
+      table-layout:fixed; /* stable column widths */
     }
-    #allMetricsTable .stack{
+    #allMetricsTable thead th{
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(6px);
+      border-bottom:1px solid rgba(255,255,255,.16);
+    }
+    #allMetricsTable tbody tr:nth-child(odd) td{
+      background: rgba(255,255,255,.015);
+    }
+    #allMetricsTable td, #allMetricsTable th{
+      padding:10px 10px;
+      vertical-align:middle;
+    }
+    /* column widths */
+    #allMetricsTable th.col-brand{width:64px}
+    #allMetricsTable th.col-metric{width:150px}
+    #allMetricsTable th.col-end{width:170px}
+    #allMetricsTable th.col-7{width:160px}
+    #allMetricsTable th.col-14{width:160px}
+    #allMetricsTable th.col-30{width:160px}
+    #allMetricsTable th.col-chg{width:210px}
+
+    .cell2{
       display:flex;
       flex-direction:column;
       gap:2px;
       line-height:1.15;
       white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    #allMetricsTable .stack .subline{
-      font-size:11px;
+    .cell2 .top{
+      font-weight:900;
+      font-size:12px;
+      color:rgba(255,255,255,.92);
+    }
+    .cell2 .sub{
+      font-size:10.5px;
       color:var(--muted);
+    }
+
+    .chgGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:6px 10px;
+      justify-items:end;
+      align-items:center;
+      line-height:1.1;
+      white-space:nowrap;
+    }
+    .chgItem{
+      display:flex;
+      gap:6px;
+      align-items:baseline;
+      justify-content:flex-end;
+      min-width:0;
+    }
+    .chgItem .k{
+      font-size:10.5px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    .chgItem .v{
+      font-size:11.5px;
+      font-weight:900;
+    }
+
+    /* brand group separator (every 3 rows per brand) */
+    .brandSep td{
+      border-bottom:1px solid rgba(255,255,255,.18) !important;
     }
 
     /* Modal */
@@ -368,23 +431,23 @@
         </div>
       </div>
 
-      <!-- ALL METRICS (✅ changed to compact so 30D fits without horizontal scroll) -->
+      <!-- ALL METRICS (professional) -->
       <div class="section" id="tab-all">
         <div class="sectionTitle">
           <h2>All Metrics</h2>
-          <div class="meta">Active / Deposit / Turnover (same rolling logic). Optional 30D toggle. (No left-right scroll)</div>
+          <div class="meta">Active / Deposit / Turnover. Clean layout + sticky header. Optional 30D. No left-right scroll.</div>
         </div>
-        <div style="overflow:auto; border-radius:14px">
+        <div style="overflow:auto; border-radius:14px; max-height:72vh">
           <table id="allMetricsTable">
             <thead>
             <tr>
-              <th>Brand</th>
-              <th>Metric</th>
-              <th class="right">End / Prev</th>
-              <th class="right">Avg 7D<br><span class="muted">last / prev</span></th>
-              <th class="right">Avg 14D<br><span class="muted">last / prev</span></th>
-              <th class="right th30" style="display:none">Avg 30D<br><span class="muted">last / prev</span></th>
-              <th class="right">% Change<br><span class="muted">1D / 7D / 14D / 30D</span></th>
+              <th class="col-brand">Brand</th>
+              <th class="col-metric">Metric</th>
+              <th class="right col-end">End / Prev</th>
+              <th class="right col-7">Avg 7D (last/prev)</th>
+              <th class="right col-14">Avg 14D (last/prev)</th>
+              <th class="right col-30 th30" style="display:none">Avg 30D (last/prev)</th>
+              <th class="right col-chg">% Change (1D/7D/14D/30D)</th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -438,8 +501,6 @@
      CONFIG
   ================================ */
   const BRANDS = ["M1","M2","B1","B2","B3","B4","K1","TK"];
-
-  // status thresholds remain SAME (based on worst of 7D/14D) to avoid breaking
   const WARN_AT = -10;
   const ALERT_AT = -20;
 
@@ -447,15 +508,12 @@
      STATE
   ================================ */
   const state = {
-    filesLoaded: new Map(), // brand -> { rows: [...], rawList: [...] }
+    filesLoaded: new Map(),
     endDateISO: "",
     compareEndISO: "",
     prevCompareEndISO: "",
     notes: [],
-    computed: {
-      perBrand: new Map(), // brand -> { active:{cur,prev}, totalDeposit:{cur}, turnover:{cur}, rowsCount }
-      allRows: [] // for All Metrics table + export
-    },
+    computed: { perBrand: new Map(), allRows: [] },
     boss: { activeText:"", depositText:"", turnoverText:"" }
   };
 
@@ -478,12 +536,7 @@
   const fullPdfBtn = $("fullPdfBtn");
 
   const tabs = document.querySelectorAll(".tab");
-  const sections = {
-    summary: $("tab-summary"),
-    active: $("tab-active"),
-    all: $("tab-all"),
-    raw: $("tab-raw")
-  };
+  const sections = { summary: $("tab-summary"), active: $("tab-active"), all: $("tab-all"), raw: $("tab-raw") };
 
   const summaryCards = $("summaryCards");
   const notesBox = $("notesBox");
@@ -502,7 +555,7 @@
   const pillTabs = document.querySelectorAll(".pill");
 
   /* ================================
-     HELPERS (dates + formatting)
+     HELPERS
   ================================ */
   function pad2(n){ return String(n).padStart(2,"0"); }
   function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -524,9 +577,7 @@
     if(/^\d{4}\/\d{2}\/\d{2}$/.test(t)) return t.replaceAll("/","-");
     if(/^\d{8}$/.test(t)) return `${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;
     const m = t.match(/(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
-    if(m){
-      return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
-    }
+    if(m) return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
     return "";
   }
 
@@ -541,8 +592,7 @@
   function fmtPct(x){
     if(x===null||x===undefined||Number.isNaN(x)) return "—";
     const v = Number(x);
-    const s = (v>=0?"+":"") + v.toFixed(2) + "%";
-    return s;
+    return (v>=0?"+":"") + v.toFixed(2) + "%";
   }
   function pctClass(v){
     if(v===null||v===undefined||Number.isNaN(v)) return "zero";
@@ -567,12 +617,8 @@
     if(status==="ALERT") return "alert";
     return "err";
   }
-
   function escapeHtml(s){
-    return String(s||"")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;");
+    return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
   }
 
   /* ================================
@@ -581,7 +627,6 @@
   function detectBrandFromFilename(name){
     const upper = (name||"").toUpperCase();
     for(const b of BRANDS){
-      // works for: M1.json, M1-1.json, M1-2.json, M1_2026.json, etc.
       if(upper.startsWith(b) || upper.includes(`${b}.JSON`) || upper.includes(`${b}_`) || upper.includes(`${b}-`)) return b;
     }
     return "";
@@ -613,7 +658,6 @@
 
   async function handleFiles(files){
     state.notes = [];
-
     for(const file of files){
       const brand = detectBrandFromFilename(file.name);
       if(!brand){
@@ -635,7 +679,6 @@
             rawList: [raw]
           });
         } else {
-          // merge by date (latest wins)
           const map = new Map(existing.rows.map(r => [r.dateISO, r]));
           for(const r of rows) map.set(r.dateISO, r);
           existing.rows = Array.from(map.values()).sort((a,b)=>a.dateISO.localeCompare(b.dateISO));
@@ -647,8 +690,6 @@
         state.notes.push(`${brand}: Failed to parse JSON (${String(err.message||err)})`);
       }
     }
-
-    // done chip counts distinct brands loaded (still 8 target)
     doneChip.textContent = `Done: loaded ${state.filesLoaded.size}/8`;
   }
 
@@ -678,24 +719,19 @@
     const prevISO = addDaysISO(compareEndISO, -1);
     const prevRow = pickRowByDate(rows, prevISO);
 
-    if(!endRow){
-      return { ok:false, reason:`No end-date row for ${compareEndISO}`, endVal:null, prevVal:null };
-    }
+    if(!endRow) return { ok:false, reason:`No end-date row for ${compareEndISO}`, endVal:null, prevVal:null };
 
     const endVal = safeNum(endRow[metricKey]);
     const prevVal = prevRow ? safeNum(prevRow[metricKey]) : null;
 
-    // 7D windows
     const last7Start = addDaysISO(compareEndISO, -6);
     const prev7Start = addDaysISO(compareEndISO, -13);
     const prev7End   = addDaysISO(compareEndISO, -7);
 
-    // 14D windows
     const last14Start = addDaysISO(compareEndISO, -13);
     const prev14Start = addDaysISO(compareEndISO, -27);
     const prev14End   = addDaysISO(compareEndISO, -14);
 
-    // 30D windows
     const last30Start = addDaysISO(compareEndISO, -29);
     const prev30Start = addDaysISO(compareEndISO, -59);
     const prev30End   = addDaysISO(compareEndISO, -30);
@@ -728,7 +764,6 @@
 
   function computeAll(){
     state.notes = [];
-
     const endISO = endDateEl.value || "";
     if(!endISO){
       state.notes.push("End Date is required.");
@@ -793,7 +828,6 @@
         state.notes.push(`${brand}: ${activeCur.reason}`);
       }
     }
-
     return true;
   }
 
@@ -939,7 +973,7 @@
     }
   }
 
-  /* ✅ UPDATED: ALL METRICS render to compact stacked columns (so 30D fits on screen) */
+  /* ✅ CLEAN PROFESSIONAL ALL METRICS RENDER (same data, better layout) */
   function renderAllMetrics(){
     allMetricsBody.innerHTML = "";
     const show30 = set30DVisibility();
@@ -955,54 +989,57 @@
       return fmtInt(v);
     };
 
-    for(const r of state.computed.allRows){
+    for(let i=0;i<state.computed.allRows.length;i++){
+      const r = state.computed.allRows[i];
+
+      const endCell = `
+        <div class="cell2" style="align-items:flex-end">
+          <div class="top">${fmtByMetric(r.metric, r.end)}</div>
+          <div class="sub">Prev: ${fmtByMetric(r.metric, r.prev)}</div>
+        </div>
+      `;
+      const a7 = `
+        <div class="cell2" style="align-items:flex-end">
+          <div class="top">${fmtByMetric(r.metric, r.last7)}</div>
+          <div class="sub">Prev: ${fmtByMetric(r.metric, r.prev7)}</div>
+        </div>
+      `;
+      const a14 = `
+        <div class="cell2" style="align-items:flex-end">
+          <div class="top">${fmtByMetric(r.metric, r.last14)}</div>
+          <div class="sub">Prev: ${fmtByMetric(r.metric, r.prev14)}</div>
+        </div>
+      `;
+      const a30 = `
+        <div class="cell2" style="align-items:flex-end">
+          <div class="top">${fmtByMetric(r.metric, r.last30)}</div>
+          <div class="sub">Prev: ${fmtByMetric(r.metric, r.prev30)}</div>
+        </div>
+      `;
+
+      const changeCell = `
+        <div class="chgGrid">
+          <div class="chgItem"><span class="k">1D</span><span class="v ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</span></div>
+          <div class="chgItem"><span class="k">7D</span><span class="v ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</span></div>
+          <div class="chgItem"><span class="k">14D</span><span class="v ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</span></div>
+          ${show30 ? `<div class="chgItem"><span class="k">30D</span><span class="v ${pctClass(r.p30d)}">${fmtPct(r.p30d)}</span></div>` : ``}
+        </div>
+      `;
+
       const tr = document.createElement("tr");
 
-      const endPrev = `
-        <div class="stack" style="align-items:flex-end">
-          <div>${fmtByMetric(r.metric, r.end)}</div>
-          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev)}</div>
-        </div>
-      `;
-
-      const avg7 = `
-        <div class="stack" style="align-items:flex-end">
-          <div>${fmtByMetric(r.metric, r.last7)}</div>
-          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev7)}</div>
-        </div>
-      `;
-
-      const avg14 = `
-        <div class="stack" style="align-items:flex-end">
-          <div>${fmtByMetric(r.metric, r.last14)}</div>
-          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev14)}</div>
-        </div>
-      `;
-
-      const avg30 = `
-        <div class="stack" style="align-items:flex-end">
-          <div>${fmtByMetric(r.metric, r.last30)}</div>
-          <div class="subline">Prev: ${fmtByMetric(r.metric, r.prev30)}</div>
-        </div>
-      `;
-
-      const pctBox = `
-        <div class="stack" style="align-items:flex-end">
-          <div class="${pctClass(r.p1d)}">1D: ${fmtPct(r.p1d)}</div>
-          <div class="${pctClass(r.p7d)}">7D: ${fmtPct(r.p7d)}</div>
-          <div class="${pctClass(r.p14d)}">14D: ${fmtPct(r.p14d)}</div>
-          ${show30 ? `<div class="${pctClass(r.p30d)}">30D: ${fmtPct(r.p30d)}</div>` : ``}
-        </div>
-      `;
+      /* add stronger separator after each brand block (3 metrics per brand) */
+      const isBrandEnd = ((i+1) % 3 === 0);
+      if(isBrandEnd) tr.classList.add("brandSep");
 
       tr.innerHTML = `
         <td><b>${r.brand}</b></td>
         <td>${metricPretty(r.metric)}</td>
-        <td class="right">${endPrev}</td>
-        <td class="right">${avg7}</td>
-        <td class="right">${avg14}</td>
-        <td class="right th30" style="${show30 ? "" : "display:none"}">${avg30}</td>
-        <td class="right">${pctBox}</td>
+        <td class="right">${endCell}</td>
+        <td class="right">${a7}</td>
+        <td class="right">${a14}</td>
+        <td class="right th30" style="${show30 ? "" : "display:none"}">${a30}</td>
+        <td class="right">${changeCell}</td>
       `;
       allMetricsBody.appendChild(tr);
     }
@@ -1036,7 +1073,7 @@
   }
 
   /* ================================
-     BOSS REPORT TEXT (format stays same; add 30D if toggle ON)
+     BOSS REPORT (unchanged)
   ================================ */
   function dirWord(p){
     if(p===null||p===undefined||Number.isNaN(p)) return "";
@@ -1127,7 +1164,7 @@
   }
 
   /* ================================
-     EXPORTS
+     EXPORTS (unchanged)
   ================================ */
   function downloadBlob(filename, content, mime){
     const blob = new Blob([content], {type:mime});
@@ -1193,24 +1230,17 @@
         r.last14 ?? "",
         r.prev14 ?? ""
       ];
-      if(show30){
-        row.push(r.last30 ?? "", r.prev30 ?? "");
-      }
+      if(show30) row.push(r.last30 ?? "", r.prev30 ?? "");
       row.push(
         r.p1d===null? "" : r.p1d.toFixed(2),
         r.p7d===null? "" : r.p7d.toFixed(2),
         r.p14d===null? "" : r.p14d.toFixed(2)
       );
-      if(show30){
-        row.push(r.p30d===null? "" : r.p30d.toFixed(2));
-      }
+      if(show30) row.push(r.p30d===null? "" : r.p30d.toFixed(2));
       rows.push(row);
     }
 
-    const csv = rows.map(arr =>
-      arr.map(x => `"${String(x).replace(/"/g,'""')}"`).join(",")
-    ).join("\n");
-
+    const csv = rows.map(arr => arr.map(x => `"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
     downloadBlob("Full_Report.csv", csv, "text/csv;charset=utf-8");
   }
 
@@ -1218,8 +1248,6 @@
     const root = document.getElementById("reportArea");
     const w = window.open("", "_blank", "width=1200,height=800");
     const clone = root.cloneNode(true);
-
-    // hide raw json textareas in pdf
     clone.querySelectorAll("textarea").forEach(t => t.style.display = "none");
 
     w.document.write(`
@@ -1242,7 +1270,6 @@
       </body>
       </html>
     `);
-
     w.document.close(); w.focus(); w.print();
   }
 
@@ -1298,9 +1325,7 @@
   });
 
   buildBtn.addEventListener("click", async () => {
-    if(filesEl.files?.length){
-      await handleFiles([...filesEl.files]);
-    }
+    if(filesEl.files?.length) await handleFiles([...filesEl.files]);
     const ok = computeAll();
     renderNotes();
     if(!ok) return;
@@ -1338,9 +1363,7 @@
   });
 
   bossCloseBtn.addEventListener("click", closeBossModal);
-  modalBackdrop.addEventListener("click", (e) => {
-    if(e.target === modalBackdrop) closeBossModal();
-  });
+  modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeBossModal(); });
   pillTabs.forEach(p => p.addEventListener("click", () => setBossTab(p.dataset.r)));
 
   bossCopyBtn.addEventListener("click", async () => {
