@@ -235,7 +235,24 @@
     }
     .smallHelp{font-size:12px; color:var(--muted); margin:6px 0 0}
     .hidden{display:none !important;}
-  </style>
+
+/* ===== Sticky right columns for All Metrics (so 30D% always visible) ===== */
+.stickyR{
+  position: sticky;
+  background: rgba(6,21,41,.92);
+  z-index: 3;
+  box-shadow: -10px 0 18px rgba(0,0,0,.35);
+}
+th.stickyR{ z-index: 4; }
+
+th.pctCol, td.pctCol{ width: 92px; min-width: 92px; }
+
+.stickyR.r0{ right: 0; }
+.stickyR.r1{ right: 92px; }
+.stickyR.r2{ right: 184px; }
+.stickyR.r3{ right: 276px; }
+
+</style>
 </head>
 
 <body>
@@ -339,10 +356,10 @@
               <th class="right">Avg(prev14)</th>
               <th class="right th30" style="display:none">Avg(last30)</th>
               <th class="right th30" style="display:none">Avg(prev30)</th>
-              <th class="right">1D%</th>
-              <th class="right">7D%</th>
-              <th class="right">14D%</th>
-              <th class="right th30" style="display:none">30D%</th>
+              <th class="right stickyR r3 pctCol">1D%</th>
+<th class="right stickyR r2 pctCol">7D%</th>
+<th class="right stickyR r1 pctCol">14D%</th>
+<th class="right stickyR r0 pctCol">30D%</th>
               <th>Status</th>
             </tr>
             </thead>
@@ -962,10 +979,10 @@
         <td class="right">${fmtByMetric(r.metric, r.prev14)}</td>
         <td class="right th30" style="${show30 ? "" : "display:none"}">${fmtByMetric(r.metric, r.last30)}</td>
         <td class="right th30" style="${show30 ? "" : "display:none"}">${fmtByMetric(r.metric, r.prev30)}</td>
-        <td class="right ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</td>
-        <td class="right ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</td>
-        <td class="right ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</td>
-        <td class="right th30 ${pctClass(r.p30d)}" style="${show30 ? "" : "display:none"}">${fmtPct(r.p30d)}</td>
+       <td class="right stickyR r3 pctCol ${pctClass(r.p1d)}">${fmtPct(r.p1d)}</td>
+<td class="right stickyR r2 pctCol ${pctClass(r.p7d)}">${fmtPct(r.p7d)}</td>
+<td class="right stickyR r1 pctCol ${pctClass(r.p14d)}">${fmtPct(r.p14d)}</td>
+<td class="right stickyR r0 pctCol th30 ${pctClass(r.p30d)}" style="${show30 ? '' : 'display:none'}">${fmtPct(r.p30d)}</td>
       `;
       allMetricsBody.appendChild(tr);
     }
