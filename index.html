@@ -299,7 +299,7 @@
       <div class="section active" id="tab-summary">
         <div class="sectionTitle">
           <h2>At a glance</h2>
-          <div class="meta" id="summaryMeta">Summary shows Active 7D% and 14D% (Now + Previous day end).</div>
+          <div class="meta" id="summaryMeta">Summary shows Active 1D%, 7D% and 14D% (Now + Previous day end).</div>
         </div>
         <div class="cards" id="summaryCards"></div>
         <div class="noteBox hidden" id="notesBox"></div>
@@ -786,8 +786,8 @@
 
       let status = "ERR";
       let reason = "";
-      let p7 = null, p14 = null;
-      let p7p = null, p14p = null;
+      let p1 = null, p7 = null, p14 = null;
+let p1p = null, p7p = null, p14p = null;
 
       if(!pack){
         reason = "Missing JSON";
@@ -796,14 +796,15 @@
         reason = data?.active?.reason || "No end-date row";
         status = "ERR";
       }else{
-        p7 = data.active.p7d;
-        p14 = data.active.p14d;
+        p1 = data.active.p1d;
+p7 = data.active.p7d;
+p14 = data.active.p14d;
 
-        // ✅ previous completed day window
-        if(data.active_prev?.ok){
-          p7p = data.active_prev.p7d;
-          p14p = data.active_prev.p14d;
-        }
+if(data.active_prev?.ok){
+  p1p = data.active_prev.p1d;
+  p7p = data.active_prev.p7d;
+  p14p = data.active_prev.p14d;
+}
 
         const worst = data.active.worstDrop;
         status = statusFromWorstDrop(worst);
@@ -825,17 +826,24 @@
         </div>
 
         <div class="metricRow">
-          <div class="metricBox">
-            <div class="mName">Active 7D%</div>
-            <div class="mVal ${pctClass(p7)}">${p7===null ? "—" : (p7.toFixed(2) + "%")}</div>
-            <div class="mSub">Prev end: ${p7p===null ? "—" : (p7p.toFixed(2) + "%")}</div>
-          </div>
-          <div class="metricBox">
-            <div class="mName">Active 14D%</div>
-            <div class="mVal ${pctClass(p14)}">${p14===null ? "—" : (p14.toFixed(2) + "%")}</div>
-            <div class="mSub">Prev end: ${p14p===null ? "—" : (p14p.toFixed(2) + "%")}</div>
-          </div>
-        </div>
+  <div class="metricBox">
+    <div class="mName">Active 1D%</div>
+    <div class="mVal ${pctClass(p1)}">${p1===null ? "—" : (p1.toFixed(2) + "%")}</div>
+    <div class="mSub">Prev end: ${p1p===null ? "—" : (p1p.toFixed(2) + "%")}</div>
+  </div>
+
+  <div class="metricBox">
+    <div class="mName">Active 7D%</div>
+    <div class="mVal ${pctClass(p7)}">${p7===null ? "—" : (p7.toFixed(2) + "%")}</div>
+    <div class="mSub">Prev end: ${p7p===null ? "—" : (p7p.toFixed(2) + "%")}</div>
+  </div>
+
+  <div class="metricBox">
+    <div class="mName">Active 14D%</div>
+    <div class="mVal ${pctClass(p14)}">${p14===null ? "—" : (p14.toFixed(2) + "%")}</div>
+    <div class="mSub">Prev end: ${p14p===null ? "—" : (p14p.toFixed(2) + "%")}</div>
+  </div>
+</div>
 
         <div class="mini" style="margin-top:10px; ${reason? '' : 'opacity:.0'}">
           ${reason ? ("<span class='muted'>"+escapeHtml(reason)+"</span>") : "&nbsp;"}
