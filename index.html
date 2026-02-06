@@ -1017,22 +1017,17 @@
       const p14 = cur.p14d;
       const p30 = cur.p30d;
 
-      const noteParts = [];
-      const worst = Math.min((p7 ?? 0), (p14 ?? 0), (use30 ? (p30 ?? 0) : 0));
+     // ✅ Note rule: ONLY "Increased" or "Drop" (Stable if no signal)
+const vals = [p7, p14, ...(use30 ? [p30] : [])].filter(v => v !== null);
 
-      if(p7 !== null && p7 <= ALERT_AT) noteParts.push("7D drop");
-      if(p14 !== null && p14 <= ALERT_AT) noteParts.push("14D drop");
-      if(use30 && p30 !== null && p30 <= ALERT_AT) noteParts.push("30D drop");
-
-      if(!noteParts.length){
-        if((p7 ?? 0) > 0 || (p14 ?? 0) > 0 || (use30 && (p30 ?? 0) > 0)) noteParts.push("Improving");
-        else noteParts.push("Stable");
-      }
+let note = "Stable";
+if (vals.some(v => v > 0)) note = "Increased";
+else if (vals.some(v => v < 0)) note = "Drop";
 
       lines.push(
         `${brand} | ${p7===null?"—":p7.toFixed(2)+"%"} | ${p14===null?"—":p14.toFixed(2)+"%"} ` +
         (use30 ? `| ${p30===null?"—":p30.toFixed(2)+"%"} ` : "") +
-        `| ${noteParts.join(", ")}`
+        `| ${note}`
       );
     }
 
