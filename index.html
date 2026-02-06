@@ -440,7 +440,7 @@
   <div class="modal">
     <div class="modalHeader">
       <div>
-        <div class="modalTitle">Boss Report (English)</div>
+        <div class="modalTitle">Report (English)</div>
         <div class="modalMeta" id="bossMeta">—</div>
       </div>
       <div class="modalActions">
@@ -457,7 +457,7 @@
         <div class="pill" data-r="turnover">Turnover</div>
       </div>
       <textarea id="reportText" readonly></textarea>
-      <div class="smallHelp">Short, boss-ready. Per-brand 7D% / 14D% (and optional 30D%) with drop/increase.</div>
+      <div class="smallHelp">Clean view: 1D / 7D / 14D (and optional 30D). Each period shows % and Increased/Drop.</div>
     </div>
   </div>
 </div>
@@ -793,7 +793,7 @@
       }
     }
 
-    refreshBossTexts(); // ✅ FIX: boss text always updated after compute
+    refreshBossTexts(); // keep always updated
     return true;
   }
 
@@ -984,7 +984,12 @@
     }
   }
 
-  // ✅ FULL Boss Report logic restored
+  // ============================================================
+  // ✅ IMPROVED REPORT TEXT (ONLY THIS PART CHANGED)
+  // - No "Boss Report" words inside the report text
+  // - Shows 1D / 7D / 14D / optional 30D with % + Increased/Drop
+  // ============================================================
+
   function metricLabel(key){
     if(key === "active") return "Active Players";
     if(key === "deposit") return "Total Deposit";
@@ -992,14 +997,36 @@
     return key;
   }
 
+  function trendWord(p){
+    if(p === null || p === undefined || Number.isNaN(p)) return "—";
+    if(p > 0) return "Increased";
+    if(p < 0) return "Drop";
+    return "Stable";
+  }
+
+  function fmtPctShort(p){
+    if(p === null || p === undefined || Number.isNaN(p)) return "—";
+    const v = Number(p);
+    return (v>=0?"+":"") + v.toFixed(2) + "%";
+  }
+
   function buildBossText(metricKey){
     const use30 = !!use30DEl.checked;
     const lines = [];
 
-    const header = `Boss Report — ${metricLabel(metricKey)}\nComparison end date: ${state.compareEndISO}  |  Files loaded: ${state.filesLoaded.size}/8  |  30D: ${use30 ? "ON" : "OFF"}\n`;
+    // Title line ONLY category (as you requested)
+    lines.push(`${metricLabel(metricKey)}`);
+    lines.push(`End: ${state.compareEndISO}  |  Loaded: ${state.filesLoaded.size}/8  |  30D: ${use30 ? "ON" : "OFF"}`);
+    lines.push("");
+
+    // Table header: each period shows % and result
+    let header = "Brand | 1D% | 1D Result | 7D% | 7D Result | 14D% | 14D Result";
+    if(use30) header += " | 30D% | 30D Result";
     lines.push(header);
-    lines.push("Brand | 7D% | 14D% " + (use30 ? "| 30D%" : "") + " | Note");
-    lines.push("----- | ---- | ----- " + (use30 ? "| ---- " : "") + "| ----");
+
+    let sep = "----- | --- | --------- | --- | --------- | ---- | ----------";
+    if(use30) sep += " | ---- | ----------";
+    lines.push(sep);
 
     for(const brand of BRANDS){
       const pb = state.computed.perBrand.get(brand);
@@ -1009,34 +1036,27 @@
         pb?.turnover?.cur;
 
       if(!cur || !cur.ok){
-        lines.push(`${brand} | — | — ${use30 ? "| —" : ""} | Missing/No row for end date`);
+        // keep clean if missing
+        let row = `${brand} | — | — | — | — | — | —`;
+        if(use30) row += ` | — | —`;
+        lines.push(row);
         continue;
       }
 
+      const p1 = cur.p1d;
       const p7 = cur.p7d;
       const p14 = cur.p14d;
       const p30 = cur.p30d;
 
-     // ✅ Note rule: ONLY "Increased" or "Drop" (Stable if no signal)
-const vals = [p7, p14, ...(use30 ? [p30] : [])].filter(v => v !== null);
-
-let note = "Stable";
-if (vals.some(v => v > 0)) note = "Increased";
-else if (vals.some(v => v < 0)) note = "Drop";
-
-      lines.push(
-        `${brand} | ${p7===null?"—":p7.toFixed(2)+"%"} | ${p14===null?"—":p14.toFixed(2)+"%"} ` +
-        (use30 ? `| ${p30===null?"—":p30.toFixed(2)+"%"} ` : "") +
-        `| ${note}`
-      );
+      let row = `${brand} | ${fmtPctShort(p1)} | ${trendWord(p1)} | ${fmtPctShort(p7)} | ${trendWord(p7)} | ${fmtPctShort(p14)} | ${trendWord(p14)}`;
+      if(use30) row += ` | ${fmtPctShort(p30)} | ${trendWord(p30)}`;
+      lines.push(row);
     }
 
-    lines.push("\nLegend: negative = drop, positive = increase. Focus on big negative drops first.");
     return lines.join("\n");
   }
 
   function refreshBossTexts(){
-    // only compute if we have compareEndISO
     if(!state.compareEndISO){
       state.boss.activeText = "";
       state.boss.depositText = "";
@@ -1049,7 +1069,6 @@ else if (vals.some(v => v < 0)) note = "Drop";
   }
 
   function setBossReportView(which){
-    // update pills
     pillTabs.forEach(p => p.classList.toggle("active", p.dataset.r === which));
     if(which === "active") reportTextEl.value = state.boss.activeText || "";
     if(which === "deposit") reportTextEl.value = state.boss.depositText || "";
@@ -1057,8 +1076,7 @@ else if (vals.some(v => v < 0)) note = "Drop";
   }
 
   function openBossModal(){
-    bossMeta.textContent = `Comparison end date: ${state.compareEndISO || "—"} • Files loaded: ${state.filesLoaded.size}/8 • 30D: ${use30DEl.checked ? "ON" : "OFF"}`;
-    // ensure text is ready
+    bossMeta.textContent = `End: ${state.compareEndISO || "—"} • Loaded: ${state.filesLoaded.size}/8 • 30D: ${use30DEl.checked ? "ON" : "OFF"}`;
     refreshBossTexts();
     setBossReportView("active");
     modalBackdrop.style.display = "flex";
@@ -1069,6 +1087,7 @@ else if (vals.some(v => v < 0)) note = "Drop";
     document.body.classList.toggle("full-all", !!isOn);
   }
 
+  // keep (already used elsewhere)
   function set30DVisibility(){
     const show30 = !!use30DEl.checked;
     document.querySelectorAll(".th30").forEach(el => {
@@ -1157,7 +1176,6 @@ else if (vals.some(v => v < 0)) note = "Drop";
     openBossModal();
   });
 
-  // boss pills
   pillTabs.forEach(p => p.addEventListener("click", () => {
     setBossReportView(p.dataset.r);
   }));
@@ -1172,25 +1190,6 @@ else if (vals.some(v => v < 0)) note = "Drop";
     }
   });
 
-  // CSV from boss report text
-  bossCsvBtn.addEventListener("click", () => {
-    const txt = reportTextEl.value || "";
-    downloadBlob("Boss_Report.txt", txt, "text/plain;charset=utf-8");
-  });
-
-  bossPdfBtn.addEventListener("click", () => {
-    const txt = reportTextEl.value || "";
-    const w = window.open("", "_blank", "width=900,height=700");
-    w.document.write(`<html><head><title>Boss Report</title>
-      <style>body{font-family:Arial;padding:18px;}pre{white-space:pre-wrap;font-size:12px;line-height:1.4}</style>
-      </head><body><h2>Boss Report</h2><pre>${escapeHtml(txt)}</pre></body></html>`);
-    w.document.close(); w.focus(); w.print();
-  });
-
-  bossCloseBtn.addEventListener("click", closeBossModal);
-  modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeBossModal(); });
-
-  // Full CSV / PDF (unchanged)
   function downloadBlob(filename, content, mime){
     const blob = new Blob([content], {type:mime});
     const url = URL.createObjectURL(blob);
@@ -1203,6 +1202,25 @@ else if (vals.some(v => v < 0)) note = "Drop";
     URL.revokeObjectURL(url);
   }
 
+  // NOTE: keeping your original behavior (downloads TXT even though button says CSV)
+  bossCsvBtn.addEventListener("click", () => {
+    const txt = reportTextEl.value || "";
+    downloadBlob("Boss_Report.txt", txt, "text/plain;charset=utf-8");
+  });
+
+  bossPdfBtn.addEventListener("click", () => {
+    const txt = reportTextEl.value || "";
+    const w = window.open("", "_blank", "width=900,height=700");
+    w.document.write(`<html><head><title>Report</title>
+      <style>body{font-family:Arial;padding:18px;}pre{white-space:pre-wrap;font-size:12px;line-height:1.4}</style>
+      </head><body><h2>${escapeHtml(txt.split("\n")[0] || "Report")}</h2><pre>${escapeHtml(txt)}</pre></body></html>`);
+    w.document.close(); w.focus(); w.print();
+  });
+
+  bossCloseBtn.addEventListener("click", closeBossModal);
+  modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeBossModal(); });
+
+  // Full CSV / PDF (unchanged)
   function exportFullCSV(){
     if(!state.computed.allRows.length) return alert("Build Dashboard first.");
     const show30 = !!use30DEl.checked;
