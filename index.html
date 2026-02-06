@@ -457,7 +457,7 @@
         <div class="pill" data-r="turnover">Turnover</div>
       </div>
       <textarea id="reportText" readonly></textarea>
-      <div class="smallHelp">Clean view: 1D / 7D / 14D (and optional 30D). Each period shows % and Increased/Drop.</div>
+      <div class="smallHelp">Telegram-ready format (copied as a code block). Each brand shows 1D/7D/14D (and optional 30D) as % + ↑/↓/→.</div>
     </div>
   </div>
 </div>
@@ -1011,50 +1011,67 @@
   }
 
   function buildBossText(metricKey){
-    const use30 = !!use30DEl.checked;
-    const lines = [];
+  const use30 = !!use30DEl.checked;
 
-    // Title line ONLY category (as you requested)
-    lines.push(`${metricLabel(metricKey)}`);
-    lines.push(`End: ${state.compareEndISO}  |  Loaded: ${state.filesLoaded.size}/8  |  30D: ${use30 ? "ON" : "OFF"}`);
-    lines.push("");
+  const label =
+    metricKey === "active" ? "Active Players" :
+    metricKey === "deposit" ? "Total Deposit" :
+    "Turnover";
 
-    // Table header: each period shows % and result
-    let header = "Brand | 1D% | 1D Result | 7D% | 7D Result | 14D% | 14D Result";
-    if(use30) header += " | 30D% | 30D Result";
-    lines.push(header);
+  const pctStr = (p) => (p===null || p===undefined || Number.isNaN(p)) ? "—" : (p>=0?"+":"") + p.toFixed(2) + "%";
+  const res = (p) => {
+    if(p===null || p===undefined || Number.isNaN(p)) return "—";
+    if(p > 0.0001) return "↑";
+    if(p < -0.0001) return "↓";
+    return "→";
+  };
 
-    let sep = "----- | --- | --------- | --- | --------- | ---- | ----------";
-    if(use30) sep += " | ---- | ----------";
-    lines.push(sep);
+  const lines = [];
 
-    for(const brand of BRANDS){
-      const pb = state.computed.perBrand.get(brand);
-      const cur =
-        metricKey === "active" ? pb?.active?.cur :
-        metricKey === "deposit" ? pb?.totalDeposit?.cur :
-        pb?.turnover?.cur;
+  // ✅ Telegram-ready: wrap inside code block
+  lines.push("```");
+  lines.push(`${label}`);
+  lines.push(`End: ${state.compareEndISO || "—"}  |  Loaded: ${state.filesLoaded.size}/8  |  30D: ${use30 ? "ON" : "OFF"}`);
+  lines.push("");
+  lines.push("Brand  1D%        7D%        14D%       " + (use30 ? "30D%" : ""));
+  lines.push("-----  ---------  ---------  ---------  " + (use30 ? "---------" : ""));
 
-      if(!cur || !cur.ok){
-        // keep clean if missing
-        let row = `${brand} | — | — | — | — | — | —`;
-        if(use30) row += ` | — | —`;
-        lines.push(row);
-        continue;
-      }
+  for(const brand of BRANDS){
+    const pb = state.computed.perBrand.get(brand);
+    const cur =
+      metricKey === "active" ? pb?.active?.cur :
+      metricKey === "deposit" ? pb?.totalDeposit?.cur :
+      pb?.turnover?.cur;
 
-      const p1 = cur.p1d;
-      const p7 = cur.p7d;
-      const p14 = cur.p14d;
-      const p30 = cur.p30d;
-
-      let row = `${brand} | ${fmtPctShort(p1)} | ${trendWord(p1)} | ${fmtPctShort(p7)} | ${trendWord(p7)} | ${fmtPctShort(p14)} | ${trendWord(p14)}`;
-      if(use30) row += ` | ${fmtPctShort(p30)} | ${trendWord(p30)}`;
-      lines.push(row);
+    if(!cur || !cur.ok){
+      // keep short to avoid Telegram wrap
+      const tail = use30 ? " —" : "";
+      lines.push(`${brand.padEnd(5)}  —         —         —         ${tail}`.trimEnd());
+      continue;
     }
 
-    return lines.join("\n");
+    const p1  = cur.p1d;
+    const p7  = cur.p7d;
+    const p14 = cur.p14d;
+    const p30 = cur.p30d;
+
+    // Compact, fixed-ish width chunks so Telegram won't wrap badly
+    const c1  = `${pctStr(p1).padEnd(9)}${res(p1)}`.padEnd(11);
+    const c7  = `${pctStr(p7).padEnd(9)}${res(p7)}`.padEnd(11);
+    const c14 = `${pctStr(p14).padEnd(9)}${res(p14)}`.padEnd(11);
+    const c30 = use30 ? `${pctStr(p30).padEnd(9)}${res(p30)}` : "";
+
+    lines.push(
+      `${brand.padEnd(5)}  ${c1}  ${c7}  ${c14}` + (use30 ? `  ${c30}` : "")
+    );
   }
+
+  lines.push("");
+  lines.push("Legend: ↑ increase | ↓ drop | → flat | — no data");
+  lines.push("```");
+
+  return lines.join("\n");
+}
 
   function refreshBossTexts(){
     if(!state.compareEndISO){
