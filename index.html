@@ -285,7 +285,6 @@
   <p class="sub">Upload JSON exports (M1, M2, B1, B2, B3, B4, K1, TK). Computes 1D / 7D / 14D rolling comparisons ending at End Date (or last completed day if toggle ON). Optional 30D if you have enough history (upload multiple files per brand).</p>
 
   <div class="panel">
-    <!-- ✅ wrapper so we can hide only this in full screen All Metrics -->
     <div id="topControls">
       <div class="topGrid">
         <div class="field">
@@ -354,7 +353,6 @@
     </div>
 
     <div id="reportArea">
-      <!-- SUMMARY -->
       <div class="section active" id="tab-summary">
         <div class="sectionTitle">
           <h2>At a glance</h2>
@@ -364,7 +362,6 @@
         <div class="noteBox hidden" id="notesBox"></div>
       </div>
 
-      <!-- ACTIVE FOCUS TABLE -->
       <div class="section" id="tab-active">
         <div class="sectionTitle">
           <h2>Active Players Focus (Most Important)</h2>
@@ -395,14 +392,12 @@
         </div>
       </div>
 
-      <!-- ALL METRICS -->
       <div class="section" id="tab-all">
         <div class="sectionTitle">
           <h2>All Metrics</h2>
           <div class="meta">Active / Deposit / Turnover (same rolling logic). Optional 30D toggle.</div>
         </div>
 
-        <!-- ✅ wrappers for full screen height -->
         <div class="tableWrap">
           <div class="tableWrapInner">
             <table id="allMetricsTable">
@@ -430,7 +425,6 @@
         </div>
       </div>
 
-      <!-- RAW -->
       <div class="section" id="tab-raw">
         <div class="sectionTitle">
           <h2>Raw JSON (debug)</h2>
@@ -442,7 +436,6 @@
   </div>
 </div>
 
-<!-- Boss Report Modal -->
 <div class="backdrop" id="modalBackdrop">
   <div class="modal">
     <div class="modalHeader">
@@ -464,7 +457,6 @@
         <div class="pill" data-r="turnover">Turnover</div>
       </div>
       <textarea id="reportText" readonly></textarea>
-      <textarea id="bossReportText" readonly style="display:none"></textarea>
       <div class="smallHelp">Short, boss-ready. Per-brand 7D% / 14D% (and optional 30D%) with drop/increase.</div>
     </div>
   </div>
@@ -517,7 +509,6 @@
 
   const modalBackdrop = $("modalBackdrop");
   const reportTextEl = $("reportText");
-  const bossReportTextEl = $("bossReportText");
   const bossMeta = $("bossMeta");
   const bossCopyBtn = $("bossCopyBtn");
   const bossCsvBtn = $("bossCsvBtn");
@@ -574,6 +565,12 @@
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
   }
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
+  }
 
   function statusFromWorstDrop(worst){
     if(worst===null) return "ERR";
@@ -586,13 +583,6 @@
     if(status==="WARN") return "warn";
     if(status==="ALERT") return "alert";
     return "err";
-  }
-
-  function escapeHtml(s){
-    return String(s||"")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;");
   }
 
   function detectBrandFromFilename(name){
@@ -744,7 +734,6 @@
       last7Avg:last7.avg, prev7Avg:prev7.avg,
       last14Avg:last14.avg, prev14Avg:prev14.avg,
       last30Avg:last30.avg, prev30Avg:prev30.avg,
-      c1:last7.count, c2:prev7.count, c3:last14.count, c4:prev14.count, c5:last30.count, c6:prev30.count,
       p1d, p7d, p14d, p30d,
       worstDrop: (p7d===null && p14d===null) ? null : Math.min(p7d ?? 0, p14d ?? 0)
     };
@@ -782,10 +771,8 @@
       const depCur = computeMetric(rows, "totalDeposit", state.compareEndISO);
       const turnCur = computeMetric(rows, "turnover", state.compareEndISO);
 
-      const activePrev = computeMetric(rows, "active", state.prevCompareEndISO);
-
       state.computed.perBrand.set(brand, {
-        active: { cur: activeCur, prev: activePrev },
+        active: { cur: activeCur },
         totalDeposit: { cur: depCur },
         turnover: { cur: turnCur },
         rowsCount: rows.length
@@ -806,6 +793,7 @@
       }
     }
 
+    refreshBossTexts(); // ✅ FIX: boss text always updated after compute
     return true;
   }
 
@@ -948,7 +936,6 @@
       return k;
     };
 
-    // Deposit + Turnover as money
     const fmtByMetric = (metricKey, v)=>{
       if(metricKey==="turnover") return fmtMoney2(v);
       if(metricKey==="totalDeposit") return fmtMoney2(v);
@@ -997,19 +984,102 @@
     }
   }
 
+  // ✅ FULL Boss Report logic restored
+  function metricLabel(key){
+    if(key === "active") return "Active Players";
+    if(key === "deposit") return "Total Deposit";
+    if(key === "turnover") return "Turnover";
+    return key;
+  }
+
+  function buildBossText(metricKey){
+    const use30 = !!use30DEl.checked;
+    const lines = [];
+
+    const header = `Boss Report — ${metricLabel(metricKey)}\nComparison end date: ${state.compareEndISO}  |  Files loaded: ${state.filesLoaded.size}/8  |  30D: ${use30 ? "ON" : "OFF"}\n`;
+    lines.push(header);
+    lines.push("Brand | 7D% | 14D% " + (use30 ? "| 30D%" : "") + " | Note");
+    lines.push("----- | ---- | ----- " + (use30 ? "| ---- " : "") + "| ----");
+
+    for(const brand of BRANDS){
+      const pb = state.computed.perBrand.get(brand);
+      const cur =
+        metricKey === "active" ? pb?.active?.cur :
+        metricKey === "deposit" ? pb?.totalDeposit?.cur :
+        pb?.turnover?.cur;
+
+      if(!cur || !cur.ok){
+        lines.push(`${brand} | — | — ${use30 ? "| —" : ""} | Missing/No row for end date`);
+        continue;
+      }
+
+      const p7 = cur.p7d;
+      const p14 = cur.p14d;
+      const p30 = cur.p30d;
+
+      const noteParts = [];
+      const worst = Math.min((p7 ?? 0), (p14 ?? 0), (use30 ? (p30 ?? 0) : 0));
+
+      if(p7 !== null && p7 <= ALERT_AT) noteParts.push("7D drop");
+      if(p14 !== null && p14 <= ALERT_AT) noteParts.push("14D drop");
+      if(use30 && p30 !== null && p30 <= ALERT_AT) noteParts.push("30D drop");
+
+      if(!noteParts.length){
+        if((p7 ?? 0) > 0 || (p14 ?? 0) > 0 || (use30 && (p30 ?? 0) > 0)) noteParts.push("Improving");
+        else noteParts.push("Stable");
+      }
+
+      lines.push(
+        `${brand} | ${p7===null?"—":p7.toFixed(2)+"%"} | ${p14===null?"—":p14.toFixed(2)+"%"} ` +
+        (use30 ? `| ${p30===null?"—":p30.toFixed(2)+"%"} ` : "") +
+        `| ${noteParts.join(", ")}`
+      );
+    }
+
+    lines.push("\nLegend: negative = drop, positive = increase. Focus on big negative drops first.");
+    return lines.join("\n");
+  }
+
   function refreshBossTexts(){
-    // keep boss modal feature unchanged
+    // only compute if we have compareEndISO
+    if(!state.compareEndISO){
+      state.boss.activeText = "";
+      state.boss.depositText = "";
+      state.boss.turnoverText = "";
+      return;
+    }
+    state.boss.activeText = buildBossText("active");
+    state.boss.depositText = buildBossText("deposit");
+    state.boss.turnoverText = buildBossText("turnover");
+  }
+
+  function setBossReportView(which){
+    // update pills
+    pillTabs.forEach(p => p.classList.toggle("active", p.dataset.r === which));
+    if(which === "active") reportTextEl.value = state.boss.activeText || "";
+    if(which === "deposit") reportTextEl.value = state.boss.depositText || "";
+    if(which === "turnover") reportTextEl.value = state.boss.turnoverText || "";
   }
 
   function openBossModal(){
     bossMeta.textContent = `Comparison end date: ${state.compareEndISO || "—"} • Files loaded: ${state.filesLoaded.size}/8 • 30D: ${use30DEl.checked ? "ON" : "OFF"}`;
+    // ensure text is ready
+    refreshBossTexts();
+    setBossReportView("active");
     modalBackdrop.style.display = "flex";
   }
   function closeBossModal(){ modalBackdrop.style.display = "none"; }
 
-  // ✅ Full screen mode toggler
   function setFullAllMode(isOn){
     document.body.classList.toggle("full-all", !!isOn);
+  }
+
+  function set30DVisibility(){
+    const show30 = !!use30DEl.checked;
+    document.querySelectorAll(".th30").forEach(el => {
+      el.style.display = show30 ? "" : "none";
+    });
+    return show30;
   }
 
   tabs.forEach(t => t.addEventListener("click", () => {
@@ -1018,8 +1088,6 @@
     const key = t.dataset.tab;
 
     Object.keys(sections).forEach(k => sections[k].classList.toggle("active", k===key));
-
-    // ✅ only All Metrics uses fullscreen table
     setFullAllMode(key === "all");
   }));
 
@@ -1031,7 +1099,6 @@
       renderActiveTable();
       renderAllMetrics();
       renderRaw();
-      refreshBossTexts();
     }
   });
 
@@ -1041,6 +1108,7 @@
       renderSummary();
       renderActiveTable();
       renderAllMetrics();
+      renderRaw();
       refreshBossTexts();
     }
   });
@@ -1066,7 +1134,6 @@
     renderActiveTable();
     renderAllMetrics();
     renderRaw();
-    refreshBossTexts();
   });
 
   clearBtn.addEventListener("click", () => {
@@ -1074,6 +1141,8 @@
     state.notes = [];
     state.computed.perBrand = new Map();
     state.computed.allRows = [];
+    state.boss = { activeText:"", depositText:"", turnoverText:"" };
+
     doneChip.textContent = "Done: loaded 0/8";
     compChip.textContent = "Comparisons end at: —";
     summaryCards.innerHTML = "";
@@ -1093,10 +1162,38 @@
     openBossModal();
   });
 
-  bossCloseBtn.addEventListener("click", closeBossModal);
-  modalBackdrop.addEventListener("click", (e) => {
-    if(e.target === modalBackdrop) closeBossModal();
+  // boss pills
+  pillTabs.forEach(p => p.addEventListener("click", () => {
+    setBossReportView(p.dataset.r);
+  }));
+
+  bossCopyBtn.addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(reportTextEl.value || "");
+      bossCopyBtn.textContent = "Copied";
+      setTimeout(()=>bossCopyBtn.textContent="Copy", 900);
+    }catch(e){
+      alert("Copy failed. Please select text manually and copy.");
+    }
   });
+
+  // CSV from boss report text
+  bossCsvBtn.addEventListener("click", () => {
+    const txt = reportTextEl.value || "";
+    downloadBlob("Boss_Report.txt", txt, "text/plain;charset=utf-8");
+  });
+
+  bossPdfBtn.addEventListener("click", () => {
+    const txt = reportTextEl.value || "";
+    const w = window.open("", "_blank", "width=900,height=700");
+    w.document.write(`<html><head><title>Boss Report</title>
+      <style>body{font-family:Arial;padding:18px;}pre{white-space:pre-wrap;font-size:12px;line-height:1.4}</style>
+      </head><body><h2>Boss Report</h2><pre>${escapeHtml(txt)}</pre></body></html>`);
+    w.document.close(); w.focus(); w.print();
+  });
+
+  bossCloseBtn.addEventListener("click", closeBossModal);
+  modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeBossModal(); });
 
   // Full CSV / PDF (unchanged)
   function downloadBlob(filename, content, mime){
